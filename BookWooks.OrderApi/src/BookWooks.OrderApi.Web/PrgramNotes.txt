@@ -1,0 +1,17 @@
+﻿In an ASP.NET Core application, the app variable typically refers to an instance of IApplicationBuilder, which is responsible for configuring the request processing pipeline by adding middleware components.
+
+Middleware components in ASP.NET Core are components that are added to the request pipeline to handle requests and responses. These components execute in sequence, with each middleware component performing a specific function such as authentication, routing, logging, or error handling.
+
+The UseXXX methods on the IApplicationBuilder interface are used to add middleware components to the pipeline. For example, app.UseHttpsRedirection() adds middleware to redirect HTTP requests to HTTPS, and app.UseSwaggerGen() adds middleware to generate Swagger documentation for the API.
+
+By chaining these UseXXX methods together in the desired order, you can configure the request pipeline to handle incoming requests in the desired manner.
+
+
+
+EnsureCreated() v Migrate()
+
+ If you're starting with a new database or you're not concerned about migrations and just want to quickly set up a database, EnsureCreated() is simpler. 
+ However, if you're managing a database schema over time and want to ensure consistency between your DbContext model and the database schema, Migrate() is the better choice as it handles migrations and schema updates automatically.
+
+ In summary, while EnsureCreated() creates the database based on the current model, migrations like InitialMigration.cs are part of a more formal process for managing database schema changes over time. 
+ If you're using migrations, it's generally recommended to stick with dbContext.Database.Migrate() to ensure that your database schema evolves along with your application's DbContext model.

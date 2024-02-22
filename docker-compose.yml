@@ -1,0 +1,34 @@
+version: '3.4'
+
+services:
+  bookwooks.orderapi.web:
+    image: ${DOCKER_REGISTRY-}bookwooksorderapiweb
+    build:
+      context: .
+      dockerfile: BookWooks.OrderApi/src/BookWooks.OrderApi.Web/Dockerfile
+    depends_on:
+      - sqldata
+      - rabbitmq
+    networks:
+      - booky_wooks_network
+
+  sqldata:
+    container_name: booky_wooks_sqldata
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    environment:
+       - "SA_PASSWORD=Your_password123"
+       - "ACCEPT_EULA=Y"
+    ports:
+    -   "5433:1433"
+    networks:
+        - booky_wooks_network
+
+  rabbitmq:
+    container_name: booky_wooks_rabbitmq
+    hostname: "rabbitmq"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    image: rabbitmq:3-management-alpine
+    networks:
+        - booky_wooks_network

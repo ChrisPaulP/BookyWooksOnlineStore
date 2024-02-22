@@ -1,0 +1,47 @@
+﻿namespace BookWooks.OrderApi.Web.Orders;
+
+public class GetOrderDetails : Endpoint<GetOrderDetailsRequest, GetOrderDetailsResponse>
+{
+  private readonly IMediator _mediator;
+
+  public GetOrderDetails(IMediator mediator)
+  {
+    _mediator = mediator;
+  }
+
+  public override void Configure()
+  {
+    Get(GetOrderDetailsRequest.Route);
+    AllowAnonymous();
+  }
+
+  public override async Task HandleAsync(GetOrderDetailsRequest request,
+  CancellationToken cancellationToken)
+  {
+    var command = new GetOrderDetailsQuery(request.OrderId);
+
+    var result = await _mediator.Send(command);
+
+    if (result.Status == ResultStatus.NotFound)
+    {
+      await SendNotFoundAsync(cancellationToken);
+      return;
+    }
+
+    if (result.IsSuccess)
+    {
+      Response = new GetOrderDetailsResponse(result.Value.Id,
+        result.Value.Status,
+        orderItems:
+        result.Value.OrderItems?
+          .Select(item => new OrderItemRecord(
+            item.BookId,
+            item.BookTitle,
+            item.BookPrice,
+            item.Quantity
+            ))
+          .ToList() ?? new List<OrderItemRecord>()
+          );
+    }
+  }
+}

@@ -1,0 +1,64 @@
+A Docker volume is an independent file system entirely managed by Docker and exists as a normal 
+file or directory on the host, where data is persisted.
+
+docker run --name christopherdockervolumeexample -v %cd%/documents/dockervolumeexample/:/usr/share/nginx/html -p 8080:80 -d nginx
+
+Log into the container and view the shared file/folder content:
+
+docker exec -it christopherdockervolumeexample /bin/bash
+ls /usr/share/nginx/html
+
+To provide the container only read-only permissions on the folder:
+
+docker run --name christopherdockervolumeexample -v %cd%/documents/dockervolumeexample/:/usr/share/nginx/html:ro -p 8080:80 -d nginx
+
+This is an example of Mount Type: bind where we mount an existing file system to docker container.
+
+This can be done as follows:
+docker inspect christopherdockervolumeexample
+and view under the Mount object
+
+ "Mounts": [
+            {
+                "Type": "bind",
+                "Source": "C:\\Users\\porterc/documents/dockervolumeexample/",
+                "Destination": "/usr/share/nginx/html",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            }
+        ]
+
+Creating named Docker Volume
+If you don't want to create a directory or have an existing directory to work with, you can simply create a volume and attach it the container as follows:
+docker volume create mydockervolume
+
+docker run --name mydockervolumeexample -v mydockervolume:/usr/share/nginx/html:ro  -p 8080:80 -d nginx
+Here, we create a volume called hello and simply attach it to run an instance of the image(here we use nginx again).
+
+The directory of the image will be created on the following location:
+
+/var/lib/docker/volumes/<vol_name>/_data
+
+Sharing Docker Volumes across Containers
+This section is relatively easy as you can simply attach a single volume to a number of containers and thus, enable sharing of data between them.
+docker run --name mydockervolumeexample1 -v mydockervolume:/usr/share/nginx/html:ro  -p 8080:80 -d nginx
+docker run --name mydockervolumeexample2  -v mydockervolume:/usr/share/nginx/html:ro  -p 8081:80 -d nginx
+
+These launched containers will use the same volumes.
+
+If there are a number of volumes attached to the container and we require all the volumes from that container to be attached to a new one, we can simply use the following code:
+docker run --name mydockervolumeexample3 --volumes-from mydockervolumeexample1 -p 8082:80 -d nginx
+
+We can implement and define Volumes in docker-compse.yaml in a very basic way as follows:
+
+version: '3.5'
+
+services:
+  corporate:
+    image: corporate.thetopgeek:latest
+    volumes:
+      - <host_path>:<conatiner_path>            ## for host-mounted volumes
+      - <named_volume>:<container path>         ## for named volumes
+
+for more info: https://techblog.geekyants.com/understanding-docker-volumes-1

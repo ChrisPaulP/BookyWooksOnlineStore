@@ -1,0 +1,27 @@
+How to rename docker-compose.yml containers group in docker desktop?
+  docker-compose -p="Lost-Chapters" up
+
+.env file overwrites app.settings
+docker-compose overwrites .env file
+docker-compose.override overwrites docker-compose
+
+Change the Name of a Docker Container:
+ docker container rename d582704d9654 myNewName
+
+How to create a customer container network:
+ docker newtwork create --driver bridge lost_chapters_network
+
+How to check current networks:
+ docker network ls
+
+We use Docker detached mode (-d) when we want to connect to the container in an interactive mode 
+or we can say when we just want application to be running inside the container. 
+This means, we can start up the container and could use the console after startup for other commands.
+
+This is a connection string to connect to sql database running in Docker container. 5433 allows me to map to 1433 in a docker container.
+By doing this I am able to see the database I have created in docker on my local machine.
+ "DefaultConnection": "Server=localhost,5433;Database=RetailInMotion.OrderDb;User Id=sa;password=Your_password123;" 
+
+
+When running order api via docker: http://localhost:5001/swagger/index.html
+

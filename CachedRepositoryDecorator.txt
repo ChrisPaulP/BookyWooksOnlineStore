@@ -1,0 +1,75 @@
+public abstract class CachedRepositoryDecorator<T> : IReadRepository<T>
+       where T : class, IAggregateRoot
+{
+  //private readonly ICacheService _cacheService;
+  //private readonly IReadRepository<T> _readRepository;
+  private readonly BookyWooksOrderDbContext _orderDbContext;
+  private readonly DbSet<T> _entitySet;
+  public CachedRepositoryDecorator( BookyWooksOrderDbContext bookyWooksOrderDb) // ICacheService cacheService, 
+  {
+
+    //_cacheService = cacheService;
+    _orderDbContext = bookyWooksOrderDb;
+    _entitySet = _orderDbContext.Set<T>();
+  }
+
+  public bool Contains(ISpecification<T> specification)
+  {
+    return Count(specification) > 0 ? true : false;
+  }
+
+  public bool Contains(Expression<Func<T, bool>> predicate)
+  {
+    return Count(predicate) > 0 ? true : false;
+  }
+
+  public int Count(ISpecification<T> specification)
+  {
+    return ApplySpecification(specification).Count();
+  }
+
+  public int Count(Expression<Func<T, bool>> predicate)
+  {
+    return _entitySet.Where(predicate).Count();
+  }
+
+  public async Task<List<T>> FindAllAsync(ISpecification<T> specification)
+  {
+    //var cacheKey = specification.CacheKey ?? String.Empty;
+
+    //var result = await _cacheService.GetOrSetAsync(
+    //    cacheKey,
+    //    () => _readRepository.FindAllAsync(specification));
+    var result = await ApplySpecification(specification).ToListAsync();
+    return result ?? new List<T>();
+  }
+
+
+  public Task<T?> FindAsync(ISpecification<T> specification)
+  {
+    //var cacheKey = "cachekey"; // or specification.CacheKey if needed
+
+    //var result =  _cacheService.GetOrSetAsync(
+    //    cacheKey,
+    //    () => _readRepository.FindAsync(specification));
+
+    var result = ApplySpecification(specification).FirstOrDefaultAsync();
+
+    return result;
+  }
+
+  public async Task<T?> GetByIdAsync(Guid id)
+  {
+    var result = await _entitySet.FindAsync(id);
+    return  result;
+  }
+
+  public Task<List<T>> ListAllAsync()
+  {
+    return _entitySet.ToListAsync();
+  }
+  private IQueryable<T> ApplySpecification(ISpecification<T> spec)
+  {
+    return SpecificationEvaluator<T, Guid>.GetQuery(_entitySet.AsQueryable(), spec);
+  }
+}

@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  bookwooks.orderapi.web:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionStrings__DefaultConnection=Server=sqldata;Database=BookyWooks.OrderDb;User=sa;Password=Your_password123; MultipleActiveResultSets=true; TrustServerCertificate=true;"
+      - RabbitMQConfiguration__Config__HostName=${BOOKYWOOKS_RABBITMQ_HOSTNAME:-rabbitmq}
+      - RabbitMQConfiguration__Config__UserName=${BOOKYWOOKS_RABBITMQ_USERNAME:-guest}
+      - RabbitMQConfiguration__Config__Password=${BOOKYWOOKS_RABBITMQ_PASSWORD:-guest}
+    ports:
+      - "5001:80"
+      - "5000:443"
+
+networks:
+    booky_wooks_network:
+     external: true
