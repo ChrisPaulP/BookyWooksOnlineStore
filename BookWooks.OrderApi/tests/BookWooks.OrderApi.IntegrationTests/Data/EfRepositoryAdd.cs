@@ -8,8 +8,8 @@ public class EfRepositoryAdd : BaseEfRepoTestFixture
   [Fact]
   public async Task AddsOrderAndSetsId()
   {
-    //var orderStatus = OrderStatus.Pending.Name;
-    var orderStatus = OrderStatus.Cancelled.Name;
+    var orderStatus = OrderStatus.Pending.Name;
+
     var deliveryAddress = new DeliveryAddress("teststreet", "testcity", "testcountry", "testpostcode");
     var repository = GetRepository();
     var newOrder = new Order("testuserid", "testusername", deliveryAddress, "testcardnumber", "testsecuritynumber", "testcardholdername" );
