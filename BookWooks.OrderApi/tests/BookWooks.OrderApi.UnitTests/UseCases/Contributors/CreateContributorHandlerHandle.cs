@@ -1,5 +1,5 @@
 ﻿using Ardalis.SharedKernel;
-using BookWooks.OrderApi.Core.ContributorAggregate;
+
 using BookWooks.OrderApi.UseCases.Contributors.Create;
 using FluentAssertions;
 using NSubstitute;
