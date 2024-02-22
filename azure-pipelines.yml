@@ -19,3 +19,11 @@ steps:
     command: 'build'
     projects: '**/BookyWooks.sln'  # Specify the solution file
     arguments: '--configuration $(buildConfiguration)'
+    
+# Add step to run tests
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+    command: 'test'
+    projects: '**/*Test.csproj'  # Specify test project(s) or wildcard pattern
+    arguments: '--configuration $(buildConfiguration)'
