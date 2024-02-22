@@ -27,4 +27,3 @@ steps:
     command: 'test'
     projects: '**/*Test.csproj'  # Specify test project(s) or wildcard pattern
     arguments: '--configuration $(buildConfiguration)'
-  condition: failed()  # Fail the pipeline if tests fail
