@@ -12,7 +12,7 @@ namespace BookWooks.OrderApi.IntegrationTests.Data;
 //    var orderStatus = OrderStatus.Cancelled.Name;
 //    var deliveryAddress = new DeliveryAddress("teststreet", "testcity", "testcountry", "testpostcode");
 //    var repository = GetRepository();
-//    var newOrder = new Order("testuserid", "testusername", deliveryAddress, "testcardnumber", "testsecuritynumber", "testcardholdername" );
+//    var newOrder = new Order("testuserid", "testusername", deliveryAddress, "testcardnumber", "testsecuritynumber", "testcardholdername");
 
 //    await repository.AddAsync(newOrder);
 //    await repository.UnitOfWork.SaveEntitiesAsync();
