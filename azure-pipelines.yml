@@ -27,3 +27,20 @@ steps:
     command: 'test'
     projects: '**/*Tests.csproj'  # Specify test project(s) or wildcard pattern
     arguments: '--configuration $(buildConfiguration)'
+
+# Install Testcontainers package
+- script: |
+    dotnet add package TestContainers
+  displayName: 'Install Testcontainers'
+
+# Start Testcontainers for SQL Server and RabbitMQ
+- script: |
+    dotnet run --project path/to/BookWooks.OrderApi.TestContainersIntegrationTests.csproj
+  displayName: 'Start Testcontainers'
+
+# Add additional steps here, such as executing integration tests
+
+# Stop Testcontainers for SQL Server and RabbitMQ
+- script: |
+    dotnet run --project path/to/BookWooks.OrderApi.TestContainersIntegrationTests.csproj
+  displayName: 'Stop Testcontainers'
