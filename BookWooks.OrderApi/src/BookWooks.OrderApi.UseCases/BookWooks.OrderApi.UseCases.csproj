@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Common\**" />
+    <EmbeddedResource Remove="Common\**" />
+    <None Remove="Common\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Ardalis.Result" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" />
@@ -20,7 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\" />
     <Folder Include="Orders\Payment\" />
     <Folder Include="Orders\UpdateOrderStatus\" />
   </ItemGroup>

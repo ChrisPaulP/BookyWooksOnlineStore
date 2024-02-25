@@ -1,14 +1,4 @@
-﻿using BookWooks.OrderApi.Infrastructure.Data;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BookWooks.OrderApi.TestContainersIntegrationTests;
+﻿namespace BookWooks.OrderApi.TestContainersIntegrationTests;
 
 //We create a new instance of the class for every test, which means we create and destroy the class once per test. (This is irrespective of whether you use IAsyncLifetime.)
 //If you want to do initialization and cleanup work only one time for a class, you can do that with a Class Fixture.See https://xunit.net/docs/shared-context for more information.

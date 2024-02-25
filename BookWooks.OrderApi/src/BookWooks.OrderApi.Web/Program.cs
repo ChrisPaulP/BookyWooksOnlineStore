@@ -74,7 +74,15 @@ using (var scope = app.Services.CreateScope())
   }
 }
 var serviceProvider = app.Services;
-var eventBus = serviceProvider.GetRequiredService<EventBus.IEventBus>();
+try
+{
+  var eventBus = serviceProvider.GetRequiredService<EventBus.IEventBus>();
+}
+catch (Exception ex)
+{
+  var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+  logger.LogError(ex, "An error occurred creating the event bus. {exceptionMessage}", ex.Message);
+}
 //await eventBus.Subscribe<CheckBookStockIntegrationEvent, BookStockCheckedEventHandler>(); Example of how to subscribe to events
 app.Run();
 

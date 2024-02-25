@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <None Remove="Services\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="OrderAggregate\IOrderRepository.cs" />
   </ItemGroup>
 
@@ -24,10 +30,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\BookyWooks.MessageBus\EventBus.csproj" />
     <ProjectReference Include="..\..\..\BookyWooks.SharedKernel\BookyWooks.SharedKernel.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

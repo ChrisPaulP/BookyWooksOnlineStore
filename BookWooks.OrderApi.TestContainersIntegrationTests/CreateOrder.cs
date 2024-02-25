@@ -1,7 +1,3 @@
-using BookWooks.OrderApi.Core.OrderAggregate;
-using BookWooks.OrderApi.UseCases.Create;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
-
 namespace BookWooks.OrderApi.TestContainersIntegrationTests
 {
     public class CreateOrder : OrderApiBaseIntegrationTest
