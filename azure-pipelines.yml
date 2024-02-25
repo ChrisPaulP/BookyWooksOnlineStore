@@ -20,13 +20,7 @@ steps:
     projects: '**/BookyWooks.sln'  # Specify the solution file
     arguments: '--configuration $(buildConfiguration)'
     
-# Add step to run tests
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet test'
-  inputs:
-    command: 'test'
-    projects: '**/*Tests.csproj'  # Specify test project(s) or wildcard pattern
-    arguments: '--configuration $(buildConfiguration)'
+
 
 # Install Testcontainers package
 - script: |
@@ -39,6 +33,13 @@ steps:
   displayName: 'Start Testcontainers'
 
 # Add additional steps here, such as executing integration tests
+# Add step to run tests
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+    command: 'test'
+    projects: '**/*Tests.csproj'  # Specify test project(s) or wildcard pattern
+    arguments: '--configuration $(buildConfiguration)'
 
 # Stop Testcontainers for SQL Server and RabbitMQ
 - script: |
