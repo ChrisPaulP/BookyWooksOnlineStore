@@ -11,47 +11,19 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-#   MSSQL_CONTAINER_HOST: 'localhost'  # Placeholder for MSSQL container host
-#   MSSQL_CONTAINER_PORT: 1433         # Placeholder for MSSQL container port
-#   RABBITMQ_CONTAINER_HOST: 'localhost'  # Placeholder for MSSQL container host
-#   RABBITMQ_CONTAINER_PORT: 5672         # Placeholder for MSSQL container port
 
-# steps:
-# - task: DockerInstaller@0  # Ensure Docker is installed
-#   displayName: 'Install Docker'
-#   inputs:
-#     dockerVersion: '19.03.14'
-
-# - script: |
-#     docker run -d --name mssql -p 1433:1433 \
-#       -e ACCEPT_EULA=Y \
-#       -e SA_PASSWORD='yourStrong(!)Password' \
-#       mcr.microsoft.com/mssql/server:2022-latest
-
-#     docker run -d --name rabbitmq -p 5672:5672 \
-#       -e RABBITMQ_DEFAULT_USER='guest' \
-#       -e RABBITMQ_DEFAULT_PASS='guest' \
-#       rabbitmq:3-management-alpine
-#   displayName: 'Start Testcontainers'
-
-# - script: |
-#     # Test connectivity to MSSQL container
-#     nc -zvw3 $(MSSQL_CONTAINER_HOST) $(MSSQL_CONTAINER_PORT)
-
-#     # Test connectivity to RabbitMQ container
-#     nc -zvw3 $(RABBITMQ_CONTAINER_HOST) $(RABBITMQ_CONTAINER_PORT)
-#   displayName: 'Test Container Connectivity'
-
+steps:
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build $(buildConfiguration)'
   inputs:
     command: 'build'
-    projects: '**/BookyWooks.sln'
+    projects: '**/BookyWooks.sln'  # Specify the solution file
     arguments: '--configuration $(buildConfiguration)'
     
+# Add step to run tests
 - task: DotNetCoreCLI@2
   displayName: 'dotnet test'
   inputs:
     command: 'test'
-    projects: '**/*Tests.csproj'
+    projects: '**/*Tests.csproj'  # Specify test project(s) or wildcard pattern
     arguments: '--configuration $(buildConfiguration)'
