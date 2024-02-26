@@ -17,29 +17,13 @@ steps:
   displayName: 'dotnet build $(buildConfiguration)'
   inputs:
     command: 'build'
-    projects: '**/BookyWooks.sln'
+    projects: '**/BookyWooks.sln'  # Specify the solution file
     arguments: '--configuration $(buildConfiguration)'
-
-- task: DockerInstaller@0  # Ensure Docker is installed
-  displayName: 'Install Docker'
-  inputs:
-    dockerVersion: '19.03.14'
-
-- script: |
-    docker run -d --name mssql -p 1433:1433 \
-      -e ACCEPT_EULA=Y \
-      -e SA_PASSWORD='yourStrong(!)Password' \
-      mcr.microsoft.com/mssql/server:2022-latest
-
-    docker run -d --name rabbitmq -p 5673:5672 \
-      -e RABBITMQ_DEFAULT_USER='guest' \
-      -e RABBITMQ_DEFAULT_PASS='guest' \
-      rabbitmq:3-management-alpine
-  displayName: 'Start Testcontainers'
-
+    
+# Add step to run tests
 - task: DotNetCoreCLI@2
   displayName: 'dotnet test'
   inputs:
     command: 'test'
-    projects: '**/BookWooks.OrderApi.TestContainersIntegrationTests.csproj'
-    arguments: '--configuration $(buildConfiguration)'
+    arguments: '--configuration $(buildConfiguration) --blame-hang --blame-crash'
+    projects: '**/BookWooks.OrderApi.TestContainersIntegrationTests.csproj'  # Specify test project(s) or wildcard pattern
