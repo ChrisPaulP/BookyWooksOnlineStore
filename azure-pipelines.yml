@@ -15,18 +15,18 @@ variables:
 steps:
 - task: DockerInstaller@0  # Ensure Docker is installed
   displayName: 'Install Docker'
-  # inputs:
-  #   dockerVersion: '19.03.14'
+  inputs:
+    dockerVersion: '19.03.14'
 
 - script: |
     docker run -d --name mssql -p 1433:1433 \
       -e ACCEPT_EULA=Y \
-      -e SA_PASSWORD=yourStrong(!)Password \
+      -e SA_PASSWORD='yourStrong(!)Password' \
       mcr.microsoft.com/mssql/server:2022-latest
 
     docker run -d --name rabbitmq -p 5672:5672 \
-      -e RABBITMQ_DEFAULT_USER=guest \
-      -e RABBITMQ_DEFAULT_PASS=guest \
+      -e RABBITMQ_DEFAULT_USER='guest' \
+      -e RABBITMQ_DEFAULT_PASS='guest' \
       rabbitmq:3-management-alpine
   displayName: 'Start Testcontainers'
 
