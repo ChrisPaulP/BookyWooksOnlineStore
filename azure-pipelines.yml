@@ -14,6 +14,12 @@ variables:
 
 steps:
 - task: DotNetCoreCLI@2
+    displayName: Restore Nuget Packages 
+    inputs:
+      command: restore
+      projects: $(BuildParameters.RestoreBuildProjects)
+
+- task: DotNetCoreCLI@2
   displayName: 'dotnet build $(buildConfiguration)'
   inputs:
     command: 'build'
