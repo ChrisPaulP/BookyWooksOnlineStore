@@ -10,7 +10,9 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  buildConfiguration: 'Release'
+- name: BuildParameters.RestoreBuildProjects
+  value: >-
+    **/*.csproj
 
 steps:
 - task: DotNetCoreCLI@2
