@@ -1,3 +1,8 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
 trigger:
 - master
 
@@ -6,19 +11,19 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  testResultsDirectory: '$(System.DefaultWorkingDirectory)/TestResults'
 
 steps:
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build $(buildConfiguration)'
   inputs:
     command: 'build'
-    projects: '**/BookyWooks.sln'
+    projects: '**/BookyWooks.sln'  # Specify the solution file
     arguments: '--configuration $(buildConfiguration)'
     
+# Add step to run tests
 - task: DotNetCoreCLI@2
   displayName: 'dotnet test'
   inputs:
     command: 'test'
-    projects: '**/*Tests.csproj'
-    arguments: '--configuration $(buildConfiguration) --logger trx --results-directory "$(testResultsDirectory)" --collect "Code Coverage"'
+    projects: '**/BookWooks.OrderApi.TestContainersIntegrationTests.csproj'  # Specify test project(s) or wildcard pattern
+    arguments: '--configuration $(buildConfiguration) --blame-hang --blame-crash'
