@@ -36,10 +36,10 @@ steps:
 
 - script: |
     # Test connectivity to MSSQL container
-    nc -zvw3 <MSSQL_CONTAINER_HOST> <MSSQL_CONTAINER_PORT>
+    nc -zvw3 $(MSSQL_CONTAINER_HOST) $(MSSQL_CONTAINER_PORT)
 
     # Test connectivity to RabbitMQ container
-    nc -zvw3 <RABBITMQ_CONTAINER_HOST> <RABBITMQ_CONTAINER_PORT>
+    nc -zvw3 $(RABBITMQ_CONTAINER_HOST) $(RABBITMQ_CONTAINER_PORT)
   displayName: 'Test Container Connectivity'
 
 - task: DotNetCoreCLI@2
