@@ -14,7 +14,7 @@ variables:
   MSSQL_CONTAINER_HOST: 'localhost'  # Placeholder for MSSQL container host
   MSSQL_CONTAINER_PORT: 1433         # Placeholder for MSSQL container port
   RABBITMQ_CONTAINER_HOST: 'localhost'  # Placeholder for MSSQL container host
-  RABBITMQ_CONTAINER_PORT: 5672         # Placeholder for MSSQL container port
+  RABBITMQ_CONTAINER_PORT: 5673         # Placeholder for MSSQL container port
 
 steps:
 - task: DockerInstaller@0  # Ensure Docker is installed
