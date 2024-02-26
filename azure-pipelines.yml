@@ -11,6 +11,10 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  MSSQL_CONTAINER_HOST: 'localhost'  # Placeholder for MSSQL container host
+  MSSQL_CONTAINER_PORT: 1433         # Placeholder for MSSQL container port
+  RABBITMQ_CONTAINER_HOST: 'localhost'  # Placeholder for MSSQL container host
+  RABBITMQ_CONTAINER_PORT: 5672         # Placeholder for MSSQL container port
 
 steps:
 - task: DockerInstaller@0  # Ensure Docker is installed
@@ -29,6 +33,14 @@ steps:
       -e RABBITMQ_DEFAULT_PASS='guest' \
       rabbitmq:3-management-alpine
   displayName: 'Start Testcontainers'
+
+- script: |
+    # Test connectivity to MSSQL container
+    nc -zvw3 <MSSQL_CONTAINER_HOST> <MSSQL_CONTAINER_PORT>
+
+    # Test connectivity to RabbitMQ container
+    nc -zvw3 <RABBITMQ_CONTAINER_HOST> <RABBITMQ_CONTAINER_PORT>
+  displayName: 'Test Container Connectivity'
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build $(buildConfiguration)'
