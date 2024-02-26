@@ -15,8 +15,8 @@ variables:
 steps:
 - task: DockerInstaller@0  # Ensure Docker is installed
   displayName: 'Install Docker'
-  inputs:
-    dockerVersion: '19.03.14'
+  # inputs:
+  #   dockerVersion: '19.03.14'
 
 - script: |
     docker run -d --name mssql -p 1433:1433 \
