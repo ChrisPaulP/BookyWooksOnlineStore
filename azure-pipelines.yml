@@ -11,6 +11,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  testResultsDirectory: '$(System.DefaultWorkingDirectory)/TestResults'  # Define the directory to store test results
 
 steps:
 - task: DotNetCoreCLI@2
@@ -22,9 +23,9 @@ steps:
     
 # Add step to run tests
 - task: DotNetCoreCLI@2
-  displayName: 'Run Tests'
+  displayName: 'dotnet test'
   inputs:
     command: 'test'
     projects: '**/*Tests.csproj'  # Specify test project(s) or wildcard pattern
-    arguments: '--configuration $(buildConfiguration) --collect "Code Coverage" --results-directory "$(Build.ArtifactStagingDirectory)/TestResults"'
-    failOnStandardError: true  # Fail pipeline if there's an error in test execution
+    arguments: '--configuration $(buildConfiguration) --logger trx --results-directory "$(testResultsDirectory)" --collect "Code Coverage"'
+
