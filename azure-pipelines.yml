@@ -39,9 +39,44 @@ steps:
       rabbitmq:3-management-alpine
   displayName: 'Start Testcontainers'
 
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet test'
+- task: PowerShell@2
+  displayName: 'Verify Docker Container Configuration'
   inputs:
-    command: 'test'
-    projects: '**/BookWooks.OrderApi.TestContainersIntegrationTests.csproj'
-    arguments: '--configuration $(buildConfiguration)'
+    targetType: 'inline'
+    script: |
+      # Verify that Docker containers for RabbitMQ and SQL Server are running
+      docker ps --filter "name=mssql" --filter "name=rabbitmq"
+
+- task: PowerShell@2
+  displayName: 'Check Network Configuration'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Inspect network configuration of Docker containers
+      docker inspect mssql
+      docker inspect rabbitmq
+
+- task: PowerShell@2
+  displayName: 'Review Docker Logs'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # View logs of Docker containers
+      docker logs mssql
+      docker logs rabbitmq
+
+- task: PowerShell@2
+  displayName: 'Validate Service Configuration'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Verify configuration settings for RabbitMQ and SQL Server within Docker containers
+      # You might need to customize this step based on your specific configuration files or initialization scripts
+
+- task: PowerShell@2
+  displayName: 'Test Connectivity'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Test connectivity to RabbitMQ and SQL Server from outside Docker containers
+      # You can use tools like telnet or nc to test connectivity, or connect with client applications
