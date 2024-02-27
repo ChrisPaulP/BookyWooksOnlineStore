@@ -12,7 +12,7 @@ services:
   rabbitmq:
     ports:
       - "15672:15672"
-      - "5673:5672"
+      - "5674:5672"
     image: rabbitmq:3-management-alpine
 
 
