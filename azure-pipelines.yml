@@ -31,17 +31,17 @@ steps:
   displayName: 'Install Docker'
 
 
-- script: |
-    docker run -d --name mssql -p 1433:1433 \
-      -e ACCEPT_EULA=Y \
-      -e SA_PASSWORD='yourStrong(!)Password' \
-      mcr.microsoft.com/mssql/server:2022-latest
+# - script: |
+#     docker run -d --name mssql -p 1433:1433 \
+#       -e ACCEPT_EULA=Y \
+#       -e SA_PASSWORD='yourStrong(!)Password' \
+#       mcr.microsoft.com/mssql/server:2022-latest
 
-    docker run -d --name rabbitmq -p 5673:5672 \
-      -e RABBITMQ_DEFAULT_USER='guest' \
-      -e RABBITMQ_DEFAULT_PASS='guest' \
-      rabbitmq:3-management-alpine
-  displayName: 'Start Testcontainers'
+#     docker run -d --name rabbitmq -p 5673:5672 \
+#       -e RABBITMQ_DEFAULT_USER='guest' \
+#       -e RABBITMQ_DEFAULT_PASS='guest' \
+#       rabbitmq:3-management-alpine
+#   displayName: 'Start Testcontainers'
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet test'
