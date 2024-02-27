@@ -8,6 +8,17 @@ variables:
   buildConfiguration: 'Release'
   BuildParameters.RestoreBuildProjects: '**/*.csproj'  # Define the variable here
 
+services:
+  rabbitmq:
+    container_name: booky_wooks_rabbitmq
+    hostname: "rabbitmq"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    image: rabbitmq:3-management-alpine
+    networks:
+        - booky_wooks_network
+
 steps:
 - task: DotNetCoreCLI@2
   displayName: Restore Nuget Packages 
@@ -33,7 +44,7 @@ steps:
       -e SA_PASSWORD='yourStrong(!)Password' \
       mcr.microsoft.com/mssql/server:2022-latest
 
-    docker run -d --name rabbitmq -p 5673:5672 \
+    docker run -d --name rabbitmq -p 5672:5672 \
       -e RABBITMQ_DEFAULT_USER='guest' \
       -e RABBITMQ_DEFAULT_PASS='guest' \
       rabbitmq:3-management-alpine
@@ -87,7 +98,7 @@ steps:
     targetType: 'inline'
     script: |
       # Test connectivity to RabbitMQ from outside Docker container
-      nc -vz -w 1 localhost 5673
+      nc -vz -w 1 localhost 5672
 
       # Test connectivity to SQL Server from outside Docker container
       nc -vz -w 1 localhost 1433
