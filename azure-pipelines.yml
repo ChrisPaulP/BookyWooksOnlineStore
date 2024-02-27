@@ -31,3 +31,6 @@ steps:
     projects: '**/*Tests.csproj'
     arguments: '--no-build --configuration Release'
     # arguments: '--configuration $(testBuildConfiguration)'  # Use the different test configuration variable
+
+- script: docker --version
+  displayName: 'Print Docker Version'
