@@ -16,7 +16,7 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
     private const string RabbitMqUsername = "guest";
     private const string RabbitMqPassword = "guest";
 
-    public OrderApiApplicationFactory(string connectionString)
+    public OrderApiApplicationFactory()
     {
         _mssqlContainer = new ContainerBuilder()
             .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
@@ -35,7 +35,6 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
             .WithEnvironment("RABBITMQ_DEFAULT_PASS", RabbitMqPassword)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(RabbitMqPort)) // Adding wait strategy
             .Build();
-        ConnectionString = connectionString;
     }
 
     public async Task InitializeAsync()
@@ -43,10 +42,7 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
         await _mssqlContainer.StartAsync();
         await _rabbitMqContainer.StartAsync();
 
-        var host = _mssqlContainer.Hostname;
-        var port = _mssqlContainer.GetMappedPublicPort(MsSqlPort);
-
-        //ConnectionString = GetDatabaseConnectionString(); //$"Server={host},{port};Database={Database};User Id={Username};Password={Password};TrustServerCertificate=True";
+        ConnectionString = GetDatabaseConnectionString(); //$"Server={host},{port};Database={Database};User Id={Username};Password={Password};TrustServerCertificate=True";
 
         //_respawner = await CreateRespawnerAsync();
         HttpClient = CreateClient();

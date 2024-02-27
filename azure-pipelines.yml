@@ -8,13 +8,6 @@ variables:
   buildConfiguration: 'Release'
   BuildParameters.RestoreBuildProjects: '**/*.csproj'  # Define the variable here
 
-services:
-  rabbitmq:
-    ports:
-      - "15672:15672"
-      - "5674:5672"
-    image: rabbitmq:3-management-alpine
-
 steps:
 - task: DotNetCoreCLI@2
   displayName: Restore Nuget Packages 
@@ -29,75 +22,75 @@ steps:
     projects: '**/BookyWooks.sln'
     arguments: '--configuration $(buildConfiguration)'
 
-- task: DockerInstaller@0  # Ensure Docker is installed
-  displayName: 'Install Docker'
-  inputs:
-    dockerVersion: '19.03.14'
+# - task: DockerInstaller@0  # Ensure Docker is installed
+#   displayName: 'Install Docker'
+#   inputs:
+#     dockerVersion: '19.03.14'
 
-- script: |
-    docker run -d --name mssql -p 1433:1433 \
-      -e ACCEPT_EULA=Y \
-      -e SA_PASSWORD='yourStrong(!)Password' \
-      mcr.microsoft.com/mssql/server:2022-latest
+# - script: |
+#     docker run -d --name mssql -p 1433:1433 \
+#       -e ACCEPT_EULA=Y \
+#       -e SA_PASSWORD='yourStrong(!)Password' \
+#       mcr.microsoft.com/mssql/server:2022-latest
 
-    docker run -d --name rabbitmq -p 5673:5672 \
-      -e RABBITMQ_DEFAULT_USER='guest' \
-      -e RABBITMQ_DEFAULT_PASS='guest' \
-      rabbitmq:3-management-alpine
-  displayName: 'Start Testcontainers'
+#     docker run -d --name rabbitmq -p 5673:5672 \
+#       -e RABBITMQ_DEFAULT_USER='guest' \
+#       -e RABBITMQ_DEFAULT_PASS='guest' \
+#       rabbitmq:3-management-alpine
+#   displayName: 'Start Testcontainers'
 
-- task: PowerShell@2
-  displayName: 'Verify Docker Container Configuration'
-  inputs:
-    targetType: 'inline'
-    script: |
-      # Verify that Docker containers for RabbitMQ and SQL Server are running
-      docker ps --filter "name=mssql" --filter "name=rabbitmq"
+# - task: PowerShell@2
+#   displayName: 'Verify Docker Container Configuration'
+#   inputs:
+#     targetType: 'inline'
+#     script: |
+#       # Verify that Docker containers for RabbitMQ and SQL Server are running
+#       docker ps --filter "name=mssql" --filter "name=rabbitmq"
 
-- task: PowerShell@2
-  displayName: 'Check Network Configuration'
-  inputs:
-    targetType: 'inline'
-    script: |
-      # Inspect network configuration of Docker containers
-      docker inspect mssql
-      docker inspect rabbitmq
+# - task: PowerShell@2
+#   displayName: 'Check Network Configuration'
+#   inputs:
+#     targetType: 'inline'
+#     script: |
+#       # Inspect network configuration of Docker containers
+#       docker inspect mssql
+#       docker inspect rabbitmq
 
-- task: PowerShell@2
-  displayName: 'Review Docker Logs'
-  inputs:
-    targetType: 'inline'
-    script: |
-      # View logs of Docker containers
-      docker logs mssql
-      docker logs rabbitmq
+# - task: PowerShell@2
+#   displayName: 'Review Docker Logs'
+#   inputs:
+#     targetType: 'inline'
+#     script: |
+#       # View logs of Docker containers
+#       docker logs mssql
+#       docker logs rabbitmq
 
-- task: PowerShell@2
-  displayName: 'Validate Service Configuration'
-  inputs:
-    targetType: 'inline'
-    script: |
-      # Verify configuration settings for RabbitMQ and SQL Server within Docker containers
-      # You might need to customize this step based on your specific configuration files or initialization scripts
+# - task: PowerShell@2
+#   displayName: 'Validate Service Configuration'
+#   inputs:
+#     targetType: 'inline'
+#     script: |
+#       # Verify configuration settings for RabbitMQ and SQL Server within Docker containers
+#       # You might need to customize this step based on your specific configuration files or initialization scripts
 
-- task: PowerShell@2
-  displayName: 'Test Connectivity'
-  inputs:
-    targetType: 'inline'
-    script: |
-      # Test connectivity to RabbitMQ and SQL Server from outside Docker containers
-      # You can use tools like telnet or nc to test connectivity, or connect with client applications
+# - task: PowerShell@2
+#   displayName: 'Test Connectivity'
+#   inputs:
+#     targetType: 'inline'
+#     script: |
+#       # Test connectivity to RabbitMQ and SQL Server from outside Docker containers
+#       # You can use tools like telnet or nc to test connectivity, or connect with client applications
 
-- task: PowerShell@2
-  displayName: 'Test Connectivity'
-  inputs:
-    targetType: 'inline'
-    script: |
-      # Test connectivity to RabbitMQ from outside Docker container
-      nc -vz -w 1 localhost 5673
+# - task: PowerShell@2
+#   displayName: 'Test Connectivity'
+#   inputs:
+#     targetType: 'inline'
+#     script: |
+#       # Test connectivity to RabbitMQ from outside Docker container
+#       nc -vz -w 1 localhost 5673
 
-      # Test connectivity to SQL Server from outside Docker container
-      nc -vz -w 1 localhost 1433
+#       # Test connectivity to SQL Server from outside Docker container
+#       nc -vz -w 1 localhost 1433
 
 
 
@@ -106,4 +99,4 @@ steps:
   inputs:
     command: 'test'
     projects: '**/*Tests.csproj'
-    arguments: '--configuration $(buildConfiguration) --connectionString "Server=127.0.0.1,55407;Database=master;User Id=sa;Password=yourStrong(!)Password;TrustServerCertificate=True"'
+    arguments: '--configuration $(buildConfiguration)'
