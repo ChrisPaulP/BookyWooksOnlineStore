@@ -99,9 +99,12 @@ steps:
 
       # Test connectivity to SQL Server from outside Docker container
       nc -vz -w 1 localhost 1433
+- script: dotnet add package coverlet.msbuild
+  displayName: 'Add coverlet.msbuild package to test project'
+
 - task: DotNetCoreCLI@2
   displayName: 'dotnet test'
   inputs:
     command: 'test'
     projects: '**/Tests.csproj'
-    arguments: '--configuration $(buildConfiguration)'
+    arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code Coverage"'
