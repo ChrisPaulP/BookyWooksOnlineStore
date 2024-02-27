@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
- vmImage: 'windows-latest'
+  vmImage: ubuntu-latest
 
 variables:
   buildConfiguration: 'Release'
@@ -27,9 +27,10 @@ steps:
     projects: '**/BookyWooks.sln'
     arguments: '--configuration $(buildConfiguration)'
 
-- task: DockerInstaller@0  # Ensure Docker is installed
-  displayName: 'Install Docker'
-
+# - task: DockerInstaller@0  # Ensure Docker is installed
+#   displayName: 'Install Docker'
+#   inputs:
+#     dockerVersion: '19.03.14'
 
 # - script: |
 #     docker run -d --name mssql -p 1433:1433 \
