@@ -106,4 +106,4 @@ steps:
   inputs:
     command: 'test'
     projects: '**/*Tests.csproj'
-    arguments: '--configuration $(buildConfiguration)'
+    arguments: '--configuration $(buildConfiguration) --connectionString "Server=127.0.0.1,55407;Database=master;User Id=sa;Password=yourStrong(!)Password;TrustServerCertificate=True"'
