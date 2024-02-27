@@ -10,14 +10,12 @@ variables:
 
 services:
   rabbitmq:
-    container_name: booky_wooks_rabbitmq
     hostname: "rabbitmq"
     ports:
       - "15672:15672"
       - "5672:5672"
     image: rabbitmq:3-management-alpine
-    networks:
-        - booky_wooks_network
+
 
 steps:
 - task: DotNetCoreCLI@2
