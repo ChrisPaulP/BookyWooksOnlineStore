@@ -10,7 +10,7 @@ services:
       - RabbitMQConfiguration__Config__Password=${BOOKYWOOKS_RABBITMQ_PASSWORD:-guest}
     ports:
       - "5001:80"
-      - "5000:443"
+      - "5002:443"  # Use a different host port, such as 5002
 
 networks:
     booky_wooks_network:

@@ -29,4 +29,5 @@ steps:
   inputs:
     command: 'test'
     projects: '**/*Tests.csproj'
-    arguments: '--configuration $(testBuildConfiguration)'  # Use the different test configuration variable
+    arguments: '--no-build --configuration Release'
+    # arguments: '--configuration $(testBuildConfiguration)'  # Use the different test configuration variable
