@@ -15,7 +15,6 @@ services:
       - "5674:5672"
     image: rabbitmq:3-management-alpine
 
-
 steps:
 - task: DotNetCoreCLI@2
   displayName: Restore Nuget Packages 
@@ -99,12 +98,12 @@ steps:
 
       # Test connectivity to SQL Server from outside Docker container
       nc -vz -w 1 localhost 1433
-- script: dotnet add package coverlet.msbuild
-  displayName: 'Add coverlet.msbuild package to test project'
+
+
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet test'
   inputs:
     command: 'test'
-    projects: '**/Tests.csproj'
-    arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code Coverage"'
+    projects: '**/*Tests.csproj'
+    arguments: '--configuration $(buildConfiguration)
