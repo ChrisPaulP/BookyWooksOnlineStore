@@ -80,3 +80,10 @@ steps:
     script: |
       # Test connectivity to RabbitMQ and SQL Server from outside Docker containers
       # You can use tools like telnet or nc to test connectivity, or connect with client applications
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+    command: 'test'
+    projects: '**/BookWooks.OrderApi.TestContainersIntegrationTests.csproj'
+    arguments: '--configuration $(buildConfiguration)'
