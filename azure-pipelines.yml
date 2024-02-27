@@ -81,6 +81,16 @@ steps:
       # Test connectivity to RabbitMQ and SQL Server from outside Docker containers
       # You can use tools like telnet or nc to test connectivity, or connect with client applications
 
+- task: PowerShell@2
+  displayName: 'Test Connectivity'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Test connectivity to RabbitMQ from outside Docker container
+      nc -vz -w 1 localhost 5672
+
+      # Test connectivity to SQL Server from outside Docker container
+      nc -vz -w 1 localhost 1433
 - task: DotNetCoreCLI@2
   displayName: 'dotnet test'
   inputs:
