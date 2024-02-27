@@ -87,7 +87,7 @@ steps:
     targetType: 'inline'
     script: |
       # Test connectivity to RabbitMQ from outside Docker container
-      nc -vz -w 1 localhost 5672
+      nc -vz -w 1 localhost 5673
 
       # Test connectivity to SQL Server from outside Docker container
       nc -vz -w 1 localhost 1433
