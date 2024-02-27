@@ -1,8 +1,3 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
 trigger:
 - master
 
@@ -11,13 +6,22 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  BuildParameters.RestoreBuildProjects: '**/*.csproj'  # Define the variable here
+
+services:
+  rabbitmq:
+    ports:
+      - "15672:15672"
+      - "5674:5672"
+    image: rabbitmq:3-management-alpine
+
 
 steps:
 - task: DotNetCoreCLI@2
-    displayName: Restore Nuget Packages 
-    inputs:
-      command: restore
-      projects: $(BuildParameters.RestoreBuildProjects)
+  displayName: Restore Nuget Packages 
+  inputs:
+     command: restore
+     projects: $(BuildParameters.RestoreBuildProjects)
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build $(buildConfiguration)'
@@ -43,9 +47,61 @@ steps:
       rabbitmq:3-management-alpine
   displayName: 'Start Testcontainers'
 
+- task: PowerShell@2
+  displayName: 'Verify Docker Container Configuration'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Verify that Docker containers for RabbitMQ and SQL Server are running
+      docker ps --filter "name=mssql" --filter "name=rabbitmq"
+
+- task: PowerShell@2
+  displayName: 'Check Network Configuration'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Inspect network configuration of Docker containers
+      docker inspect mssql
+      docker inspect rabbitmq
+
+- task: PowerShell@2
+  displayName: 'Review Docker Logs'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # View logs of Docker containers
+      docker logs mssql
+      docker logs rabbitmq
+
+- task: PowerShell@2
+  displayName: 'Validate Service Configuration'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Verify configuration settings for RabbitMQ and SQL Server within Docker containers
+      # You might need to customize this step based on your specific configuration files or initialization scripts
+
+- task: PowerShell@2
+  displayName: 'Test Connectivity'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Test connectivity to RabbitMQ and SQL Server from outside Docker containers
+      # You can use tools like telnet or nc to test connectivity, or connect with client applications
+
+- task: PowerShell@2
+  displayName: 'Test Connectivity'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Test connectivity to RabbitMQ from outside Docker container
+      nc -vz -w 1 localhost 5673
+
+      # Test connectivity to SQL Server from outside Docker container
+      nc -vz -w 1 localhost 1433
 - task: DotNetCoreCLI@2
   displayName: 'dotnet test'
   inputs:
     command: 'test'
-    projects: '**/BookWooks.OrderApi.TestContainersIntegrationTests.csproj'
+    projects: '**/Tests.csproj'
     arguments: '--configuration $(buildConfiguration)'

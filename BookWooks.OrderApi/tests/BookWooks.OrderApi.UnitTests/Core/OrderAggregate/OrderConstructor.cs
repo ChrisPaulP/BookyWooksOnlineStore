@@ -6,7 +6,7 @@ using Xunit;
 namespace BookWooks.OrderApi.UnitTests.Core.OrderAggregate;
 public class OrderConstructor
 {
-  private readonly string _testName = "test name";
+  private readonly string _testName = "Pending";
   public static readonly DeliveryAddress DeliveryAddress = new("Test Street", "Test City", "Test Country", "Test Post Code");
   public static readonly Order Order1 = new("UserIdNo", "Crispy", DeliveryAddress, "12345", "11111", "Christopher", OrderStatus.Pending);
 
