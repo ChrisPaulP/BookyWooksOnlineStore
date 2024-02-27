@@ -24,6 +24,9 @@ steps:
     projects: '**/BookyWooks.sln'
     arguments: '--configuration $(buildConfiguration)'
 
+- script: docker --version
+  displayName: 'Print Docker Version'
+
 - task: DotNetCoreCLI@2
   displayName: 'dotnet test'
   inputs:
@@ -32,5 +35,3 @@ steps:
     arguments: '--no-build --configuration Release'
     # arguments: '--configuration $(testBuildConfiguration)'  # Use the different test configuration variable
 
-- script: docker --version
-  displayName: 'Print Docker Version'
