@@ -1,4 +1,6 @@
-﻿namespace BookWooks.OrderApi.TestContainersIntegrationTests;
+﻿using Testcontainers.MsSql;
+
+namespace BookWooks.OrderApi.TestContainersIntegrationTests;
 
 public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Program>, IAsyncLifetime where TEntryPoint : Program // : WebApplicationFactory<Program>, IAsyncLifetime
 {
@@ -8,7 +10,7 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
     private string ConnectionString;
     private const ushort MsSqlPort = 1433;
     private const ushort RabbitMqPort = 5672; // RabbitMQ default port
-    private readonly IContainer _mssqlContainer;
+    private readonly MsSqlContainer _mssqlContainer;
     private readonly IContainer _rabbitMqContainer;
 
     public HttpClient HttpClient { get; private set; } = default!;
@@ -18,7 +20,7 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
 
     public OrderApiApplicationFactory()
     {
-        _mssqlContainer = new ContainerBuilder()
+        _mssqlContainer = new MsSqlBuilder()
             .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
             .WithPortBinding(MsSqlPort, true)
             .WithEnvironment("ACCEPT_EULA", "Y") 
