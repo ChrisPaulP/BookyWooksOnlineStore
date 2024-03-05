@@ -6,10 +6,15 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  testBuildConfiguration: 'Debug'  # Define a different variable for test configuration
   system.debug: true  # Enable verbose logging
 
 steps:
+- task: DockerCompose@0
+  displayName: "Run a Docker Compose command"
+  inputs:
+    dockerComposeFile: "docker-compose-integration-tests.yml"
+    dockerComposeCommand: "up --abort-on-container-exit" 
+
 - task: DotNetCoreCLI@2
   displayName: Restore Nuget Packages 
   inputs:
@@ -32,6 +37,6 @@ steps:
   inputs:
     command: 'test'
     projects: '**/*Tests.csproj'
-    arguments: '--no-build --configuration Release'
-    # arguments: '--configuration $(testBuildConfiguration)'  # Use the different test configuration variable
+    arguments: '--no-build --configuration Release --exclude BookyWooks.OrderApi.IntegrationTests.csproj'
+
 

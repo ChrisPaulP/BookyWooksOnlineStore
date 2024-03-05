@@ -1,0 +1,41 @@
+version: '3.4'
+
+services:
+  BookyWooks.OrderApiIntegrationTests:
+    image: ${DOCKER_REGISTRY-}bookywooksorderapiintegrationtests
+    build:
+      context: .
+      dockerfile: BookWooks.OrderApi/src/BookWooks.OrderApi.Web/Dockerfile
+      target: integrationtest
+    depends_on:
+      - integrationtestsdatabase
+      - rabbitmq
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionStrings__DefaultConnection=Server=integrationtestsdatabase;Database=BookyWooks.OrderDbIntegrationTests;User=sa;Password=Your_password123; MultipleActiveResultSets=true; TrustServerCertificate=true;"
+      - RabbitMQConfiguration__Config__HostName=${BOOKYWOOKS_RABBITMQ_HOSTNAME:-rabbitmq}
+      - RabbitMQConfiguration__Config__UserName=${BOOKYWOOKS_RABBITMQ_USERNAME:-guest}
+      - RabbitMQConfiguration__Config__Password=${BOOKYWOOKS_RABBITMQ_PASSWORD:-guest}
+    volumes:
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+    entrypoint:
+      - dotnet
+      - test
+      - --logger
+        #- trx --results-directory /var/temp
+        #dotnet test -l:trx;LogFileName=C:/temp/integration-test-results.xml
+      - trx;LogFileName=/tests/booky-wooks-integration-test-results.xml 
+
+  integrationtestsdatabase:
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    environment:
+       - "SA_PASSWORD=Your_password123"
+       - "ACCEPT_EULA=Y"
+    ports:
+    -   "5433:1433"
+
+  rabbitmq:
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    image: rabbitmq:3-management-alpine

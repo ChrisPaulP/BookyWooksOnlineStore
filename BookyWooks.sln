@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookWooks.OrderApi.Function
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookWooks.OrderApi.IntegrationTests", "BookWooks.OrderApi\tests\BookWooks.OrderApi.IntegrationTests\BookWooks.OrderApi.IntegrationTests.csproj", "{D07538FB-F15A-43B9-8142-FDB6805DB518}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookWooks.OrderApi.UnitTests", "BookWooks.OrderApi\tests\BookWooks.OrderApi.UnitTests\BookWooks.OrderApi.UnitTests.csproj", "{846B2574-ECC3-4BBA-97F0-A1E1AAE2561E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookWooks.OrderApi.UnitTests", "BookWooks.OrderApi\tests\BookWooks.OrderApi.UnitTests\BookWooks.OrderApi.UnitTests.csproj", "{846B2574-ECC3-4BBA-97F0-A1E1AAE2561E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BookyWooks.Order", "BookyWooks.Order", "{0D46073E-5FC0-4A9F-A319-72B72DCCB383}"
 EndProject
@@ -49,6 +49,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DockerEnvironmentVariables"
 		DockerNotes.txt = DockerNotes.txt
 		NotesOnDockerVolumes.txt = NotesOnDockerVolumes.txt
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookyWooks.OrderApi.IntegrationTests", "BookyWooks.OrderApi.IntegrationTests\BookyWooks.OrderApi.IntegrationTests.csproj", "{52D0D4B6-E309-4ABA-BBC3-14A51B2FFEB5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -112,6 +114,10 @@ Global
 		{7B788D73-AF3F-4AE6-879C-318062FFB326}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B788D73-AF3F-4AE6-879C-318062FFB326}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B788D73-AF3F-4AE6-879C-318062FFB326}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52D0D4B6-E309-4ABA-BBC3-14A51B2FFEB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52D0D4B6-E309-4ABA-BBC3-14A51B2FFEB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52D0D4B6-E309-4ABA-BBC3-14A51B2FFEB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52D0D4B6-E309-4ABA-BBC3-14A51B2FFEB5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -134,6 +140,7 @@ Global
 		{D3258C84-2A97-48B8-A17C-9B467104CC29} = {1D0D32BF-5434-4C69-A846-FE72B287541C}
 		{6533473D-9D88-4ADD-A665-F7D4E85270C5} = {8213A9FE-A86D-4758-906C-A0CC6C38E8D6}
 		{1D0D32BF-5434-4C69-A846-FE72B287541C} = {C75B7DBE-0351-4488-8B51-46BE843E6508}
+		{52D0D4B6-E309-4ABA-BBC3-14A51B2FFEB5} = {8213A9FE-A86D-4758-906C-A0CC6C38E8D6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C62E4639-BD4C-47C3-873D-B083250A5897}
