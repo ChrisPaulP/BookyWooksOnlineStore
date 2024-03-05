@@ -39,4 +39,10 @@ steps:
     projects: '**/*Tests.csproj'
     arguments: '--no-build --configuration Release --filter "-not DisplayName~*IntegrationTests"'
 
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+    command: 'test'
+    projects: '**/UnitTests.csproj'
+    arguments: '--configuration $(buildConfiguration)'
 
