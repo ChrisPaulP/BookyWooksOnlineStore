@@ -37,6 +37,6 @@ steps:
   inputs:
     command: 'test'
     projects: '**/*Tests.csproj'
-    arguments: '--no-build --configuration Release --exclude BookyWooks.OrderApi.IntegrationTests.csproj'
+    arguments: '--no-build --configuration Release --filter "-not DisplayName~*IntegrationTests"'
 
 
