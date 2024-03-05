@@ -25,13 +25,8 @@ WORKDIR "/src/BookWooks.OrderApi/src/BookWooks.OrderApi.Web"
 RUN dotnet build "./BookWooks.OrderApi.Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Integration Test Stage
-FROM build AS integrationtest
+FROM build as integrationtest
 WORKDIR "/src/BookyWooks.OrderApi.IntegrationTests"
-COPY ["/BookyWooks.OrderApi.IntegrationTests.csproj", "."]
-RUN dotnet restore
-COPY . .
-WORKDIR "/src/BookyWooks.OrderApi.IntegrationTests"
-RUN dotnet test
 
 # Publish Stage
 FROM build AS publish
