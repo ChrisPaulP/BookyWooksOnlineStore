@@ -36,13 +36,15 @@ steps:
   displayName: 'dotnet test'
   inputs:
     command: 'test'
-    projects: '**/*Tests.csproj'
-    arguments: '--no-build --configuration Release --filter "-not DisplayName~*IntegrationTests"'
+    projects: '**/*UnitTests.csproj'
+    arguments: '--configuration $(buildConfiguration) --no-build'
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet test'
   inputs:
     command: 'test'
-    projects: '**/UnitTests.csproj'
-    arguments: '--configuration $(buildConfiguration)'
+    projects: '**/*Tests.csproj'
+    arguments: '--no-build --configuration Release --filter "-not DisplayName~*IntegrationTests"'
+
+
 
