@@ -1,41 +1,42 @@
 version: '3.4'
 
 services:
+  # Service for running integration tests
   BookyWooks.OrderApi.IntegrationTests:
     image: ${DOCKER_REGISTRY-}bookywooksorderapiintegrationtests
     build:
       context: .
       dockerfile: BookWooks.OrderApi/src/BookWooks.OrderApi.Web/Dockerfile
-      target: integrationtest
+      target: integrationtest  # Specify the build target
     depends_on:
-      - integrationtestsdatabase
-      - rabbitmq
+      - integrationtestsdatabase  # Depends on the integration tests database service
+      - rabbitmq  # Depends on the RabbitMQ service
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - "ConnectionStrings__DefaultConnection=Server=integrationtestsdatabase;Database=BookyWooks.OrderDbIntegrationTests;User=sa;Password=Your_password123; MultipleActiveResultSets=true; TrustServerCertificate=true;"
-      - RabbitMQConfiguration__Config__HostName=${BOOKYWOOKS_RABBITMQ_HOSTNAME:-rabbitmq}
-      - RabbitMQConfiguration__Config__UserName=${BOOKYWOOKS_RABBITMQ_USERNAME:-guest}
-      - RabbitMQConfiguration__Config__Password=${BOOKYWOOKS_RABBITMQ_PASSWORD:-guest}
+      - "ConnectionStrings__DefaultConnection=Server=integrationtestsdatabase;Database=BookyWooks.OrderDbIntegrationTests;User=sa;Password=Your_password123; MultipleActiveResultSets=true; TrustServerCertificate=true;"  # Database connection string
+      - RabbitMQConfiguration__Config__HostName=${BOOKYWOOKS_RABBITMQ_HOSTNAME:-rabbitmq}  # RabbitMQ host name
+      - RabbitMQConfiguration__Config__UserName=${BOOKYWOOKS_RABBITMQ_USERNAME:-guest}  # RabbitMQ user name
+      - RabbitMQConfiguration__Config__Password=${BOOKYWOOKS_RABBITMQ_PASSWORD:-guest}  # RabbitMQ password
     volumes:
-      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests  # Mount volume for test results
     entrypoint:
-      - dotnet
-      - test
-      - --logger
-        #- trx --results-directory /var/temp
-        #dotnet test -l:trx;LogFileName=C:/temp/integration-test-results.xml
-      - trx;LogFileName=/tests/booky-wooks-integration-test-results.xml 
+      - dotnet  # Entry point to execute dotnet commands
+      - test  # Command to run tests
+      - --logger  # Specify logger options
+      - trx;LogFileName=/tests/booky-wooks-integration-test-results.xml  # Use trx logger format and specify log file path
 
+  # Service for integration tests database (SQL Server)
   integrationtestsdatabase:
-    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    image: "mcr.microsoft.com/mssql/server:2022-latest"  # Use SQL Server 2022 image
     environment:
-       - "SA_PASSWORD=Your_password123"
-       - "ACCEPT_EULA=Y"
+       - "SA_PASSWORD=Your_password123"  # Set SA password
+       - "ACCEPT_EULA=Y"  # Accept End-User License Agreement
     ports:
-    -   "5433:1433"
+    -   "5433:1433"  # Map container port 1433 to host port 5433
 
+  # Service for RabbitMQ
   rabbitmq:
     ports:
-      - "15672:15672"
-      - "5672:5672"
-    image: rabbitmq:3-management-alpine
+      - "15672:15672"  # Map RabbitMQ management port
+      - "5672:5672"    # Map RabbitMQ port for message communication
+    image: rabbitmq:3-management-alpine  # Use RabbitMQ 3 with management plugin
