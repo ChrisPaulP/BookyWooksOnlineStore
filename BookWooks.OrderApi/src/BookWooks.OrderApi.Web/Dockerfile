@@ -29,7 +29,7 @@ WORKDIR "/src/BookWooks.OrderApi/src/BookWooks.OrderApi.Web"
 RUN dotnet build "./BookWooks.OrderApi.Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build as integrationtest
-WORKDIR "/BookyWooks.OrderApiIntegrationTests"
+WORKDIR "/BookyWooks.OrderApi.IntegrationTests"
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
