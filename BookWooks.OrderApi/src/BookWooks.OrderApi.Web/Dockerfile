@@ -27,7 +27,7 @@ RUN dotnet build "./BookWooks.OrderApi.Web.csproj" -c $BUILD_CONFIGURATION -o /a
 # Integration Test Stage
 FROM build AS integrationtest
 WORKDIR "/src/BookyWooks.OrderApi.IntegrationTests"
-COPY ["BookWooks.OrderApi.IntegrationTests/BookWooks.OrderApi.IntegrationTests.csproj", "."]
+COPY ["../../BookWooksOrderApiIntegrationTests/BookWooks.OrderApi.IntegrationTests.csproj", "."]
 RUN dotnet restore
 COPY . .
 WORKDIR "/src/BookyWooks.OrderApi.IntegrationTests"
