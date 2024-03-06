@@ -46,9 +46,10 @@ steps:
     projects: '**/*Tests.csproj'
     arguments: '--no-build --configuration Release --filter "-not DisplayName~*IntegrationTests"'
 
-- task: DockerCLI@2
+- task: CopyFiles@2
   displayName: 'Copy Test Results'
   inputs:
-    command: 'cp'
-    arguments: '$(Agent.Id):/tests/booky-wooks-integration-test-results.xml $(Build.ArtifactStagingDirectory)/TestResults/'
+    SourceFolder: '$(Agent.Id):/tests'
+    Contents: '**/booky-wooks-integration-test-results.xml'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/TestResults/'
 
