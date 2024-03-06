@@ -6,7 +6,6 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
- # system.debug: true  # Enable verbose logging
 
 steps:
 - task: DockerCompose@0
@@ -20,7 +19,7 @@ steps:
   inputs:
      command: restore
      projects: '**/*.csproj'
-     configuration: $(buildConfiguration)  # Use the main build configuration variable
+     configuration: $(buildConfiguration)
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build $(buildConfiguration)'
@@ -33,18 +32,21 @@ steps:
   displayName: 'Print Docker Version'
 
 - task: DotNetCoreCLI@2
-  displayName: 'dotnet test'
+  displayName: 'dotnet test - Unit Tests'
   inputs:
     command: 'test'
     projects: '**/*UnitTests.csproj'
     arguments: '--configuration $(buildConfiguration) --no-build'
 
 - task: DotNetCoreCLI@2
-  displayName: 'dotnet test'
+  displayName: 'dotnet test - Exclude Integration Tests'
   inputs:
     command: 'test'
     projects: '**/*Tests.csproj'
-    arguments: '--no-build --configuration Release --filter "-not DisplayName~*IntegrationTests"'
+    arguments: '--no-build --configuration $(buildConfiguration) --filter "-not DisplayName~*IntegrationTests"'
 
-
-
+- task: DockerCLI@2
+  displayName: 'Copy Test Results'
+  inputs:
+    command: 'cp'
+    arguments: '$(Agent.Id):/tests/booky-wooks-integration-test-results.xml $(Build.ArtifactStagingDirectory)/TestResults/'
