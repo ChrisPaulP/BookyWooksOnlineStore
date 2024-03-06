@@ -49,7 +49,8 @@ steps:
 - task: CopyFiles@2
   displayName: 'Copy Test Results'
   inputs:
-    SourceFolder: '$(Agent.Id):/tests'
+    SourceFolder: '/tests'
     Contents: '**/booky-wooks-integration-test-results.xml'
     TargetFolder: '$(Build.ArtifactStagingDirectory)/TestResults/'
+
 
