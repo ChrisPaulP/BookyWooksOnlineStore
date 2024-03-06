@@ -6,25 +6,16 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  # system.debug: true  # Enable verbose logging
+ # system.debug: true  # Enable verbose logging
 
 steps:
 - task: DockerCompose@0
+  displayName: "Run a Docker Compose command"
   inputs:
     dockerComposeFile: "docker-compose-integration-tests.yml"
     dockerComposeCommand: "up --abort-on-container-exit" 
-  displayName: 'Run Docker Compose and save test results'
-  continueOnError: true  # Allow pipeline to continue even if the Docker Compose step fails
-  timeoutInMinutes: 10  # Adjust timeout as needed
-  condition: succeeded()  # Only execute this step if the previous steps succeeded
   env:
     CONTAINER_NAME: 'bookywooks_orderapi_integrationtests'  # Define the container name here
-
-  # Add a script to save the test results
-- script: |
-    # Save the logs of the container to integration-test-results.txt
-    docker logs ${CONTAINER_NAME} > integration-test-results.txt
-  displayName: 'Save Docker integration test results'
 
 - task: DotNetCoreCLI@2
   displayName: Restore Nuget Packages 
@@ -57,10 +48,6 @@ steps:
     projects: '**/*Tests.csproj'
     arguments: '--no-build --configuration Release --filter "-not DisplayName~*IntegrationTests"'
 
-- script: |
-    if [ -f "/tests/booky-wooks-integration-test-results.xml" ]; then
-      echo "Test results file exists."
-    else
-      echo "Test results file does not exist."
-    fi
-  displayName: 'Check if test results file exists'
+
+
+
