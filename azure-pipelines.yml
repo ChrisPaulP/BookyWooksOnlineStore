@@ -13,7 +13,8 @@ steps:
   displayName: "Run a Docker Compose command"
   inputs:
     dockerComposeFile: "docker-compose-integration-tests.yml"
-    dockerComposeCommand: "up --abort-on-container-exit" 
+    dockerComposeCommand: "up" 
+    # dockerComposeCommand: "up --abort-on-container-exit" 
 
 - script: |
     # Get the container ID of the running Docker Compose service
@@ -37,7 +38,11 @@ steps:
 
     # Save the logs of the container to integration-test-results.txt
     docker logs $container_name > integration-test-results.txt
-  displayName: 'Save Docker integration test results'
+
+    # Stop the container
+    docker-compose -f docker-compose-integration-tests.yml down
+  displayName: 'Save Docker integration test results and stop container'
+
 
 
 - task: DotNetCoreCLI@2
