@@ -54,6 +54,9 @@ steps:
     fi
   displayName: 'Check if test results file exists'
 
+- script: |
+   cat /tests/booky-wooks-integration-test-results.xml
+  displayName: 'Display Test Results'
 
 # - task: CopyFiles@2
 #   displayName: 'Copy Test Results'
