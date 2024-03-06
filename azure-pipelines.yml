@@ -46,11 +46,11 @@ steps:
     projects: '**/*Tests.csproj'
     arguments: '--no-build --configuration Release --filter "-not DisplayName~*IntegrationTests"'
 
-- task: CopyFiles@2
-  displayName: 'Copy Test Results'
-  inputs:
-    SourceFolder: '/tests'
-    Contents: '**/booky-wooks-integration-test-results.xml'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)/TestResults/'
+# - task: CopyFiles@2
+#   displayName: 'Copy Test Results'
+#   inputs:
+#     SourceFolder: '/tests'
+#     Contents: '**/booky-wooks-integration-test-results.xml'
+#     TargetFolder: '$(Build.ArtifactStagingDirectory)/TestResults/'
 
 

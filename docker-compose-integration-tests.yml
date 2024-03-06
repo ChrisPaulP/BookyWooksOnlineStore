@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   # Service for running integration tests
-  bookyWooks.orderapi.integrationtests:
+  bookywooks_orderapi_integrationtests:
     image: ${DOCKER_REGISTRY-}bookywooksorderapiintegrationtests
     build:
       context: .
@@ -40,3 +40,4 @@ services:
       - "15672:15672"  # Map RabbitMQ management port
       - "5672:5672"    # Map RabbitMQ port for message communication
     image: rabbitmq:3-management-alpine  # Use RabbitMQ 3 with management plugin
+
