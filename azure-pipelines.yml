@@ -10,7 +10,6 @@ variables:
 
 steps:
 - task: DockerCompose@0
-  displayName: "Run a Docker Compose command"
   inputs:
     dockerComposeFile: "docker-compose-integration-tests.yml"
     dockerComposeCommand: "up --abort-on-container-exit" 
