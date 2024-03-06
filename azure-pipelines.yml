@@ -19,8 +19,18 @@ steps:
     # Get the container ID of the running Docker Compose service
     container_id=$(docker-compose -f docker-compose-integration-tests.yml ps -q bookywooks_orderapi_integrationtests)
 
+    if [ -z "$container_id" ]; then
+        echo "Error: Container ID not found. Aborting."
+        exit 1
+    fi
+
     # Get the container name associated with the container ID
     container_name=$(docker inspect --format '{{.Name}}' $container_id)
+
+    if [ -z "$container_name" ]; then
+        echo "Error: Container name not found. Aborting."
+        exit 1
+    fi
 
     # Remove the leading slash from the container name
     container_name=${container_name#/}
@@ -28,6 +38,7 @@ steps:
     # Save the logs of the container to integration-test-results.txt
     docker logs $container_name > integration-test-results.txt
   displayName: 'Save Docker integration test results'
+
 
 - task: DotNetCoreCLI@2
   displayName: Restore Nuget Packages 
