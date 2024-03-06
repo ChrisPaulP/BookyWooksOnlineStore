@@ -21,7 +21,7 @@ steps:
     CONTAINER_NAME: 'bookywooks_orderapi_integrationtests'  # Define the container name here
 
   # Add a script to save the test results
-  script: |
+ - script: |
     # Save the logs of the container to integration-test-results.txt
     docker logs ${CONTAINER_NAME} > integration-test-results.txt
 
