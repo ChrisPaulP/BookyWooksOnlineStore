@@ -6,7 +6,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
- # system.debug: true  # Enable verbose logging
+  # system.debug: true  # Enable verbose logging
 
 steps:
 - task: DockerCompose@0
@@ -24,6 +24,7 @@ steps:
 - script: |
     # Save the logs of the container to integration-test-results.txt
     docker logs ${CONTAINER_NAME} > integration-test-results.txt
+  displayName: 'Save Docker integration test results'
 
 - task: DotNetCoreCLI@2
   displayName: Restore Nuget Packages 
