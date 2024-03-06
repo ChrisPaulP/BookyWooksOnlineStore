@@ -6,7 +6,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  system.debug: true  # Enable verbose logging
+ # system.debug: true  # Enable verbose logging
 
 steps:
 - task: DockerCompose@0
