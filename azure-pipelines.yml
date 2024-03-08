@@ -6,7 +6,14 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
- # system.debug: true  # Enable verbose logging
+  BuildParameters.RestoreBuildProjects: '**/*.csproj'
+  BuildParameters.TestProjects: |
+     $(BuildParameters.RestoreBuildProjects) 
+     !**/*IntegrationTests*.csproj
+
+jobs:
+- job: BuildAndTest
+  displayName: Build and Test
 
 steps:
 - task: DockerCompose@0
@@ -21,7 +28,7 @@ steps:
   displayName: Restore Nuget Packages 
   inputs:
      command: restore
-     projects: '**/*.csproj'
+     projects: $(BuildParameters.RestoreBuildProjects)
      configuration: $(buildConfiguration)  # Use the main build configuration variable
 
 - task: DotNetCoreCLI@2
@@ -35,18 +42,21 @@ steps:
   displayName: 'Print Docker Version'
 
 - task: DotNetCoreCLI@2
-  displayName: 'dotnet test'
+  displayName: Run Tests
   inputs:
-    command: 'test'
-    projects: '**/*UnitTests.csproj'
-    arguments: '--configuration $(buildConfiguration) --no-build'
+    command: test
+    projects: $(BuildParameters.TestProjects) 
+    arguments: --configuration $(buildConfiguration) --no-build
 
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet test'
-  inputs:
-    command: 'test'
-    projects: '**/*Tests.csproj'
-    arguments: '--no-build --configuration Release --filter "-not DisplayName~*IntegrationTests"'
+
+# - task: DotNetCoreCLI@2
+#   displayName: 'dotnet test'
+#   inputs:
+#     command: 'test'
+#     projects: '**/*UnitTests.csproj'
+#     arguments: '--configuration $(buildConfiguration) --no-build'
+
+
 
 
 
