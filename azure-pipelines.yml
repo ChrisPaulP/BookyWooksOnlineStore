@@ -15,38 +15,38 @@ jobs:
 - job: BuildAndTest
   displayName: Build and Test
 
-steps:
-- task: DockerCompose@0
-  displayName: "Run a Docker Compose command"
-  inputs:
-    dockerComposeFile: "docker-compose-integration-tests.yml"
-    dockerComposeCommand: "up --abort-on-container-exit" 
-  env:
-    CONTAINER_NAME: 'bookywooks_orderapi_integrationtests'  # Define the container name here
+  steps:
+  - task: DockerCompose@0
+    displayName: "Run a Docker Compose command"
+    inputs:
+      dockerComposeFile: "docker-compose-integration-tests.yml"
+      dockerComposeCommand: "up --abort-on-container-exit" 
+    env:
+      CONTAINER_NAME: 'bookywooks_orderapi_integrationtests'  # Define the container name here
 
-- task: DotNetCoreCLI@2
-  displayName: Restore Nuget Packages 
-  inputs:
-     command: restore
-     projects: $(BuildParameters.RestoreBuildProjects)
-     configuration: $(buildConfiguration)  # Use the main build configuration variable
+  - task: DotNetCoreCLI@2
+    displayName: Restore Nuget Packages 
+    inputs:
+       command: restore
+       projects: $(BuildParameters.RestoreBuildProjects)
+       configuration: $(buildConfiguration)  # Use the main build configuration variable
 
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet build $(buildConfiguration)'
-  inputs:
-    command: 'build'
-    projects: '**/BookyWooks.sln'
-    arguments: '--configuration $(buildConfiguration)'
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet build $(buildConfiguration)'
+    inputs:
+      command: 'build'
+      projects: '**/BookyWooks.sln'
+      arguments: '--configuration $(buildConfiguration)'
 
-- script: docker --version
-  displayName: 'Print Docker Version'
+  - script: docker --version
+    displayName: 'Print Docker Version'
 
-- task: DotNetCoreCLI@2
-  displayName: Run Tests
-  inputs:
-    command: test
-    projects: $(BuildParameters.TestProjects) 
-    arguments: --configuration $(buildConfiguration) --no-build
+  - task: DotNetCoreCLI@2
+    displayName: Run Tests
+    inputs:
+      command: test
+      projects: $(BuildParameters.TestProjects) 
+      arguments: --configuration $(buildConfiguration) --no-build
 
 
 # - task: DotNetCoreCLI@2
