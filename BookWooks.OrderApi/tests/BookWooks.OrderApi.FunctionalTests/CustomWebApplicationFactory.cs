@@ -2,15 +2,19 @@
 using BookWooks.OrderApi.Infrastructure.Data.Queries;
 
 using BookWooks.OrderApi.Web;
+using DotNet.Testcontainers.Builders;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
+using Testcontainers.RabbitMq;
+using Xunit;
 
 namespace BookWooks.OrderApi.FunctionalTests;
-public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram> where TProgram : class
+public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram>, IAsyncLifetime where TProgram : class
 {
   /// <summary>
   /// Overriding CreateHost to avoid creating a separate ServiceProvider per this thread:
@@ -18,6 +22,20 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
   /// </summary>
   /// <param name="builder"></param>
   /// <returns></returns>
+  /// 
+  private readonly RabbitMqContainer _rabbitMqContainer;
+  private const string RabbitMqUsername = "guest";
+  private const string RabbitMqPassword = "guest";
+  public CustomWebApplicationFactory()
+  {
+    _rabbitMqContainer = new RabbitMqBuilder()
+                       .WithImage("rabbitmq:3.11")
+                        .WithPortBinding(5672, 5672)
+         .WithEnvironment("RABBITMQ_DEFAULT_USER", RabbitMqUsername)
+         .WithEnvironment("RABBITMQ_DEFAULT_PASS", RabbitMqPassword)
+         .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5672)) // Adding wait strategy
+         .Build();
+  }
   protected override IHost CreateHost(IHostBuilder builder)
   {
     builder.UseEnvironment("Development"); // will not send real emails
@@ -82,6 +100,38 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
           {
             options.UseInMemoryDatabase(inMemoryCollectionName);
           });
+
+          //var descriptor2 = services.SingleOrDefault(
+          //            d => d.ServiceType == typeof(ConnectionFactory));
+
+          //if (descriptor2 != null)
+          //{
+          //  services.Remove(descriptor2);
+          //}
+
+          //// Use TestContainers to create an in-memory RabbitMQ container
+          //services.AddSingleton<IRabbitMqContainerFactory, RabbitMqContainerFactory>();
+
+          //services.AddSingleton<ConnectionFactory>(provider =>
+          //{
+          //  var containerFactory = provider.GetRequiredService<IRabbitMqContainerFactory>();
+          //  var container = containerFactory.CreateContainer();
+          //  container.StartAsync().GetAwaiter().GetResult(); // Start the container
+          //  return container.ConnectionFactory; // Assuming ConnectionFactory is a property of RabbitMQContainer
+          //});
+
         });
+
+
+  }
+
+  public async Task InitializeAsync()
+  {
+    await _rabbitMqContainer.StartAsync();
+  }
+
+  async Task IAsyncLifetime.DisposeAsync()
+  {
+    await _rabbitMqContainer.DisposeAsync();
   }
 }
