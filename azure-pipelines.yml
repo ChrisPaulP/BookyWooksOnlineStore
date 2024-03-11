@@ -9,8 +9,7 @@ variables:
   BuildParameters.RestoreBuildProjects: '**/*.csproj'
   BuildParameters.TestProjects: |
      $(BuildParameters.RestoreBuildProjects) 
-     # !**/*IntegrationTests*.csproj
-     !**/*FunctionalTests*.csproj
+     !**/*IntegrationTests*.csproj
 
 jobs:
 - job: BuildAndTest
