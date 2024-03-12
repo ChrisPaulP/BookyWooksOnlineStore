@@ -1,4 +1,5 @@
-﻿using Testcontainers.MsSql;
+﻿using Microsoft.Extensions.Configuration;
+using Testcontainers.MsSql;
 
 namespace BookWooks.OrderApi.TestContainersIntegrationTests;
 
@@ -7,7 +8,7 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
     private const string Database = "master";
     private const string Username = "sa";
     private const string Password = "yourStrong(!)Password";
-    private string ConnectionString;
+    private string _connectionString;
     private const ushort MsSqlPort = 1433;
     private const ushort RabbitMqPort = 5672; // RabbitMQ default port
     private readonly MsSqlContainer _mssqlContainer;
@@ -27,6 +28,7 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
             .WithEnvironment("SQLCMDUSER", Username)
             .WithEnvironment("SQLCMDPASSWORD", Password)
             .WithEnvironment("MSSQL_SA_PASSWORD", Password)
+            .WithEnvironment("MSSQL_DATABASE_NAME", "TestContainersDb")
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(MsSqlPort))
             .Build();
 
@@ -43,8 +45,8 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
     {
         await _mssqlContainer.StartAsync();
         await _rabbitMqContainer.StartAsync();
-
-        ConnectionString = GetDatabaseConnectionString(); //$"Server={host},{port};Database={Database};User Id={Username};Password={Password};TrustServerCertificate=True";
+       
+        GetDatabaseConnectionString(); //$"Server={host},{port};Database={Database};User Id={Username};Password={Password};TrustServerCertificate=True";
 
         //_respawner = await CreateRespawnerAsync();
         HttpClient = CreateClient();
@@ -52,6 +54,26 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.ConfigureAppConfiguration(configurationBuilder =>
+        {
+            //var configuration = new ConfigurationBuilder()
+            //   .AddJsonFile("testcontainersappsettings.json")
+            //   .AddEnvironmentVariables()
+            //   .Build();
+            //string connectionString = configuration.GetConnectionString("TestConnection");
+
+            var configuration = new ConfigurationBuilder().AddJsonFile("testcontainersappsettings.json")
+       .AddInMemoryCollection(new Dictionary<string, string>
+       {
+           ["ConnectionStrings:DefaultConnection"] =  _connectionString,
+           ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname
+       })
+       .AddEnvironmentVariables()
+       .Build();
+
+            configurationBuilder.AddConfiguration(configuration);
+        });
+
         builder.ConfigureServices(services =>
         {
             RemoveDbContextOptions<BookyWooksOrderDbContext>(services);
@@ -75,13 +97,14 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
     {
         services.AddDbContext<T>(options =>
         {
-            options.UseSqlServer(ConnectionString,
+            options.UseSqlServer(_connectionString,
                 builder => builder.MigrationsAssembly(typeof(T).Assembly.FullName));
         });
     }
     private string GetDatabaseConnectionString()
     {
-        return $"Server={_mssqlContainer.Hostname},{_mssqlContainer.GetMappedPublicPort(MsSqlPort)};Database={Database};User Id={Username};Password={Password};TrustServerCertificate=True";
+        _connectionString = $"Server={_mssqlContainer.Hostname},{_mssqlContainer.GetMappedPublicPort(MsSqlPort)};Database={Database};User Id={Username};Password={Password};TrustServerCertificate=True";
+        return _connectionString;
     }
 
     public new async Task DisposeAsync()

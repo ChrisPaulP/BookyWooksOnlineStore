@@ -1,0 +1,38 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=LAPTOP3337;Database=TestContainersDb;Trusted_Connection=True;MultipleActiveResultSets=true; TrustServerCertificate=Yes;",
+    "TestConnection": "MyTest",
+    "Redis": "localhost:6379"
+  },
+  "RabbitMQConfiguration": {
+    "Config": {
+      "HostName": "my-rabbitmq-hostname",
+      "UserName": "guest",
+      "Password": "guest",
+      "VirtualHost": "/",
+      "Port": 5672
+    },
+    "AdditionalConfig": {
+      "Retry": 5,
+      "QueueName": "Booky Wooks QueueTest",
+      "BrokerName": "Booky Wooks BrokerTest"
+    },
+    "Serilog": {
+      "MinimumLevel": {
+        "Default": "Information"
+      },
+      "WriteTo": [
+        {
+          "Name": "Console"
+        },
+        {
+          "Name": "File",
+          "Args": {
+            "path": "log.txt",
+            "rollingInterval": "Day"
+          }
+        }
+      ]
+    }
+  }
+}
