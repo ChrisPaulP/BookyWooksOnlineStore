@@ -27,16 +27,15 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
             .WithEnvironment("ACCEPT_EULA", "Y") 
             .WithEnvironment("SQLCMDUSER", Username)
             .WithEnvironment("SQLCMDPASSWORD", Password)
-            .WithEnvironment("MSSQL_SA_PASSWORD", Password)
-            .WithEnvironment("MSSQL_DATABASE_NAME", "TestContainersDb")
+            .WithEnvironment("SA_PASSWORD", Password)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(MsSqlPort))
             .Build();
 
         _rabbitMqContainer = new ContainerBuilder()
             .WithImage("rabbitmq:3-management-alpine") // Use rabbitmq:management image
             .WithPortBinding(RabbitMqPort, 5672)
-            .WithEnvironment("RABBITMQ_DEFAULT_USER", RabbitMqUsername)
-            .WithEnvironment("RABBITMQ_DEFAULT_PASS", RabbitMqPassword)
+            .WithEnvironment("RabbitMQConfiguration__Config__UserName", RabbitMqUsername)
+            .WithEnvironment("RabbitMQConfiguration__Config__Password", RabbitMqPassword)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(RabbitMqPort)) // Adding wait strategy
             .Build();
     }
