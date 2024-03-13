@@ -42,7 +42,8 @@ jobs:
   - script: docker --version
     displayName: 'Print Docker Version'
 
-  - name: Test
+  - task: DotNetCoreCLI@2
+    displayName: Run Integration Tests
     run: dotnet test ./BookWooks.OrderApi.Web.sln --no-build
 
   - task: DotNetCoreCLI@2
