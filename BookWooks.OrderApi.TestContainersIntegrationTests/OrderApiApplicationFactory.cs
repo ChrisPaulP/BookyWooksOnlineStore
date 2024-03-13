@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Testcontainers.MsSql;
+using Testcontainers.RabbitMq;
 
 namespace BookWooks.OrderApi.TestContainersIntegrationTests;
 
@@ -23,13 +24,14 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
     {
         _mssqlContainer = new MsSqlBuilder()
             .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
-            .WithPortBinding(5433, 1433) 
-            .WithEnvironment("ACCEPT_EULA", "Y") 
-            .WithEnvironment("SA_PASSWORD", Password)
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(MsSqlPort))
+            .WithPassword("Strong_password_123!")
+            //.WithPortBinding(5433, 1433) 
+            //.WithEnvironment("ACCEPT_EULA", "Y") 
+            //.WithEnvironment("SA_PASSWORD", Password)
+            //.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(MsSqlPort))
             .Build();
 
-        _rabbitMqContainer = new ContainerBuilder()
+        _rabbitMqContainer = new RabbitMqBuilder()
             .WithImage("rabbitmq:3-management-alpine") // Use rabbitmq:management image
             .WithPortBinding(RabbitMqPort, 5672)
             .WithPortBinding(15672, 15672) // Management plugin
@@ -101,7 +103,7 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
     }
     private string GetDatabaseConnectionString()
     {
-        _connectionString = $"Server={_mssqlContainer.Hostname},{_mssqlContainer.GetMappedPublicPort(MsSqlPort)};Database={Database};User Id={Username};Password={Password};TrustServerCertificate=True";
+        _connectionString = _mssqlContainer.GetConnectionString(); // $"Server={_mssqlContainer.Hostname},{_mssqlContainer.GetMappedPublicPort(MsSqlPort)};Database={Database};User Id={Username};Password={Password};TrustServerCertificate=True";
         return _connectionString;
     }
 
