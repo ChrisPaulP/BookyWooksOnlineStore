@@ -23,10 +23,8 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
     {
         _mssqlContainer = new MsSqlBuilder()
             .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
-            .WithPortBinding(MsSqlPort, true)
+            .WithPortBinding(5433, 1433) 
             .WithEnvironment("ACCEPT_EULA", "Y") 
-            .WithEnvironment("SQLCMDUSER", Username)
-            .WithEnvironment("SQLCMDPASSWORD", Password)
             .WithEnvironment("SA_PASSWORD", Password)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(MsSqlPort))
             .Build();
@@ -34,9 +32,10 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
         _rabbitMqContainer = new ContainerBuilder()
             .WithImage("rabbitmq:3-management-alpine") // Use rabbitmq:management image
             .WithPortBinding(RabbitMqPort, 5672)
+            .WithPortBinding(15672, 15672) // Management plugin
             .WithEnvironment("RabbitMQConfiguration__Config__UserName", RabbitMqUsername)
             .WithEnvironment("RabbitMQConfiguration__Config__Password", RabbitMqPassword)
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(RabbitMqPort)) // Adding wait strategy
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(15672)) // Adding wait strategy
             .Build();
     }
 
