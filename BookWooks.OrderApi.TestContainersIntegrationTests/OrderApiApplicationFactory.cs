@@ -11,9 +11,9 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
     private const string Password = "yourStrong(!)Password";
     private string _connectionString;
     private const ushort MsSqlPort = 1433;
-    private const ushort RabbitMqPort = 5672; // RabbitMQ default port
+    private const ushort RabbitMqPort = 5672; 
     private readonly MsSqlContainer _mssqlContainer;
-    private readonly IContainer _rabbitMqContainer;
+    private readonly RabbitMqContainer _rabbitMqContainer;
 
     public HttpClient HttpClient { get; private set; } = default!;
 
@@ -24,20 +24,19 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
     {
         _mssqlContainer = new MsSqlBuilder()
             .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
-            .WithPassword("Strong_password_123!")
-            //.WithPortBinding(5433, 1433) 
-            //.WithEnvironment("ACCEPT_EULA", "Y") 
-            //.WithEnvironment("SA_PASSWORD", Password)
-            //.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(MsSqlPort))
+            .WithPortBinding(5433, 1433) 
+            .WithEnvironment("ACCEPT_EULA", "Y") 
+            .WithEnvironment("SA_PASSWORD", Password)
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(MsSqlPort))
             .Build();
 
         _rabbitMqContainer = new RabbitMqBuilder()
             .WithImage("rabbitmq:3-management-alpine") // Use rabbitmq:management image
             .WithPortBinding(RabbitMqPort, 5672)
-            .WithPortBinding(15672, 15672) // Management plugin
-            .WithEnvironment("RabbitMQConfiguration__Config__UserName", RabbitMqUsername)
-            .WithEnvironment("RabbitMQConfiguration__Config__Password", RabbitMqPassword)
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(15672)) // Adding wait strategy
+            .WithPortBinding(15672, 15672)
+            .WithEnvironment("RABBITMQ_DEFAULT_USER", RabbitMqUsername)
+            .WithEnvironment("RABBITMQ_DEFAULT_PASS", RabbitMqPassword)
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(RabbitMqPort)) // Adding wait strategy
             .Build();
     }
 
@@ -46,9 +45,8 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
         await _mssqlContainer.StartAsync();
         await _rabbitMqContainer.StartAsync();
        
-        GetDatabaseConnectionString(); //$"Server={host},{port};Database={Database};User Id={Username};Password={Password};TrustServerCertificate=True";
+        GetDatabaseConnectionString();
 
-        //_respawner = await CreateRespawnerAsync();
         HttpClient = CreateClient();
     }
 
@@ -56,12 +54,6 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
     {
         builder.ConfigureAppConfiguration(configurationBuilder =>
         {
-            //var configuration = new ConfigurationBuilder()
-            //   .AddJsonFile("testcontainersappsettings.json")
-            //   .AddEnvironmentVariables()
-            //   .Build();
-            //string connectionString = configuration.GetConnectionString("TestConnection");
-
             var configuration = new ConfigurationBuilder().AddJsonFile("testcontainersappsettings.json")
        .AddInMemoryCollection(new Dictionary<string, string>
        {

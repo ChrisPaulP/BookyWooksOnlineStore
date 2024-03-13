@@ -23,14 +23,14 @@ jobs:
       dockerComposeFile: "docker-compose-integration-tests.yml"
       dockerComposeCommand: "up --abort-on-container-exit" 
     env:
-      CONTAINER_NAME: 'bookywooks_orderapi_integrationtests'  # Define the container name here
+      CONTAINER_NAME: 'bookywooks_orderapi_integrationtests'  
 
   - task: DotNetCoreCLI@2
     displayName: Restore Nuget Packages 
     inputs:
        command: restore
        projects: $(BuildParameters.RestoreBuildProjects)
-       configuration: $(buildConfiguration)  # Use the main build configuration variable
+       configuration: $(buildConfiguration)  
 
   - task: DotNetCoreCLI@2
     displayName: 'dotnet build $(buildConfiguration)'
