@@ -34,7 +34,7 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
 
         _rabbitMqContainer = new RabbitMqBuilder()
             .WithImage("rabbitmq:3-management-alpine") // Use rabbitmq:management image
-            .WithPortBinding(5672, RabbitMqPort)
+            .WithPortBinding(0, RabbitMqPort)
             //.WithPortBinding(15672, 15672)
             .WithEnvironment("RABBITMQ_DEFAULT_USER", RabbitMqUsername)
             .WithEnvironment("RABBITMQ_DEFAULT_PASS", RabbitMqPassword)

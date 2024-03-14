@@ -6,7 +6,7 @@
   },
   "RabbitMQConfiguration": {
     "Config": {
-      "HostName": "my-rabbitmq-hostname",
+      "HostName": "localhost",
       "UserName": "guest",
       "Password": "guest",
       "VirtualHost": "/",

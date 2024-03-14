@@ -27,8 +27,8 @@ public class AutofacRabbitMQModule : Module
         var connectionFactory = new ConnectionFactory()
         {
             HostName = rabbitMQConfiguration.HostName,
-            DispatchConsumersAsync = true//,
-            //Port = rabbitMQConfiguration.Port,
+            DispatchConsumersAsync = true,//,
+            Port = rabbitMQConfiguration.Port,
             //VirtualHost = rabbitMQConfiguration.VirtualHost
         };
         if (!string.IsNullOrEmpty(rabbitMQConfiguration.UserName))

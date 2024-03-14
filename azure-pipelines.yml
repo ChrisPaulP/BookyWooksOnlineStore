@@ -11,7 +11,9 @@ variables:
      $(BuildParameters.RestoreBuildProjects) 
      # !**/*IntegrationTests*.csproj
      !**/*FunctionalTests*.csproj
-  system.debug: 'true' # Enable debug logging
+     !**/*IntegrationTests*.csproj
+     **/*TestContainersIntegrationTests*.csproj
+  # system.debug: 'true' # Enable debug logging
 
 jobs:
 - job: BuildAndTest
