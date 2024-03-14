@@ -24,7 +24,9 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
     {
         _mssqlContainer = new MsSqlBuilder()
             .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
-            .WithPortBinding(5433, 1433) 
+            // Remove static port binding and let Docker assign random ports
+            .WithPortBinding(0, MsSqlPort)
+            //.WithPortBinding(5433, 1433) 
             .WithEnvironment("ACCEPT_EULA", "Y") 
             .WithEnvironment("SA_PASSWORD", Password)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(MsSqlPort))
@@ -32,8 +34,8 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
 
         _rabbitMqContainer = new RabbitMqBuilder()
             .WithImage("rabbitmq:3-management-alpine") // Use rabbitmq:management image
-            .WithPortBinding(RabbitMqPort, 5672)
-            .WithPortBinding(15672, 15672)
+            .WithPortBinding(0, RabbitMqPort)
+            //.WithPortBinding(15672, 15672)
             .WithEnvironment("RABBITMQ_DEFAULT_USER", RabbitMqUsername)
             .WithEnvironment("RABBITMQ_DEFAULT_PASS", RabbitMqPassword)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(RabbitMqPort)) // Adding wait strategy
