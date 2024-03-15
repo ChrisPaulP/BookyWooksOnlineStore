@@ -26,14 +26,13 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
             .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
             // Remove static port binding and let Docker assign random ports
             .WithPortBinding(0, MsSqlPort)
-            //.WithPortBinding(5433, 1433) 
             .WithEnvironment("ACCEPT_EULA", "Y") 
             .WithEnvironment("SA_PASSWORD", Password)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(MsSqlPort))
             .Build();
 
         _rabbitMqContainer = new RabbitMqBuilder()
-            .WithImage("rabbitmq:3-management-alpine") // Use rabbitmq:management image
+            .WithImage("rabbitmq:3-management-alpine") 
             .WithPortBinding(5672, RabbitMqPort) // Bind RabbitMQ's default port to the specified host port
             .WithEnvironment("RABBITMQ_DEFAULT_USER", RabbitMqUsername)
             .WithEnvironment("RABBITMQ_DEFAULT_PASS", RabbitMqPassword)
