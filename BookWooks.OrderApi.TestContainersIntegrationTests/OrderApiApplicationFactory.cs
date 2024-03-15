@@ -34,11 +34,12 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
 
         _rabbitMqContainer = new RabbitMqBuilder()
             .WithImage("rabbitmq:3-management-alpine") // Use rabbitmq:management image
-            .WithPortBinding(0, RabbitMqPort)
-            //.WithPortBinding(15672, 15672)
+            .WithPortBinding(5672, RabbitMqPort) // Bind RabbitMQ's default port to the specified host port
             .WithEnvironment("RABBITMQ_DEFAULT_USER", RabbitMqUsername)
             .WithEnvironment("RABBITMQ_DEFAULT_PASS", RabbitMqPassword)
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(RabbitMqPort)) // Adding wait strategy
+            .WithWaitStrategy(Wait.ForUnixContainer()
+                .UntilPortIsAvailable(RabbitMqPort) // Wait until the specified host port is available
+                .UntilPortIsAvailable(15672)) // Wait until the management port is available
             .Build();
     }
 
