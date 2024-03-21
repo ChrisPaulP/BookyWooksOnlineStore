@@ -18,7 +18,7 @@ public class ListOrdersForCustomer : Endpoint<ListOrdersForCustomerRequest, List
   }
 
   public override async Task HandleAsync(ListOrdersForCustomerRequest request,
-    CancellationToken cancellationToken)
+    CancellationToken ct)
   {
     var command = new ListOrdersForCustomerQuery(null, null, request.CustomerId);
 
@@ -26,7 +26,7 @@ public class ListOrdersForCustomer : Endpoint<ListOrdersForCustomerRequest, List
 
     if (result.Status == ResultStatus.NotFound)
     {
-      await SendNotFoundAsync(cancellationToken);
+      await SendNotFoundAsync(ct);
       return;
     }
 

@@ -11,5 +11,5 @@ public class GetOrderDetailsResponse
 
   public Guid Id { get; set; }
   public string Status { get; set; }
-  public List<OrderItemRecord> OrderItems { get; set; } = new();
+  public List<OrderItemRecord> OrderItems { get; set; }
 }

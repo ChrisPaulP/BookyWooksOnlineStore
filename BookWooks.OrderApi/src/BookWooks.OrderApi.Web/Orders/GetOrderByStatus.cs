@@ -16,7 +16,7 @@ public class GetOrderByStatus : Endpoint<GetOrderByStatusRequest, GetOrderByStat
   }
 
   public override async Task HandleAsync(GetOrderByStatusRequest request,
-    CancellationToken cancellationToken)
+    CancellationToken ct)
   {
     var command = new GetOrdersByStatusQuery(null, null, request.Status);
 
@@ -24,7 +24,7 @@ public class GetOrderByStatus : Endpoint<GetOrderByStatusRequest, GetOrderByStat
 
     if (result.Status == ResultStatus.NotFound)
     {
-      await SendNotFoundAsync(cancellationToken);
+      await SendNotFoundAsync(ct);
       return;
     }
 

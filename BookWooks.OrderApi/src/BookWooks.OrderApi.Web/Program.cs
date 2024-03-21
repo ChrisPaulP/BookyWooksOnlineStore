@@ -70,23 +70,17 @@ using (var scope = app.Services.CreateScope())
   catch (Exception ex)
   {
     var logger = services.GetRequiredService<ILogger<Program>>();
-    logger.LogError(ex, "An error occurred seeding the DB. {exceptionMessage}", ex.Message);
+    logger.LogError(ex, "An error occurred seeding the DB. {ExceptionMessage}", ex.Message);
   }
 }
-var serviceProvider = app.Services;
-try
-{
-  var eventBus = serviceProvider.GetRequiredService<EventBus.IEventBus>();
-}
-catch (Exception ex)
-{
-  var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
-  logger.LogError(ex, "An error occurred creating the event bus. {exceptionMessage}", ex.Message);
-}
-//await eventBus.Subscribe<CheckBookStockIntegrationEvent, BookStockCheckedEventHandler>(); Example of how to subscribe to events
+
 app.Run();
 
 // Make the implicit Program.cs class public, so integration tests can reference the correct assembly for host building
 public partial class Program
 {
+  protected Program()
+  {
+      
+  }
 }

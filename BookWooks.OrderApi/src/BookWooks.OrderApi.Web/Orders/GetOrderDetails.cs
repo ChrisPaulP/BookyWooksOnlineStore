@@ -16,7 +16,7 @@ public class GetOrderDetails : Endpoint<GetOrderDetailsRequest, GetOrderDetailsR
   }
 
   public override async Task HandleAsync(GetOrderDetailsRequest request,
-  CancellationToken cancellationToken)
+  CancellationToken ct)
   {
     var command = new GetOrderDetailsQuery(request.OrderId);
 
@@ -24,7 +24,7 @@ public class GetOrderDetails : Endpoint<GetOrderDetailsRequest, GetOrderDetailsR
 
     if (result.Status == ResultStatus.NotFound)
     {
-      await SendNotFoundAsync(cancellationToken);
+      await SendNotFoundAsync(ct);
       return;
     }
 

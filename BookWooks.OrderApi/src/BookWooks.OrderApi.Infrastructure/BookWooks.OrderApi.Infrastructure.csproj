@@ -27,4 +27,12 @@
     <ProjectReference Include="..\BookWooks.OrderApi.Core\BookWooks.OrderApi.Core.csproj" />
     <ProjectReference Include="..\BookWooks.OrderApi.UseCases\BookWooks.OrderApi.UseCases.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\porterc\source\repos\BookyWooksOnlineStore\BookWooks.OrderApi\src\BookWooks.OrderApi.Infrastructure\.editorconfig" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="C:\Users\porterc\source\repos\BookyWooksOnlineStore\BookWooks.OrderApi\src\BookWooks.OrderApi.Infrastructure\.editorconfig" />
+  </ItemGroup>
 </Project>

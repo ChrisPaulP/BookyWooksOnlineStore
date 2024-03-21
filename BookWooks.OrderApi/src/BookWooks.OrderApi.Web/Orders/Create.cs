@@ -14,25 +14,21 @@ public class Create : Endpoint<CreateOrderRequest, CreateOrderResponse>
   AllowAnonymous();
   Summary(s =>
   {
-    // XML Docs are used by default but are overridden by these properties:
-    //s.Summary = "Create a new Order.";
-    //s.Description = "Create a new Contributor. A valid name is required.";
     s.ExampleRequest = new CreateOrderRequest { Name = "Order Customer Name" };
   });
 }
 
 public override async Task HandleAsync(
   CreateOrderRequest request,
-  CancellationToken cancellationToken)
+  CancellationToken ct)
 {
   var result = await _mediator.Send(new CreateOrderCommand(request.Id, request.OrderItems.ToOrderCommandOrderItems(), request.UserId!, request.UserName!, request.City!, request.Street!, request.Country!, request.Postcode!, request.CardNumber!, request.CardHolderName!, request.ExpiryDate!, request.CardSecurityNumber!));
 
   if (result.IsSuccess)
   {
     Response = new CreateOrderResponse(result.Value, request.UserName!);
-    return;
   }
-  // TODO: Handle other cases as necessary
+
 }
 }
 

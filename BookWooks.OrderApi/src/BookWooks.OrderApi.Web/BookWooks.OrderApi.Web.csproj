@@ -29,6 +29,10 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" PrivateAssets="All" />
     <PackageReference Include="Serilog.Sinks.ApplicationInsights" />
     <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="SonarAnalyzer.CSharp">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <!--<PackageReference Include="Swashbuckle.AspNetCore" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" />-->
   </ItemGroup>
@@ -36,6 +40,14 @@
   <ItemGroup>
     <ProjectReference Include="..\BookWooks.OrderApi.Infrastructure\BookWooks.OrderApi.Infrastructure.csproj" />
     <ProjectReference Include="..\BookWooks.OrderApi.UseCases\BookWooks.OrderApi.UseCases.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\porterc\source\repos\BookyWooksOnlineStore\BookWooks.OrderApi\src\BookWooks.OrderApi.Web\.editorconfig" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="C:\Users\porterc\source\repos\BookyWooksOnlineStore\BookWooks.OrderApi\src\BookWooks.OrderApi.Web\.editorconfig" />
   </ItemGroup>
   
 </Project>

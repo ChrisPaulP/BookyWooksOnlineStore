@@ -3,13 +3,10 @@
 public class CancelOrder : Endpoint<CancelOrderRequest, CancelOrderResponse>
 {
   private readonly IMediator _mediator;
-  private readonly IRepository<Order> _repository;
 
-  public CancelOrder(IRepository<Order> repository,
-    IMediator mediator)
+  public CancelOrder(IMediator mediator)
   {
     _mediator = mediator;
-    _repository = repository;
   }
 
   public override void Configure()
@@ -24,14 +21,13 @@ public class CancelOrder : Endpoint<CancelOrderRequest, CancelOrderResponse>
 
   public override async Task HandleAsync(
     CancelOrderRequest request,
-    CancellationToken cancellationToken)
+    CancellationToken ct)
   {
     var result = await _mediator.Send(new CancelOrderCommand(request.OrderId));
 
     if (result.IsSuccess)
     {
       Response = new CancelOrderResponse();
-      return;
     }
   }
 }

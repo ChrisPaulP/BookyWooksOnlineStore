@@ -8,8 +8,11 @@
 
   <ItemGroup>
     <Compile Remove="Common\**" />
+    <Compile Remove="Orders\UpdateOrderStatus\**" />
     <EmbeddedResource Remove="Common\**" />
+    <EmbeddedResource Remove="Orders\UpdateOrderStatus\**" />
     <None Remove="Common\**" />
+    <None Remove="Orders\UpdateOrderStatus\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,7 +30,14 @@
 
   <ItemGroup>
     <Folder Include="Orders\Payment\" />
-    <Folder Include="Orders\UpdateOrderStatus\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\porterc\source\repos\BookyWooksOnlineStore\BookWooks.OrderApi\src\BookWooks.OrderApi.UseCases\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\porterc\source\repos\BookyWooksOnlineStore\BookWooks.OrderApi\src\BookWooks.OrderApi.UseCases\.editorconfig" />
   </ItemGroup>
 
 </Project>

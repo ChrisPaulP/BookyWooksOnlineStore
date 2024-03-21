@@ -16,7 +16,7 @@ public class GetOrders : EndpointWithoutRequest<GetOrdersResponse>
     AllowAnonymous();
   }
 
-  public override async Task HandleAsync(CancellationToken cancellationToken)
+  public override async Task HandleAsync(CancellationToken ct)
   {
     var command = new GetOrdersQuery(0, 0);
 
@@ -24,7 +24,7 @@ public class GetOrders : EndpointWithoutRequest<GetOrdersResponse>
 
     if (result.Status == ResultStatus.NotFound)
     {
-      await SendNotFoundAsync(cancellationToken);
+      await SendNotFoundAsync(ct);
       return;
     }
 

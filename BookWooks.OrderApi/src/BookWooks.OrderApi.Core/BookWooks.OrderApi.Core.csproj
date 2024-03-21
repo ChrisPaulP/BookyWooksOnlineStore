@@ -32,4 +32,12 @@
     <ProjectReference Include="..\..\..\BookyWooks.SharedKernel\BookyWooks.SharedKernel.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\porterc\source\repos\BookyWooksOnlineStore\BookWooks.OrderApi\src\BookWooks.OrderApi.Core\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\porterc\source\repos\BookyWooksOnlineStore\BookWooks.OrderApi\src\BookWooks.OrderApi.Core\.editorconfig" />
+  </ItemGroup>
+
 </Project>
