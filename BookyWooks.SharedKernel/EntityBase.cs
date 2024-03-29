@@ -1,12 +1,22 @@
-﻿namespace BookyWooks.SharedKernel;
-public abstract class EntityBase<T> 
+﻿using System;
+using System.Collections.Generic;
+
+namespace BookyWooks.SharedKernel
 {
-    public T Id { get; set; }
+    public abstract class EntityBase
+    {
+        public Guid Id { get; protected set; }
 
-    private List<DomainEventBase> _domainEvents = new();
-    [NotMapped]
-    public IEnumerable<DomainEventBase> DomainEvents => _domainEvents.AsReadOnly();
+        private List<DomainEventBase> _domainEvents = new();
+        [NotMapped]
+        public IEnumerable<DomainEventBase> DomainEvents => _domainEvents.AsReadOnly();
 
-    public void RegisterDomainEvent(DomainEventBase domainEvent) => _domainEvents.Add(domainEvent);
-    public void ClearDomainEvents() => _domainEvents.Clear();
+        protected EntityBase()
+        {
+            Id = Guid.NewGuid();
+        }
+
+        public void RegisterDomainEvent(DomainEventBase domainEvent) => _domainEvents.Add(domainEvent);
+        public void ClearDomainEvents() => _domainEvents.Clear();
+    }
 }

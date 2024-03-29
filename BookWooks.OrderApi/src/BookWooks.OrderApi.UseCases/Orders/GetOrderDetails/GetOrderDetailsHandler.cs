@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-
-using BookWooks.OrderApi.UseCases.Contributors;
-using BookyWooks.SharedKernel;
+﻿using BookyWooks.SharedKernel;
 using BookWooks.OrderApi.Core.OrderAggregate.Specifications;
-using BookWooks.OrderApi.Core.OrderAggregate;
+using BookWooks.OrderApi.Core.OrderAggregate.Entities;
 
 
 namespace BookWooks.OrderApi.UseCases.Orders.Get;
@@ -32,7 +24,7 @@ public class GetOrderDetailsHandler : IQueryHandler<GetOrderDetailsQuery, Result
       return Result.NotFound();
     }
     // Project the orders into OrderDTO objects
-    var orderDTO = new OrderDTO(order.Id, order.Status.Name, order.OrderItems.Select(item => new OrderItemDTO(item.BookId, item.BookTitle, item.BookPrice, item.Quantity)));//.ToList());
+    var orderDTO = new OrderDTO(order.Id, order.Status.Name, order.OrderItems.Select(item => new OrderItemDTO(item.ProductId, item.Price, item.Quantity)));//.ToList());
 
     return orderDTO;
 

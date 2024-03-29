@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BookWooks.OrderApi.Core.OrderAggregate;
+using BookWooks.OrderApi.Core.OrderAggregate.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,15 +12,18 @@ public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
 {
   public void Configure(EntityTypeBuilder<OrderItem> builder)
   {
-    builder.Property(oi => oi.BookId).IsRequired(true);
+    builder.HasKey(oi => oi.Id);
 
-    builder.Property(oi => oi.BookPrice).HasColumnType("decimal(18,2)")
-           .IsRequired(true);    
+    builder.Property(oi => oi.OrderId).IsRequired(true);
 
-    builder.Property(oi => oi.BookTitle).HasMaxLength(90)
-           .IsRequired();
 
-    builder.Property(oi => oi.BookPrice)
+    builder.HasOne<Product>()
+            .WithMany()
+            .HasForeignKey(oi => oi.ProductId);
+
+    builder.Property(oi => oi.Quantity).IsRequired();
+
+    builder.Property(oi => oi.Price)
            .IsRequired(true)
            .HasColumnType("decimal(18,2)");
   }

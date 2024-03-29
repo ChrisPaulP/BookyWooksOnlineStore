@@ -1,4 +1,6 @@
-﻿namespace BookWooks.OrderApi.Core.OrderAggregate.IntegrationEvents;
+﻿using BookWooks.OrderApi.Core.OrderAggregate.Entities;
+
+namespace BookWooks.OrderApi.Core.OrderAggregate.IntegrationEvents;
 public record CheckBookStockIntegrationEvent : IntegrationEventBase
 {
   public CheckBookStockIntegrationEvent(Guid orderId, IEnumerable<OrderItem> orderItems)

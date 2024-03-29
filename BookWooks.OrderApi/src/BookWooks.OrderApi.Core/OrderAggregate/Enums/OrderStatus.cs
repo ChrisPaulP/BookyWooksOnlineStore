@@ -1,4 +1,4 @@
-﻿namespace BookWooks.OrderApi.Core.OrderAggregate;
+﻿namespace BookWooks.OrderApi.Core.OrderAggregate.Enums;
 public class OrderStatus : SmartEnum<OrderStatus>
 {
   public static readonly OrderStatus Pending = new(nameof(Pending), 1);

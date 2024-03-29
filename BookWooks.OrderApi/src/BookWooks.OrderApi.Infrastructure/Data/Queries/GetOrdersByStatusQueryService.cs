@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using BookWooks.OrderApi.Core.OrderAggregate;
-using BookWooks.OrderApi.UseCases.Orders;
+﻿using BookWooks.OrderApi.UseCases.Orders;
 using BookWooks.OrderApi.UseCases.Orders.List;
 using Microsoft.EntityFrameworkCore;
-using Polly;
+
 
 namespace BookWooks.OrderApi.Infrastructure.Data.Queries;
 public class GetOrdersByStatusQueryService : IGetOrdersByStatusQueryService
@@ -25,7 +21,7 @@ public class GetOrdersByStatusQueryService : IGetOrdersByStatusQueryService
         .Select(o => new OrderDTO(
           o.Id,
           o.Status.Name,
-          o.OrderItems.Select(item => new OrderItemDTO(item.BookId, item.BookTitle, item.BookPrice, item.Quantity)).ToList()
+          o.OrderItems.Select(item => new OrderItemDTO(item.ProductId, item.Price, item.Quantity)).ToList()
       ))
         .ToListAsync();
 

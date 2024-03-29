@@ -10,46 +10,63 @@ public class CreateOrderRequest
 
   [Required]
   public Guid Id { get; set; }
-  [Required]
-  public string? Name { get; set; }
-  [Required]
-  public List<OrderRequestOrderItem> OrderItems { get; set; } = new List<OrderRequestOrderItem>();
-  [Required]
-  public string? UserId { get; set; }
-  [Required]
-  public string? UserName { get; set; }
-  [Required]
-  public string? City { get; set; }
-  [Required]
-  public string? Street { get; set; }
-  [Required]
-  public string? Country { get; set; }
-  [Required]
-  public string? Postcode { get; set; }
-  [Required]
-  public string? CardNumber { get; set; }
-  [Required]
-  public string? CardHolderName { get; set; }
-  [Required]
-  public DateTime ExpiryDate { get; set; }
-  [Required]
-  public string? CardSecurityNumber { get; set; }
 
+  [Required]
+  public Guid CustomerId { get; set; }
+
+  [Required]
+  public OrderRequestAddress Address { get; set; } = new();
+
+  [Required]
+  public OrderRequestPayment Payment { get; set; } = new();
+
+  [Required]
+  public List<OrderRequestOrderItem> OrderItems { get; set; } = new();
 }
 
-public class OrderRequestOrderItem
+public record OrderRequestOrderItem
 {
   [Required]
-  public decimal BookPrice { get; set; }
+  public decimal Price { get; init; }
+
   [Required]
-  public string? BookTitle { get; set; }
+  public int Quantity { get; init; } = 1;
+
   [Required]
-  public int Quantity { get; set; }
-  [Required]
-  public int BookId { get; set; }
-  [Required]
-  public string? BookImageUrl { get; set; }
+  public Guid ProductId { get; init; }
+
 }
 
-//These properties need to be declared as nullable even when they're not expected to be null because when working with JSON serialization/deserialization libraries like Newtonsoft.Json (Json.NET) or the System.Text.Json library in .NET.
-//These libraries often expect properties to be nullable for certain scenarios, such as deserializing JSON objects where a property might be absent.
+public record OrderRequestAddress
+{
+  [Required]
+  public string Street { get; init; } = string.Empty;
+
+  [Required]
+  public string City { get; init; } = string.Empty;
+
+  [Required]
+  public string Country { get; init; } = string.Empty;
+
+  [Required]
+  public string Postcode { get; init; } = string.Empty;
+}
+
+public record OrderRequestPayment
+{
+  [Required]
+  public string CardHolderName { get; init; } = string.Empty;
+
+  [Required]
+  public string CardNumber { get; init; } = string.Empty;
+
+  [Required]
+  public string ExpiryDate { get; init; } = string.Empty;
+
+  [Required]
+  public string Cvv { get; init; } = string.Empty;
+
+  [Required]
+  public int PaymentMethod { get; init; }
+}
+

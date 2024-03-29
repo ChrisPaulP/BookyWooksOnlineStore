@@ -5,16 +5,14 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Module = Autofac.Module;
-using BookWooks.OrderApi.Core.Interfaces;
-using BookWooks.OrderApi.Core.OrderAggregate;
+
 using BookWooks.OrderApi.UseCases.Create;
 using BookWooks.OrderApi.UseCases.Orders.Get;
 using BookWooks.OrderApi.UseCases.Orders.List;
 using BookyWooks.SharedKernel;
 using MediatR.Pipeline;
 using MediatR;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Configuration;
+
 using Autofac;
 
 using EventBus.IntegrationEventInterfaceAbstraction;

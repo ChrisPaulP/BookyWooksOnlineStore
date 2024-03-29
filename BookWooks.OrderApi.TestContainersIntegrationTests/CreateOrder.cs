@@ -1,3 +1,6 @@
+using BookWooks.OrderApi.Core.OrderAggregate.Entities;
+using OrderItem = BookWooks.OrderApi.UseCases.Create.OrderItem;
+
 namespace BookWooks.OrderApi.TestContainersIntegrationTests
 {
     public class CreateOrder : OrderApiBaseIntegrationTest
@@ -10,33 +13,38 @@ namespace BookWooks.OrderApi.TestContainersIntegrationTests
         [Fact]
         public async Task SuccesfullyCreateNewOrder()
         {
-            //await AddAsync(new Order("1", "Chris Porter", GetPreconfiguredDeliveryAddresses(), CardTypeEnum.MasterCard, "001", "1212121212", "Chris Porter", DateTime.Now.AddYears(1)));
+            // Create a new customer
+            var customer = Customer.Create("Customer Name", "Unique Email");
+            var product = Product.Create("Book 1", "Book URL", 9.99M);
+            await AddAsync(customer); // Add the customer to the database
+            await AddAsync(product); // Add the customer to the database
+            // Create order items
+            var orderItems = new List<OrderItem>()
+    {
+        new OrderItem(product.Id, 9.99M, 1),
+        new OrderItem(product.Id, 5.99M, 4)
+    };
 
-            var orderItems = new List<OrderCommandOrderItem>()
-                    {
-                        new OrderCommandOrderItem(1, "Test", 2.9M, 6, "bookimageurl" ),
-                        new OrderCommandOrderItem(2, "Test2", 4.9M, 3, "bookimageurl" )
-                    };
+            // Create delivery address
+            var deliveryAddress = new Address("Test Street", "Test City", "Test Country", "Post Code");
 
-            var command = new CreateOrderCommand
-          (
-               Guid.NewGuid(),
-               orderItems,
-               "1",
-               "Thomas",
-               "Integration Test",
-               "Belfast",
-               "Integration Test",
-               "Integration Test",
-               "Integration Test",
-               "Integration Test",
-                DateTime.Now.AddYears(5),
-               "Integration Test"
-           );
+            // Create payment details
+            var paymentDetails = new PaymentDetails("1234 5678 9012 3456", "Christopher", "12/23", "123", 1);
 
-            var commandCreated = await SendAsync(command);
+            // Create a command to create the order
+            var command = new CreateOrderCommand(
+                OrderItems: orderItems,
+                CustomerId: customer.Id,
+                DeliveryAddress: deliveryAddress,
+                PaymentDetails: paymentDetails
+            );
 
-            Assert.True(commandCreated.IsSuccess);
+            // Send the command to create the order
+            var commandResult = await SendAsync(command);
+
+            // Assert that the command execution was successful
+            Assert.True(commandResult.IsSuccess);
         }
+
     }
 }

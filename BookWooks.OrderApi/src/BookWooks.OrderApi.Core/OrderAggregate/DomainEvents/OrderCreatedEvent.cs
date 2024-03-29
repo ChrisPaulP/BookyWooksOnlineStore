@@ -1,4 +1,6 @@
-﻿namespace BookWooks.OrderApi.Core.OrderAggregate.Events;
+﻿using BookWooks.OrderApi.Core.OrderAggregate.Entities;
+
+namespace BookWooks.OrderApi.Core.OrderAggregate.Events;
 /// <summary>
 /// A domain event that is dispatched whenever a contributor is deleted.
 /// The DeleteContributorService is used to dispatch this event.

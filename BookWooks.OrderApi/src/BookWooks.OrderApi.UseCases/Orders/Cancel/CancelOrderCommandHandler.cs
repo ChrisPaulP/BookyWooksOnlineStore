@@ -1,9 +1,6 @@
 ﻿
 using Ardalis.GuardClauses;
-
-
-
-using BookWooks.OrderApi.Core.OrderAggregate;
+using BookWooks.OrderApi.Core.OrderAggregate.Entities;
 using BookWooks.OrderApi.UseCases.Cancel;
 using BookWooks.OrderApi.UseCases.Orders;
 using BookyWooks.SharedKernel;
@@ -29,7 +26,7 @@ public class CancelOrderHandler : ICommandHandler<CancelOrderCommand, Result>
     var orderToCancel = await _repository.GetByIdAsync(request.Id);
     if (orderToCancel == null) return Result.NotFound();
 
-    orderToCancel.OrderCancelled();
+    orderToCancel.CancelOrder();
     _repository.Update(orderToCancel);
     await _repository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
     return Result.Success();

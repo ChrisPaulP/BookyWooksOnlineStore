@@ -1,11 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="Common\**" />
     <Compile Remove="Orders\UpdateOrderStatus\**" />
@@ -14,30 +12,24 @@
     <None Remove="Common\**" />
     <None Remove="Orders\UpdateOrderStatus\**" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Ardalis.Result" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\..\BookyWooks.MessageBus\EventBus.csproj" />
     <ProjectReference Include="..\..\..\IntegrationEventsSetUp\OutBoxPattern.csproj" />
     <ProjectReference Include="..\..\..\RabbitMQ\RabbitMQ.csproj" />
     <ProjectReference Include="..\BookWooks.OrderApi.Core\BookWooks.OrderApi.Core.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="Orders\Payment\" />
   </ItemGroup>
-
   <ItemGroup>
     <EditorConfigFiles Remove="C:\Users\porterc\source\repos\BookyWooksOnlineStore\BookWooks.OrderApi\src\BookWooks.OrderApi.UseCases\.editorconfig" />
   </ItemGroup>
-
   <ItemGroup>
     <None Include="C:\Users\porterc\source\repos\BookyWooksOnlineStore\BookWooks.OrderApi\src\BookWooks.OrderApi.UseCases\.editorconfig" />
   </ItemGroup>
-
 </Project>

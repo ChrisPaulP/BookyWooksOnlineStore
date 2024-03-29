@@ -8,4 +8,4 @@ using Ardalis.Result;
 namespace BookWooks.OrderApi.UseCases.Orders;
 
 public record OrderDTO(Guid Id, string Status, IEnumerable<OrderItemDTO>? OrderItems);
-public record OrderItemDTO(int BookId, string BookTitle, decimal BookPrice, int Quantity);
+public record OrderItemDTO(Guid ProductId,  decimal Price, int Quantity);

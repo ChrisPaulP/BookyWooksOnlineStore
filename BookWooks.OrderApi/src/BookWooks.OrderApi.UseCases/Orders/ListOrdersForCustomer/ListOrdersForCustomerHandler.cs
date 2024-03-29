@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BookWooks.OrderApi.Core.OrderAggregate;
+using BookWooks.OrderApi.Core.OrderAggregate.Entities;
 using BookWooks.OrderApi.Core.OrderAggregate.Specifications;
 using BookWooks.OrderApi.UseCases.Orders.List;
 using BookyWooks.SharedKernel;
@@ -34,7 +34,7 @@ public class ListOrdersForCustomerHandler : IQueryHandler<ListOrdersForCustomerQ
         .Select(order => new OrderDTO(
             order.Id,
             order.Status.Name,
-            order.OrderItems.Select(item => new OrderItemDTO(item.BookId, item.BookTitle, item.BookPrice, item.Quantity))//.ToList()
+            order.OrderItems.Select(item => new OrderItemDTO(item.ProductId, item.Price, item.Quantity))//.ToList()
         ))
         .ToList();
 

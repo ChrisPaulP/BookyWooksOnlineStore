@@ -8,7 +8,7 @@ using OutBoxPattern;
 
 #nullable disable
 
-namespace BookWooks.OrderApi.Infrastructure.Migrations.IntegrationEventLogDb
+namespace OutBoxPattern.Migrations
 {
     [DbContext(typeof(IntegrationEventLogDbContext))]
     partial class IntegrationEventLogDbContextModelSnapshot : ModelSnapshot
@@ -17,7 +17,7 @@ namespace BookWooks.OrderApi.Infrastructure.Migrations.IntegrationEventLogDb
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.12")
+                .HasAnnotation("ProductVersion", "8.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);

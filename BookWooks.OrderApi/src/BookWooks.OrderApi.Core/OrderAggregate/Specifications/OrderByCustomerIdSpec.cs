@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BookWooks.OrderApi.Core.OrderAggregate.Entities;
 
 namespace BookWooks.OrderApi.Core.OrderAggregate.Specifications;
 public class OrderByCustomerIdSpec : BaseSpecification<Order>
 {
-  public OrderByCustomerIdSpec(int customerId)
+  public OrderByCustomerIdSpec(Guid customerId)
        : base(x => x.CustomerId == customerId)
   {
     AddInclude(x => x.OrderItems);

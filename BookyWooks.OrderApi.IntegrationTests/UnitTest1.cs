@@ -14,26 +14,19 @@ public class UnitTest1 : OrderApiBaseIntegrationTest
     {
         //await AddAsync(new Order("1", "Chris Porter", GetPreconfiguredDeliveryAddresses(), CardTypeEnum.MasterCard, "001", "1212121212", "Chris Porter", DateTime.Now.AddYears(1)));
 
-        var orderItems = new List<OrderCommandOrderItem>()
-                {
-                    new OrderCommandOrderItem(1, "Test", 2.9M, 6, "bookimageurl" ),
-                    new OrderCommandOrderItem(2, "Test2", 4.9M, 3, "bookimageurl" )
-                };
-
+        var orderItems = new List<OrderItem>()
+                    {
+                        new OrderItem(Guid.NewGuid(), 9.99M, 1 ),
+                        new OrderItem(Guid.NewGuid(), 5.99M, 4 ),
+                    };
+        var DeliveryAddress = new Address("Test Street", "Test City", "Test Country", "Test Post Code");
+        var PaymentDetails = new PaymentDetails("1234 5678 9012 3456", "Christopher", "12/23", "123", 1);
         var command = new CreateOrderCommand
       (
-           Guid.NewGuid(),
            orderItems,
-           "1",
-           "Thomas",
-           "Integration Test",
-           "Belfast",
-           "Integration Test",
-           "Integration Test",
-           "Integration Test",
-           "Integration Test",
-            DateTime.Now.AddYears(5),
-           "Integration Test"
+           Guid.NewGuid(),
+           DeliveryAddress,
+           PaymentDetails
        );
 
         var commandCreated = await SendAsync(command);

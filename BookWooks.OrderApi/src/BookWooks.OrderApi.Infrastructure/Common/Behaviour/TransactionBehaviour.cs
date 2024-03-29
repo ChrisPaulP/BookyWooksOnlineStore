@@ -1,20 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Azure.Core;
-using Azure;
-
-using BookWooks.OrderApi.UseCases.Orders;
-using Humanizer;
+﻿
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Serilog;
+
 using Serilog.Context;
-using static System.Net.Mime.MediaTypeNames;
+
 using ILogger = Serilog.ILogger;
 using BookWooks.OrderApi.Core.Orders;
 using BookWooks.OrderApi.Infrastructure.Data;

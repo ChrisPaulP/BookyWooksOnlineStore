@@ -1,4 +1,6 @@
-﻿namespace BookWooks.OrderApi.Core.OrderAggregate.Handlers;
+﻿using BookWooks.OrderApi.Core.OrderAggregate.Entities;
+
+namespace BookWooks.OrderApi.Core.OrderAggregate.Handlers;
 internal class OrderCreatedDomainEventHandler : INotificationHandler<OrderCreatedEvent>
 {
   private readonly ILogger<OrderCreatedDomainEventHandler> _logger;

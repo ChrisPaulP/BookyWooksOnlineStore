@@ -1,8 +1,6 @@
 ﻿using System.Data;
 using System.Reflection;
-
-using BookWooks.OrderApi.Core.OrderAggregate;
-
+using BookWooks.OrderApi.Core.OrderAggregate.Entities;
 using BookyWooks.SharedKernel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -10,12 +8,12 @@ using Microsoft.EntityFrameworkCore.Storage;
 namespace BookWooks.OrderApi.Infrastructure.Data;
 public class BookyWooksOrderDbContext : DbContext , IUnitOfWork//, IBookyWooksOrderDbContext    
 {
-  private readonly IDomainEventDispatcher<Guid>? _dispatcher;
+  private readonly IDomainEventDispatcher? _dispatcher;
   public IDbContextTransaction? CurrentTransaction { get; private set; }
   public bool HasActiveTransaction => CurrentTransaction != null;
 
   public BookyWooksOrderDbContext(DbContextOptions<BookyWooksOrderDbContext> options,
-    IDomainEventDispatcher<Guid>? dispatcher)
+    IDomainEventDispatcher? dispatcher)
       : base(options)
   {
     _dispatcher = dispatcher;
@@ -24,6 +22,8 @@ public class BookyWooksOrderDbContext : DbContext , IUnitOfWork//, IBookyWooksOr
 
   public DbSet<Order> Orders  { get; set; }
   public DbSet<OrderItem> OrderItems { get; set; }
+  public DbSet<Customer> Customers { get; set; }
+  public DbSet<Product> Products { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
@@ -44,7 +44,7 @@ public class BookyWooksOrderDbContext : DbContext , IUnitOfWork//, IBookyWooksOr
   
 
     // dispatch events only if save was successful
-    var entitiesWithEvents = ChangeTracker.Entries<EntityBase<Guid>>()
+    var entitiesWithEvents = ChangeTracker.Entries<EntityBase>()
         .Select(e => e.Entity)
         .Where(e => e.DomainEvents.Any())
         .ToArray();

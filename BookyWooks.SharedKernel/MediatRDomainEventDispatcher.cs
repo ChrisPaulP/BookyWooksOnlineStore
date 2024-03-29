@@ -1,5 +1,5 @@
 ﻿namespace BookyWooks.SharedKernel;
-public class MediatRDomainEventDispatcher<T> : IDomainEventDispatcher<T> 
+public class MediatRDomainEventDispatcher<T> : IDomainEventDispatcher
 {
     private readonly IMediator _mediator;
 
@@ -7,7 +7,7 @@ public class MediatRDomainEventDispatcher<T> : IDomainEventDispatcher<T>
     {
         _mediator = mediator;
     }
-    public async Task DispatchAndClearEvents(IEnumerable<EntityBase<T>> entitiesWithEvents)
+    public async Task DispatchAndClearEvents(IEnumerable<EntityBase> entitiesWithEvents)
     {
         foreach (var entity in entitiesWithEvents)
         {

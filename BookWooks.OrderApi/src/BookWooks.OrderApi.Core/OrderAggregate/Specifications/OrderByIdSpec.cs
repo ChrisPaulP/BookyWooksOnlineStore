@@ -1,4 +1,6 @@
-﻿namespace BookWooks.OrderApi.Core.OrderAggregate.Specifications;
+﻿using BookWooks.OrderApi.Core.OrderAggregate.Entities;
+
+namespace BookWooks.OrderApi.Core.OrderAggregate.Specifications;
 public class OrderByIdSpec : BaseSpecification<Order>
 {
   public OrderByIdSpec(Guid id)

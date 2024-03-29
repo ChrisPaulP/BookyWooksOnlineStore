@@ -1,9 +1,8 @@
-﻿
-
-using BookyWooks.SharedKernel;
+﻿using BookyWooks.SharedKernel;
 
 namespace BookWooks.OrderApi.UseCases.Create;
-public record CreateOrderCommand(Guid Id, IEnumerable<OrderCommandOrderItem> OrderItems, string UserId, string UserName, string City, string Street, string Country, string Postcode,
-        string CardNumber, string CardHolderName, DateTime ExpiryDate, string CardSecurityNumber) : ICommand<Result<Guid>>;
-public record OrderCommandOrderItem(int BookId, string BookTitle, decimal BookPrice,  int Quantity, string BookImageUrl);
+public record CreateOrderCommand(IEnumerable<OrderItem> OrderItems, Guid CustomerId, Address DeliveryAddress, PaymentDetails PaymentDetails) : ICommand<Result<Guid>>;
+public record OrderItem(Guid ProductId, decimal Price,  int Quantity);
+public record Address(string Street, string City, string Country, string Postcode);
+public record PaymentDetails(string CardNumber, string CardHolderName, string ExpiryDate, string Cvv, int PaymentMethod);
 

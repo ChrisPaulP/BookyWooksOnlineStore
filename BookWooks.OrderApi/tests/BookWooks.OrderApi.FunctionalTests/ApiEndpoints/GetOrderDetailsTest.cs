@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using Ardalis.HttpClientTestExtensions;
 
 using BookWooks.OrderApi.Web;
 using Xunit;
 using BookWooks.OrderApi.Web.Orders;
-using BookWooks.OrderApi.Core.OrderAggregate;
+
 
 namespace BookWooks.OrderApi.FunctionalTests.ApiEndpoints;
 [Collection("Sequential")]

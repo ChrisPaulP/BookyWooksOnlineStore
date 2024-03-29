@@ -1,10 +1,7 @@
 ﻿
 using Ardalis.GuardClauses;
-
-
-
-using BookWooks.OrderApi.Core.OrderAggregate;
-
+using BookWooks.OrderApi.Core.OrderAggregate.Entities;
+using BookWooks.OrderApi.Core.OrderAggregate.ValueObjects;
 using BookWooks.OrderApi.UseCases.Create;
 
 using BookWooks.OrderApi.UseCases.Orders;
@@ -26,15 +23,14 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Res
   public async Task<Result<Guid>> Handle(CreateOrderCommand request,
     CancellationToken cancellationToken)
   {
-    var deliveryAddress = new DeliveryAddress(request.Street, request.City, request.Country, request.Postcode);
-    var userId = (!string.IsNullOrEmpty(request.UserId)) ? request.UserId : "1";
-    var userName = (!string.IsNullOrEmpty(request.UserName)) ? request.UserName : "Christopher Porter";
-    var newOrder = new Order(userId, userName, deliveryAddress, request.CardNumber, request.CardSecurityNumber, request.CardHolderName);
+    var deliveryAddress = DeliveryAddress.Of(request.DeliveryAddress.Street, request.DeliveryAddress.City, request.DeliveryAddress.Country, request.DeliveryAddress.Postcode);
+    var paymentDetails = Payment.Of(request.PaymentDetails.CardHolderName, request.PaymentDetails.CardNumber, request.PaymentDetails.ExpiryDate, request.PaymentDetails.Cvv, request.PaymentDetails.PaymentMethod);
+    var newOrder = Order.Create(request.CustomerId, deliveryAddress, paymentDetails);
     if (newOrder == null)
       throw new NotFoundException("", "");
     foreach (var item in request.OrderItems)
     {
-      newOrder.AddOrderItem(item.BookId, item.BookTitle, item.BookPrice, item.BookImageUrl, item.Quantity);
+      newOrder.AddOrderItem(item.ProductId, item.Price, item.Quantity);
     }
     _logger.LogInformation("----- Creating Order - Order: {@Order}", newOrder);
     

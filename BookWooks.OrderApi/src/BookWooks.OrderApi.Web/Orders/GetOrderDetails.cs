@@ -35,9 +35,8 @@ public class GetOrderDetails : Endpoint<GetOrderDetailsRequest, GetOrderDetailsR
         orderItems:
         result.Value.OrderItems?
           .Select(item => new OrderItemRecord(
-            item.BookId,
-            item.BookTitle,
-            item.BookPrice,
+            item.ProductId,
+            item.Price,
             item.Quantity
             ))
           .ToList() ?? new List<OrderItemRecord>()

@@ -1,5 +1,5 @@
 ﻿using BookWooks.OrderApi.Infrastructure.Data;
-using BookWooks.OrderApi.Infrastructure.Data.Queries;
+
 
 using BookWooks.OrderApi.Web;
 using DotNet.Testcontainers.Builders;
@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
+
 using Testcontainers.RabbitMq;
 using Xunit;
 

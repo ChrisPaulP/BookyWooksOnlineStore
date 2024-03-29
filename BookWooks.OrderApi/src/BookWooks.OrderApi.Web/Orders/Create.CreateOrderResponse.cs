@@ -2,11 +2,11 @@
 
 public class CreateOrderResponse
 {
-  public CreateOrderResponse(Guid id, string userName)
+  public CreateOrderResponse(Guid id, Guid customerId)
   {
     Id = id;
-    UserName = userName;
+    CustomerId = customerId;
   }
   public Guid Id { get; set; }
-  public string UserName { get; set; }
+  public Guid CustomerId { get; set; }
 }

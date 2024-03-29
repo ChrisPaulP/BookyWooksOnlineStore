@@ -1,7 +1,7 @@
 ﻿namespace BookWooks.OrderApi.UseCases.Orders;
 public static class OrderItemExtensions
 {
-  public static IEnumerable<OrderCommandOrderItem> ToOrderCommandOrderItems(this List<OrderRequestOrderItem> orderRequestOrderItems)
+  public static IEnumerable<OrderItem> ToOrderCommandOrderItems(this List<OrderRequestOrderItem> orderRequestOrderItems)
   {
     foreach (var item in orderRequestOrderItems)
     {
@@ -9,13 +9,13 @@ public static class OrderItemExtensions
     }
   }
 
-  private static OrderCommandOrderItem ToOrderCommandOrderItem(this OrderRequestOrderItem item)
+  private static OrderItem ToOrderCommandOrderItem(this OrderRequestOrderItem item)
   {
-    return new OrderCommandOrderItem(item.BookId, item.BookTitle!, item.BookPrice!, item.Quantity!, item.BookImageUrl!);
+    return new OrderItem(item.ProductId, item.Price, item.Quantity);
   }
   public static IEnumerable<OrderItemRecord> ToOrderItemRecord(this IEnumerable<OrderItemDTO> items)
   {
-    return new List<OrderItemRecord>(items.Select(i => new OrderItemRecord(i.BookId, i.BookTitle, i.BookPrice, i.Quantity)));
+    return new List<OrderItemRecord>(items.Select(i => new OrderItemRecord(i.ProductId, i.Price, i.Quantity)));
   }
 
 }

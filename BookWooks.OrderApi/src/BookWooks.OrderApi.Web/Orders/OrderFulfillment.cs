@@ -1,7 +1,5 @@
 ﻿using BookWooks.OrderApi.UseCases.Orders.OrderFulfillment;
-using BookyWooks.SharedKernel;
-using FastEndpoints;
-using MediatR;
+
 
 namespace BookWooks.OrderApi.Web.Orders;
 

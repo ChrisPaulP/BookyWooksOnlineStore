@@ -19,10 +19,9 @@ global using BookWooks.OrderApi.UseCases.Create;
 global using BookyWooks.SharedKernel;
 
 global using MediatR;
-global using Order = BookWooks.OrderApi.Core.OrderAggregate.Order;
+global using Order = BookWooks.OrderApi.Core.OrderAggregate.Entities.Order;
 global using BookWooks.OrderApi.UseCases.Orders.List;
 global using BookWooks.OrderApi.UseCases.Orders.Get;
 global using BookWooks.OrderApi.Web.Orders;
-global using BookWooks.OrderApi.Core.OrderAggregate;
 global using BookWooks.OrderApi.UseCases.Cancel;
 

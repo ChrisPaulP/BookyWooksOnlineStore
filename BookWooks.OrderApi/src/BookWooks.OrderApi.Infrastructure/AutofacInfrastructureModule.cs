@@ -27,8 +27,7 @@ using Microsoft.Extensions.Options;
 
 using Serilog;
 using Module = Autofac.Module;
-using Humanizer.Configuration;
-using Humanizer;
+
 using RabbitMQ.Client;
 using BookWooks.OrderApi.Infrastructure.Common.Behaviour;
 using BookWooks.OrderApi.Infrastructure.IntegrationEventService;
@@ -36,15 +35,13 @@ using BookWooks.OrderApi.Infrastructure.IntegrationEventService;
 using System.Data.Common;
 using BookWooks.OrderApi.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using BookWooks.OrderApi.UseCases.Contributors.Create;
-using EventBus.IntegrationEventInterfaceAbstraction;
-using BookWooks.OrderApi.UseCases.IntegrationEventHandlers;
+
 using BookWooks.OrderApi.Core.Orders;
 
 
-using OutBoxPattern.IntegrationEventLogServices;
-using OutBoxPattern;
 using Microsoft.Extensions.DependencyModel;
+using OutBoxPattern;
+using OutBoxPattern.IntegrationEventLogServices;
 
 
 namespace BookWooks.OrderApi.Infrastructure;
@@ -102,7 +99,7 @@ public class AutofacInfrastructureModule : Module
     {
       var optionsBuilder = new DbContextOptionsBuilder<BookyWooksOrderDbContext>();
       optionsBuilder.UseSqlServer(connectionString);
-      var dispatcher = c.Resolve<IDomainEventDispatcher<Guid>>();
+      var dispatcher = c.Resolve<IDomainEventDispatcher>();
       return new BookyWooksOrderDbContext(optionsBuilder.Options, dispatcher);
     })
  .AsSelf()
@@ -114,14 +111,27 @@ public class AutofacInfrastructureModule : Module
       var optionsBuilder = new DbContextOptionsBuilder<IntegrationEventLogDbContext>();
       optionsBuilder.UseSqlServer(connectionString, sqlServerOptions =>
       {
-        sqlServerOptions.MigrationsAssembly(typeof(BookyWooksOrderDbContext).Assembly.FullName);
+        sqlServerOptions.MigrationsAssembly(typeof(IntegrationEventLogDbContext).Assembly.FullName);
         sqlServerOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(30), null);
       });
       return new IntegrationEventLogDbContext(optionsBuilder.Options);
     })
     .InstancePerLifetimeScope();
 
-
+    //builder.Register(c =>
+    //{
+    //  var optionsBuilder = new DbContextOptionsBuilder<IntegrationEventLogDbContext>();
+    //  optionsBuilder.UseSqlServer(connectionString, sqlServerOptions =>
+    //  {
+    //    sqlServerOptions.MigrationsAssembly(typeof(IntegrationEventLogDbContext).Assembly.FullName);
+    //    sqlServerOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(30), null);
+    //  });
+    //  return optionsBuilder.Options;
+    //}).As<DbContextOptions<IntegrationEventLogDbContext>>().SingleInstance();
+    //builder.RegisterType<IntegrationEventLogDbContext>()
+    //    .AsSelf()
+    //    .As<DbContext>()
+    //    .InstancePerLifetimeScope();
   }
   private void RegisterEfReposotories(ContainerBuilder builder)
   {
@@ -138,7 +148,7 @@ public class AutofacInfrastructureModule : Module
 
     builder
     .RegisterType<MediatRDomainEventDispatcher<Guid>>()
-    .As<IDomainEventDispatcher<Guid>>()
+    .As<IDomainEventDispatcher>()
     .InstancePerLifetimeScope();
 
     builder
@@ -179,6 +189,7 @@ public class AutofacInfrastructureModule : Module
   }
   private void RegisterRedisCache(ContainerBuilder builder)
   {
+#pragma warning disable CS8604 // Possible null reference argument.
     var redisConfiguration = new RedisCacheOptions
     {
       ConfigurationOptions = new StackExchange.Redis.ConfigurationOptions
@@ -187,6 +198,7 @@ public class AutofacInfrastructureModule : Module
         EndPoints = { _configuration.GetValue<string>("ConnectionStrings:Redis") }
       }
     };
+#pragma warning restore CS8604 // Possible null reference argument.
 
     builder.RegisterInstance(redisConfiguration).As<RedisCacheOptions>();
 

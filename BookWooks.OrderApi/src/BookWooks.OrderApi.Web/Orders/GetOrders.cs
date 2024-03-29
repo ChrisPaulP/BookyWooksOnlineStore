@@ -1,4 +1,6 @@
-﻿using BookWooks.OrderApi.UseCases.Orders.GetOrders;
+﻿
+using BookWooks.OrderApi.UseCases.Orders.GetOrders;
+
 namespace BookWooks.OrderApi.Web.Orders;
 
 public class GetOrders : EndpointWithoutRequest<GetOrdersResponse>

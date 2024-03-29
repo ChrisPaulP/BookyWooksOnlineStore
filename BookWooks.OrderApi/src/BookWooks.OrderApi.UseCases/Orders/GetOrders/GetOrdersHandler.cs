@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BookWooks.OrderApi.Core.OrderAggregate;
+using BookWooks.OrderApi.Core.OrderAggregate.Entities;
 using BookWooks.OrderApi.UseCases.Contributors;
 using BookyWooks.SharedKernel;
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BookWooks.OrderApi.Core.OrderAggregate;
+using BookWooks.OrderApi.Core.OrderAggregate.Entities;
 using BookWooks.OrderApi.Core.OrderAggregate.Specifications;
 using BookyWooks.SharedKernel;
 
@@ -24,7 +24,7 @@ public class OrderFulfillmentHandler : ICommandHandler<OrderFulfillmentCommand, 
     var entity = await _repository.FindAsync(spec);
     if (entity == null) return Result.NotFound("Project not found.");
 
-    entity.OrderFulfilled();
+    entity.FulfillOrder();
      _repository.Update(entity);
 
     return Result.Success();

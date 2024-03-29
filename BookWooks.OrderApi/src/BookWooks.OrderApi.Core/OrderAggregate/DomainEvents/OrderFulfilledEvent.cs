@@ -1,4 +1,6 @@
-﻿namespace BookWooks.OrderApi.Core.OrderAggregate.Events;
+﻿using BookWooks.OrderApi.Core.OrderAggregate.Entities;
+
+namespace BookWooks.OrderApi.Core.OrderAggregate.Events;
 public class OrderFulfilledEvent : DomainEventBase
 {
   public Order FulfilledOrder { get; set; }
