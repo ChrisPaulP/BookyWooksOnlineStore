@@ -5,7 +5,7 @@
   },
   "RabbitMQConfiguration": {
     "Config": {
-      "HostName": "localhost",
+      "HostName": "amqp://localhost:5672",
       "UserName": "guest",
       "Password": "guest",
       "VirtualHost": "/",

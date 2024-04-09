@@ -1,15 +1,16 @@
 ﻿using BookWooks.OrderApi.Core.OrderAggregate.Entities;
+using BookyWooks.Messaging.Events;
 
 namespace BookWooks.OrderApi.Core.OrderAggregate.IntegrationEvents;
-public record CheckBookStockIntegrationEvent : IntegrationEventBase
+public record CheckBookStockIntegrationEvent : IntegrationEvent
 {
-  public CheckBookStockIntegrationEvent(Guid orderId, IEnumerable<OrderItem> orderItems)
+  public CheckBookStockIntegrationEvent(Guid orderId) //  IEnumerable<OrderItem> orderItems
   {
     OrderId = orderId;
-    OrderItems = orderItems; 
+    //OrderItems = orderItems; 
   }
   public Guid OrderId { get; init; }
-  public IEnumerable<OrderItem> OrderItems { get; init; }
+  //public IEnumerable<OrderItem> OrderItems { get; init; }
 }
 
 

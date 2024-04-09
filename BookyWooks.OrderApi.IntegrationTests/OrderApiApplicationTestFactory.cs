@@ -5,7 +5,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using OutBoxPattern;
+
 using Respawn;
 
 using System.Data.Common;
@@ -54,10 +54,10 @@ public class OrderApiApplicationTestFactory<TEntryPoint> : WebApplicationFactory
     private void ConfigureDatabaseServices(IServiceCollection services)
     {
         RemoveDbContextOptions<BookyWooksOrderDbContext>(services);
-        RemoveDbContextOptions<IntegrationEventLogDbContext>(services);
+        //RemoveDbContextOptions<IntegrationEventLogDbContext>(services);
 
         AddDbContext<BookyWooksOrderDbContext>(services);
-        AddDbContext<IntegrationEventLogDbContext>(services);
+        //AddDbContext<IntegrationEventLogDbContext>(services);
     }
 
     private void RemoveDbContextOptions<T>(IServiceCollection services) where T : DbContext

@@ -1,14 +1,16 @@
 ﻿
 
 using BookWooks.OrderApi.Core.OrderAggregate.IntegrationEvents;
-using EventBus.IntegrationEventInterfaceAbstraction;
+using MassTransit;
 
 namespace BookWooks.OrderApi.UseCases.IntegrationEventHandlers;
-public class BookStockCheckedEventHandler : IIntegrationEventHandler<CheckBookStockIntegrationEvent>
+public class BookStockCheckedEventHandler : IConsumer<CheckBookStockIntegrationEvent>, IIntegrationEventHandler// IIntegrationEventHandler<CheckBookStockIntegrationEvent>
 {
-  public async Task Handle(CheckBookStockIntegrationEvent @event)
+  public async Task Consume(ConsumeContext<CheckBookStockIntegrationEvent> @event)
   {
+    // CHRIS !!!!!!
     // Handle IntegrationEventB
     await Task.CompletedTask;
+
   }
 }

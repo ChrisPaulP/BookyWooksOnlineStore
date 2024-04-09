@@ -29,6 +29,7 @@
      
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
+    <PackageReference Include="Serilog" />
     <PackageReference Include="SQLite" />
   </ItemGroup>
 </Project>

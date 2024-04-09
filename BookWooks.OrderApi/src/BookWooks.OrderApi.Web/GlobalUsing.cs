@@ -8,10 +8,10 @@ global using BookWooks.OrderApi.Web;
 global using FastEndpoints;
 global using FastEndpoints.Swagger;
 global using Microsoft.EntityFrameworkCore;
-global using RabbitMQ;
+
 global using Serilog;
 global using BookWooks.OrderApi.UseCases;
-global using OutBoxPattern;
+
 global using BookWooks.OrderApi.UseCases.Orders;
 
 

@@ -1,5 +1,7 @@
-﻿namespace BookWooks.OrderApi.Core.OrderAggregate.IntegrationEvents;
-public record OrderStatusChangedToAwaitingBookStockConfirmationIntegrationEvent : IntegrationEventBase
+﻿using BookyWooks.Messaging.Events;
+
+namespace BookWooks.OrderApi.Core.OrderAggregate.IntegrationEvents;
+public record OrderStatusChangedToAwaitingBookStockConfirmationIntegrationEvent : IntegrationEvent
 {
   public string OrderStatus { get; }
   public string BuyerName { get; }

@@ -1,47 +1,51 @@
-﻿using System.Reflection;
+﻿
 using Autofac;
 
 using BookWooks.OrderApi.Core.Interfaces;
-using BookWooks.OrderApi.Core.OrderAggregate;
+
 using BookWooks.OrderApi.Infrastructure.Caching;
 using BookWooks.OrderApi.Infrastructure.Data.Queries;
 using BookWooks.OrderApi.Infrastructure.Data.Repositories;
-using BookWooks.OrderApi.Infrastructure.Data.Repositories.Abstract;
+
 using BookWooks.OrderApi.Infrastructure.Email;
 
-using BookWooks.OrderApi.UseCases.Create;
-using BookWooks.OrderApi.UseCases.Orders;
+
 using BookWooks.OrderApi.UseCases.Orders.Get;
 using BookWooks.OrderApi.UseCases.Orders.List;
 using BookyWooks.SharedKernel;
-using EventBus.EventBusSubscriptionsManager;
-using EventBus;
+
+
 using MediatR;
-using MediatR.Pipeline;
+
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Memory;
+
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
-using Serilog;
+
+
 using Module = Autofac.Module;
 
-using RabbitMQ.Client;
-using BookWooks.OrderApi.Infrastructure.Common.Behaviour;
-using BookWooks.OrderApi.Infrastructure.IntegrationEventService;
 
-using System.Data.Common;
+
+
+
 using BookWooks.OrderApi.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-using BookWooks.OrderApi.Core.Orders;
 
 
-using Microsoft.Extensions.DependencyModel;
-using OutBoxPattern;
-using OutBoxPattern.IntegrationEventLogServices;
+
+
+
+using BookWooks.OrderApi.UseCases.IntegrationEventHandlers;
+using MassTransit;
+
+
+using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
+using BookyWooks.Messaging.MassTransit;
+using Serilog;
 
 
 namespace BookWooks.OrderApi.Infrastructure;
@@ -74,14 +78,13 @@ public class AutofacInfrastructureModule : Module
     RegisterEfReposotories(builder);
     RegisterMediatR(builder);
     RegisterIntegrationEventServices(builder);
-    RegisterEventBusSubscriptionsManager(builder);
+   // RegisterEventBusSubscriptionsManager(builder);
     RegisterLogger(builder);   
     RegisterDistributedCacheService(builder);
     RegisterRedisCache(builder);
     RegisterNewtonSoftService(builder);
 
   }
-
   private void RegisterDbContext(ContainerBuilder builder)
   {
     var connectionString = _configuration.GetConnectionString("DefaultConnection");
@@ -106,32 +109,19 @@ public class AutofacInfrastructureModule : Module
  .As<DbContext>() // Register as DbContext
  .InstancePerLifetimeScope();
 
-    builder.Register(c =>
-    {
-      var optionsBuilder = new DbContextOptionsBuilder<IntegrationEventLogDbContext>();
-      optionsBuilder.UseSqlServer(connectionString, sqlServerOptions =>
-      {
-        sqlServerOptions.MigrationsAssembly(typeof(IntegrationEventLogDbContext).Assembly.FullName);
-        sqlServerOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(30), null);
-      });
-      return new IntegrationEventLogDbContext(optionsBuilder.Options);
-    })
-    .InstancePerLifetimeScope();
-
     //builder.Register(c =>
     //{
     //  var optionsBuilder = new DbContextOptionsBuilder<IntegrationEventLogDbContext>();
-    //  optionsBuilder.UseSqlServer(connectionString, sqlServerOptions =>
+    //  optionsBuilder.Use SqlServer(connectionString, sqlServerOptions =>
     //  {
     //    sqlServerOptions.MigrationsAssembly(typeof(IntegrationEventLogDbContext).Assembly.FullName);
     //    sqlServerOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(30), null);
     //  });
-    //  return optionsBuilder.Options;
-    //}).As<DbContextOptions<IntegrationEventLogDbContext>>().SingleInstance();
-    //builder.RegisterType<IntegrationEventLogDbContext>()
-    //    .AsSelf()
-    //    .As<DbContext>()
-    //    .InstancePerLifetimeScope();
+    //  return new IntegrationEventLogDbContext(optionsBuilder.Options);
+    //})
+    //.InstancePerLifetimeScope();
+
+  
   }
   private void RegisterEfReposotories(ContainerBuilder builder)
   {
@@ -151,10 +141,10 @@ public class AutofacInfrastructureModule : Module
     .As<IDomainEventDispatcher>()
     .InstancePerLifetimeScope();
 
-    builder
-     .RegisterGeneric(typeof(TransactionBehaviour<,>))
-     .As(typeof(IPipelineBehavior<,>))
-     .InstancePerLifetimeScope();
+    //builder
+    // .RegisterGeneric(typeof(TransactionBehaviour<,>))
+    // .As(typeof(IPipelineBehavior<,>))
+    // .InstancePerLifetimeScope();
 
     builder
       .RegisterGeneric(typeof(LoggingBehavior<,>))
@@ -163,21 +153,21 @@ public class AutofacInfrastructureModule : Module
   }
   private void RegisterIntegrationEventServices(ContainerBuilder builder)
   {
-    builder.Register(c =>
-    {
-      var bookWooksOrderDbContext = c.Resolve<BookyWooksOrderDbContext>();
-      var dbConnection = bookWooksOrderDbContext.Database.GetDbConnection();
-      return new IntegrationEventLogService(dbConnection);
-    }).As<IIntegrationEventLogService>();
+    //builder.Register(c =>
+    //{
+    //  var bookWooksOrderDbContext = c.Resolve<BookyWooksOrderDbContext>();
+    //  var dbConnection = bookWooksOrderDbContext.Database.GetDbConnection();
+    //  return new IntegrationEventLogService(dbConnection);
+    //}).As<IIntegrationEventLogService>();
 
-    builder.RegisterType<OrderIntegrationEventService>().As<IOrderIntegrationEventService>(); ;
+    builder.RegisterType<OrderMassTransitServicee>().As<IMassTransitService>().InstancePerLifetimeScope();
   }
-  public void RegisterEventBusSubscriptionsManager(ContainerBuilder builder)
-  {
-    builder.RegisterType<EventBusSubscriptionsManager>()
-           .As<IEventBusSubscriptionsManager>()
-           .SingleInstance();
-  }
+  //public void RegisterEventBusSubscriptionsManager(ContainerBuilder builder)
+  //{
+  //  builder.RegisterType<EventBusSubscriptionsManager>()
+  //         .As<IEventBusSubscriptionsManager>()
+  //         .SingleInstance();
+  //}
   public void RegisterLogger(ContainerBuilder builder)
   {
     builder.RegisterInstance(Log.Logger)

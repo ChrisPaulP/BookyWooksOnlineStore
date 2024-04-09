@@ -15,7 +15,7 @@ using MediatR;
 
 using Autofac;
 
-using EventBus.IntegrationEventInterfaceAbstraction;
+
 using BookWooks.OrderApi.UseCases.Contributors.Create;
 using BookWooks.OrderApi.UseCases.IntegrationEventHandlers;
 
@@ -40,7 +40,7 @@ public class AutofacUseCasesModule : Module
       RegisterProductionOnlyDependencies(builder);
     }  
     RegisterMediatR(builder);
-    RegisterIntegrationEventHandlers(builder);
+    //RegisterIntegrationEventHandlers(builder);
   }
   private void RegisterMediatR(ContainerBuilder builder)
   {
@@ -50,12 +50,12 @@ public class AutofacUseCasesModule : Module
      .RegisterAssemblyTypes(typeof(CreateOrderCommand).Assembly)
      .AsClosedTypesOf(typeof(IRequestHandler<,>));
   }
-  private void RegisterIntegrationEventHandlers(ContainerBuilder builder)
-  {
-    builder.RegisterAssemblyTypes(typeof(BookStockCheckedEventHandler)
-           .GetTypeInfo().Assembly)
-           .AsClosedTypesOf(typeof(IIntegrationEventHandler<>)); // Registers Integration Event Handlers
-  }
+  //private void RegisterIntegrationEventHandlers(ContainerBuilder builder)
+  //{
+  //  builder.RegisterAssemblyTypes(typeof(BookStockCheckedEventHandler)
+  //         .GetTypeInfo().Assembly)
+  //         .AsClosedTypesOf(typeof(IIntegrationEventHandler<>)); // Registers Integration Event Handlers
+  //}
 
   private void RegisterDevelopmentOnlyDependencies(ContainerBuilder builder)
   {

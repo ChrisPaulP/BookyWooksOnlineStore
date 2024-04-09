@@ -1,7 +1,4 @@
-﻿using BookWooks.OrderApi.Infrastructure.Data.Config;
-using FastEndpoints;
-using FluentValidation;
-
+﻿
 namespace BookWooks.OrderApi.Web.Orders;
 
 public class CreateOrderValidator : Validator<CreateOrderRequest>

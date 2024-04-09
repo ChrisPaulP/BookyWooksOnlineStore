@@ -2,6 +2,7 @@
 using System.Reflection;
 using BookWooks.OrderApi.Core.OrderAggregate.Entities;
 using BookyWooks.SharedKernel;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -31,27 +32,30 @@ public class BookyWooksOrderDbContext : DbContext , IUnitOfWork//, IBookyWooksOr
 
     // Call base method at the end
     base.OnModelCreating(modelBuilder);
+
+
+    modelBuilder.AddInboxStateEntity();
+    modelBuilder.AddOutboxMessageEntity();
+    modelBuilder.AddOutboxStateEntity();
   }
-
-  public  async Task<int> SaveEntitiesAsync(CancellationToken cancellationToken = new CancellationToken())
+  public async Task<int> SaveEntitiesAsync(CancellationToken cancellationToken = default)
   {
-    var initialTrackedEntities = ChangeTracker.Entries().ToList();
-    int result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-
     // ignore events if no dispatcher provided
-    if (_dispatcher == null) return result;
-  
+    if (_dispatcher == null)
+      return await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-    // dispatch events only if save was successful
+    // Retrieve entities with domain events
     var entitiesWithEvents = ChangeTracker.Entries<EntityBase>()
+        .Where(e => e.Entity.DomainEvents.Any())
         .Select(e => e.Entity)
-        .Where(e => e.DomainEvents.Any())
         .ToArray();
 
-    await _dispatcher.DispatchAndClearEvents(entitiesWithEvents);
+    // Dispatch events only if there are entities with domain events
+    if (entitiesWithEvents.Length > 0)
+      await _dispatcher.DispatchAndClearEvents(entitiesWithEvents).ConfigureAwait(false);
 
-    return result;
+    // Save changes to the database
+    return await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
   }
 
   public override int SaveChanges()

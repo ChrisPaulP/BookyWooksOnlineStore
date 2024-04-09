@@ -72,10 +72,10 @@ public class OrderApiApplicationFactory<TEntryPoint> : WebApplicationFactory<Pro
         builder.ConfigureServices(services =>
         {
             RemoveDbContextOptions<BookyWooksOrderDbContext>(services);
-            RemoveDbContextOptions<IntegrationEventLogDbContext>(services);
+            //RemoveDbContextOptions<IntegrationEventLogDbContext>(services);
 
             AddDbContext<BookyWooksOrderDbContext>(services);
-            AddDbContext<IntegrationEventLogDbContext>(services);
+            //AddDbContext<IntegrationEventLogDbContext>(services);
         });
     }
 

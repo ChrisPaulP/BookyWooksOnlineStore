@@ -3,19 +3,19 @@ using BookWooks.OrderApi.Core.Interfaces;
 using BookWooks.OrderApi.Core.OrderAggregate.IntegrationEvents;
 using BookWooks.OrderApi.Infrastructure.Data;
 using Microsoft.Extensions.Logging;
-using OutBoxPattern.IntegrationEventLogServices;
+
 
 namespace BookWooks.OrderApi.Infrastructure.Email;
 public class SmtpEmailSender : IEmailSender
 {
   private readonly ILogger<SmtpEmailSender> _logger;
-  private readonly IIntegrationEventLogService _eventLogService;
+
   private readonly BookyWooksOrderDbContext _orderDbContext;
 
-  public SmtpEmailSender(ILogger<SmtpEmailSender> logger, IIntegrationEventLogService eventLogService, BookyWooksOrderDbContext orderDbContext)
+  public SmtpEmailSender(ILogger<SmtpEmailSender> logger, BookyWooksOrderDbContext orderDbContext)
   {
     _logger = logger;
-    _eventLogService = eventLogService;
+  
     _orderDbContext = orderDbContext;
   }
 
@@ -24,7 +24,7 @@ public class SmtpEmailSender : IEmailSender
     var currentTransaction = _orderDbContext.Database.CurrentTransaction;
     if (currentTransaction == null) throw new ArgumentNullException(nameof(currentTransaction));
 
-    await _eventLogService.SaveEventAsync(new EmailSentIntegrationEvent(to, from, subject, body), currentTransaction);
+    //await _eventLogService.SaveEventAsync(new EmailSentIntegrationEvent(to, from, subject, body), currentTransaction);
 
     var emailClient = new SmtpClient("localhost");
     var message = new MailMessage

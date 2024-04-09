@@ -24,8 +24,9 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\BookyWooks.MessageBus\EventBus.csproj" />
+    <ProjectReference Include="..\..\..\BookyWooks.Messaging\BookyWooks.Messaging.csproj" />
     <ProjectReference Include="..\..\..\BookyWooks.SharedKernel\BookyWooks.SharedKernel.csproj" />
+
   </ItemGroup>
   <ItemGroup>
     <EditorConfigFiles Remove="C:\Users\porterc\source\repos\BookyWooksOnlineStore\BookWooks.OrderApi\src\BookWooks.OrderApi.Core\.editorconfig" />

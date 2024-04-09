@@ -18,9 +18,7 @@
     <PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\BookyWooks.MessageBus\EventBus.csproj" />
-    <ProjectReference Include="..\..\..\IntegrationEventsSetUp\OutBoxPattern.csproj" />
-    <ProjectReference Include="..\..\..\RabbitMQ\RabbitMQ.csproj" />
+
     <ProjectReference Include="..\BookWooks.OrderApi.Core\BookWooks.OrderApi.Core.csproj" />
   </ItemGroup>
   <ItemGroup>

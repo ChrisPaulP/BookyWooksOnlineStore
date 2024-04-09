@@ -1,4 +1,12 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿
+using System.Reflection;
+using Autofac.Core;
+using BookWooks.OrderApi.Core.OrderAggregate.IntegrationEvents;
+using BookWooks.OrderApi.UseCases;
+using BookWooks.OrderApi.UseCases.IntegrationEventHandlers;
+
+
+var builder = WebApplication.CreateBuilder(args);
 
 //It appears that the class you provided is indeed using Autofac as the dependency injection container. This can be inferred from the following lines of code:
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
@@ -15,6 +23,7 @@ builder.Services.SwaggerDocument(o =>
 {
   o.ShortSchemaNames = true;
 });
+#pragma warning restore S125 // Sections of code should not be commented out
 
 // add list services for diagnostic purposes - see https://github.com/ardalis/AspNetCoreStartupServices
 builder.Services.Configure<ServiceConfig>(config =>
@@ -30,10 +39,11 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
   containerBuilder.RegisterModule(new AutofacCoreModule());
   containerBuilder.RegisterModule(new AutofacUseCasesModule(builder.Environment.IsDevelopment()));
   containerBuilder.RegisterModule(new AutofacInfrastructureModule(builder.Environment.IsDevelopment(), builder.Configuration));
-  containerBuilder.RegisterModule(new AutofacRabbitMQModule( builder.Configuration));
 });
 
+builder.Services.AddInfrastructureMessagingServices(builder.Configuration);
 var app = builder.Build();
+
 
 if (app.Environment.IsDevelopment())
 {
@@ -57,15 +67,20 @@ using (var scope = app.Services.CreateScope())
   try
   {
     var bookyWooksOrderDbContext = services.GetRequiredService<BookyWooksOrderDbContext>();
+
     bookyWooksOrderDbContext.Database.EnsureCreated();
 
-    var integrationEventLogDbContext = services.GetRequiredService<IntegrationEventLogDbContext>();
-    integrationEventLogDbContext.Database.Migrate();
+
+
+#pragma warning disable S125 // Sections of code should not be commented out
+    //var integrationEventLogDbContext = services.GetRequiredService<IntegrationEventLogDbContext>();
+    //integrationEventLogDbContext.Database.Migrate();
 
     // To find difference between Migrate and EnsureCreated, see ProgramNotes.txt file
 
 
     SeedData.Initialize(services);
+#pragma warning restore S125 // Sections of code should not be commented out
   }
   catch (Exception ex)
   {

@@ -1,86 +1,86 @@
 ﻿
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+//using MediatR;
+//using Microsoft.EntityFrameworkCore;
+//using Microsoft.Extensions.Logging;
 
-using Serilog.Context;
+//using Serilog.Context;
 
-using ILogger = Serilog.ILogger;
-using BookWooks.OrderApi.Core.Orders;
-using BookWooks.OrderApi.Infrastructure.Data;
+//using ILogger = Serilog.ILogger;
 
-namespace BookWooks.OrderApi.Infrastructure.Common.Behaviour;
-public class TransactionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
-{
-  private readonly ILogger<TransactionBehaviour<TRequest, TResponse>> _logger;
-  private readonly BookyWooksOrderDbContext _orderingDbContext;
-  private readonly IOrderIntegrationEventService _orderingIntegrationEventService;
+//using BookWooks.OrderApi.Infrastructure.Data;
 
-  public TransactionBehaviour(BookyWooksOrderDbContext orderingDbContext,
-      IOrderIntegrationEventService orderingIntegrationEventService,
-      ILogger<TransactionBehaviour<TRequest, TResponse>> logger)
-  {
-    _orderingDbContext = orderingDbContext ?? throw new ArgumentException(nameof(BookyWooksOrderDbContext));
-    _orderingIntegrationEventService = orderingIntegrationEventService ?? throw new ArgumentException(nameof(orderingIntegrationEventService));
-    _logger = logger ?? throw new ArgumentException(nameof(ILogger));
-  }
+//namespace BookWooks.OrderApi.Infrastructure.Common.Behaviour;
+//public class TransactionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
+//{
+//  private readonly ILogger<TransactionBehaviour<TRequest, TResponse>> _logger;
+//  private readonly BookyWooksOrderDbContext _orderingDbContext;
+//  private readonly IOrderIntegrationEventService _orderingIntegrationEventService;
 
-  public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
-  {
-    var response = default(TResponse);
+//  public TransactionBehaviour(BookyWooksOrderDbContext orderingDbContext,
+//      IOrderIntegrationEventService orderingIntegrationEventService,
+//      ILogger<TransactionBehaviour<TRequest, TResponse>> logger)
+//  {
+//    _orderingDbContext = orderingDbContext ?? throw new ArgumentException(nameof(BookyWooksOrderDbContext));
+//    _orderingIntegrationEventService = orderingIntegrationEventService ?? throw new ArgumentException(nameof(orderingIntegrationEventService));
+//    _logger = logger ?? throw new ArgumentException(nameof(ILogger));
+//  }
 
-    try
-    {
-      if (_orderingDbContext.HasActiveTransaction)
-      {
-        return await next();
-      }
+//  public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+//  {
+//    var response = default(TResponse);
 
-      var strategy = _orderingDbContext.Database.CreateExecutionStrategy();
+//    try
+//    {
+//      if (_orderingDbContext.HasActiveTransaction)
+//      {
+//        return await next();
+//      }
 
-      await strategy.ExecuteAsync(async () =>
-      {
-        using var transaction = await _orderingDbContext.BeginTransactionAsync();
+//      var strategy = _orderingDbContext.Database.CreateExecutionStrategy();
 
-        if (transaction == null)
-        {
-          _logger.LogError("Transaction is unexpectedly null");
-          return;
-        }
+//      await strategy.ExecuteAsync(async () =>
+//      {
+//        using var transaction = await _orderingDbContext.BeginTransactionAsync();
 
-        var transactionId = transaction.TransactionId;
+//        if (transaction == null)
+//        {
+//          _logger.LogError("Transaction is unexpectedly null");
+//          return;
+//        }
 
-        using (LogContext.PushProperty("TransactionContext", transactionId))
-        {
-          _logger.LogInformation("----- Begin transaction {TransactionId} for ({@Command})", transactionId, request);
+//        var transactionId = transaction.TransactionId;
 
-          response = await next();
+//        using (LogContext.PushProperty("TransactionContext", transactionId))
+//        {
+//          _logger.LogInformation("----- Begin transaction {TransactionId} for ({@Command})", transactionId, request);
 
-          _logger.LogInformation("----- Commit transaction {TransactionId}", transactionId);
+//          response = await next();
 
-          await _orderingDbContext.CommitTransactionAsync(transaction);
-        }
+//          _logger.LogInformation("----- Commit transaction {TransactionId}", transactionId);
 
-        await _orderingIntegrationEventService.PublishEventsThroughEventBusAsync(transactionId);
-      });
+//          await _orderingDbContext.CommitTransactionAsync(transaction);
+//        }
 
-      return response!;
-    }
-    catch (Exception ex)
-    {
-      var detailedExceptionMessage = ex.ToString();
-      _logger.LogError(detailedExceptionMessage, "ERROR Handling transaction for {CommandName} ({@Command})", request);
-      throw;
-    }
-  }
-}
+//        await _orderingIntegrationEventService.PublishEventsThroughEventBusAsync(transactionId);
+//      });
 
-//Notes:
-//In the provided TransactionBehaviour class, the handling of the request logic ends after the next() delegate is invoked.Let's break it down:
+//      return response!;
+//    }
+//    catch (Exception ex)
+//    {
+//      var detailedExceptionMessage = ex.ToString();
+//      _logger.LogError(detailedExceptionMessage, "ERROR Handling transaction for {CommandName} ({@Command})", request);
+//      throw;
+//    }
+//  }
+//}
 
-//response = await next();
-//This line is where the next() delegate, which represents the next step in the request processing pipeline, is invoked.This delegate typically represents the actual request handling logic, which may involve executing business logic, querying a database, or performing other operations related to the request.
+////Notes:
+////In the provided TransactionBehaviour class, the handling of the request logic ends after the next() delegate is invoked.Let's break it down:
 
-//Once the next() delegate is invoked, control passes to the next component in the request pipeline, and the processing of the request logic is considered complete from the perspective of TransactionBehaviour.Any further operations or actions that need to be performed after handling the request occur after this line.
+////response = await next();
+////This line is where the next() delegate, which represents the next step in the request processing pipeline, is invoked.This delegate typically represents the actual request handling logic, which may involve executing business logic, querying a database, or performing other operations related to the request.
 
-//Therefore, in the context of TransactionBehaviour, the handling of the request logic ends after the await next() call, and subsequent actions such as committing the transaction and publishing integration events occur afterward.
+////Once the next() delegate is invoked, control passes to the next component in the request pipeline, and the processing of the request logic is considered complete from the perspective of TransactionBehaviour.Any further operations or actions that need to be performed after handling the request occur after this line.
+
+////Therefore, in the context of TransactionBehaviour, the handling of the request logic ends after the await next() call, and subsequent actions such as committing the transaction and publishing integration events occur afterward.
