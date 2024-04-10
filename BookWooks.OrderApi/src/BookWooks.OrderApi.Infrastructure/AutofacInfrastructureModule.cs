@@ -1,54 +1,4 @@
-﻿
-using Autofac;
-
-using BookWooks.OrderApi.Core.Interfaces;
-
-using BookWooks.OrderApi.Infrastructure.Caching;
-using BookWooks.OrderApi.Infrastructure.Data.Queries;
-using BookWooks.OrderApi.Infrastructure.Data.Repositories;
-
-using BookWooks.OrderApi.Infrastructure.Email;
-
-
-using BookWooks.OrderApi.UseCases.Orders.Get;
-using BookWooks.OrderApi.UseCases.Orders.List;
-using BookyWooks.SharedKernel;
-
-
-using MediatR;
-
-using Microsoft.Extensions.Caching.Distributed;
-
-using Microsoft.Extensions.Caching.StackExchangeRedis;
-using Microsoft.Extensions.Configuration;
-
-
-
-using Module = Autofac.Module;
-
-
-
-
-
-using BookWooks.OrderApi.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-
-
-
-
-
-
-using BookWooks.OrderApi.UseCases.IntegrationEventHandlers;
-using MassTransit;
-
-
-using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
-using BookyWooks.Messaging.MassTransit;
-using Serilog;
-
-
-namespace BookWooks.OrderApi.Infrastructure;
+﻿namespace BookWooks.OrderApi.Infrastructure;
 /// <summary>
 /// An Autofac module responsible for wiring up services defined in Infrastructure.
 /// Mainly responsible for setting up EF and MediatR, as well as other one-off services.
@@ -77,7 +27,7 @@ public class AutofacInfrastructureModule : Module
     RegisterDbContext(builder);
     RegisterEfReposotories(builder);
     RegisterMediatR(builder);
-    RegisterIntegrationEventServices(builder);
+    RegisterMassTransitService(builder);
    // RegisterEventBusSubscriptionsManager(builder);
     RegisterLogger(builder);   
     RegisterDistributedCacheService(builder);
@@ -151,7 +101,7 @@ public class AutofacInfrastructureModule : Module
       .As(typeof(IPipelineBehavior<,>))
       .InstancePerLifetimeScope();
   }
-  private void RegisterIntegrationEventServices(ContainerBuilder builder)
+  private void RegisterMassTransitService(ContainerBuilder builder)
   {
     //builder.Register(c =>
     //{
@@ -160,7 +110,7 @@ public class AutofacInfrastructureModule : Module
     //  return new IntegrationEventLogService(dbConnection);
     //}).As<IIntegrationEventLogService>();
 
-    builder.RegisterType<OrderMassTransitServicee>().As<IMassTransitService>().InstancePerLifetimeScope();
+    builder.RegisterType<OrderMassTransitService>().As<IMassTransitService>().InstancePerLifetimeScope();
   }
   //public void RegisterEventBusSubscriptionsManager(ContainerBuilder builder)
   //{

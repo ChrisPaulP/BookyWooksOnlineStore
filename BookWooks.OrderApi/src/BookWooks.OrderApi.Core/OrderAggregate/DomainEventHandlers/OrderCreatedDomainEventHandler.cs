@@ -1,5 +1,5 @@
 ﻿using BookWooks.OrderApi.Core.OrderAggregate.Entities;
-
+using BookyWooks.Messaging.Events;
 using BookyWooks.Messaging.MassTransit;
 
 namespace BookWooks.OrderApi.Core.OrderAggregate.Handlers;

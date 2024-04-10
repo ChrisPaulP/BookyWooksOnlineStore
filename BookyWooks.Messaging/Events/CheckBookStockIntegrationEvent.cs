@@ -1,7 +1,4 @@
-﻿using BookWooks.OrderApi.Core.OrderAggregate.Entities;
-using BookyWooks.Messaging.Events;
-
-namespace BookWooks.OrderApi.Core.OrderAggregate.IntegrationEvents;
+﻿namespace BookyWooks.Messaging.Events;
 public record CheckBookStockIntegrationEvent : IntegrationEvent
 {
   public CheckBookStockIntegrationEvent(Guid orderId) //  IEnumerable<OrderItem> orderItems

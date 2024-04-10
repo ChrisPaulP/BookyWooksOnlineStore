@@ -3,7 +3,7 @@ using System.Reflection;
 using Autofac.Core;
 using BookWooks.OrderApi.Core.OrderAggregate.IntegrationEvents;
 using BookWooks.OrderApi.UseCases;
-using BookWooks.OrderApi.UseCases.IntegrationEventHandlers;
+
 
 
 var builder = WebApplication.CreateBuilder(args);

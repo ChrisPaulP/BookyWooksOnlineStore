@@ -1,11 +1,4 @@
-﻿using System.Net.Mail;
-using BookWooks.OrderApi.Core.Interfaces;
-using BookWooks.OrderApi.Core.OrderAggregate.IntegrationEvents;
-using BookWooks.OrderApi.Infrastructure.Data;
-using Microsoft.Extensions.Logging;
-
-
-namespace BookWooks.OrderApi.Infrastructure.Email;
+﻿namespace BookWooks.OrderApi.Infrastructure.Email;
 public class SmtpEmailSender : IEmailSender
 {
   private readonly ILogger<SmtpEmailSender> _logger;

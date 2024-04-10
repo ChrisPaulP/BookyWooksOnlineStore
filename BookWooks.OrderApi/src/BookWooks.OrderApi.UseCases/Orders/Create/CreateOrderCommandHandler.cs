@@ -4,11 +4,11 @@ using BookWooks.OrderApi.Core.OrderAggregate.Entities;
 using BookWooks.OrderApi.Core.OrderAggregate.IntegrationEvents;
 using BookWooks.OrderApi.Core.OrderAggregate.ValueObjects;
 using BookWooks.OrderApi.UseCases.Create;
-using BookWooks.OrderApi.UseCases.IntegrationEventHandlers;
-using BookWooks.OrderApi.UseCases.Orders;
 
+using BookWooks.OrderApi.UseCases.Orders;
+using BookyWooks.Messaging.Events;
 using BookyWooks.SharedKernel;
-using MassTransit;
+
 using Microsoft.Extensions.Logging;
 
 namespace BookWooks.OrderApi.UseCases.Contributors.Create;
@@ -38,14 +38,8 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Res
     _logger.LogInformation("----- Creating Order - Order: {@Order}", newOrder);
     
     await _orderRepository.AddAsync(newOrder);
-    //var testEvent = new TestIntegrationEvent("Hi there test");
-    //await _publishEndpoint.Publish(testEvent);
-    var checkStockAvailabilityIntegrationEvent = new CheckBookStockIntegrationEvent(newOrder.Id);//, new List<OrderItem>());
-    //var testEvent = new TestIntegrationEvent("Hi there test");//, new List<OrderItem>());
-    //await _publishEndpoint.Publish(checkStockAvailabilityIntegrationEvent);
     await _orderRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
     return Result.Success(newOrder.Id);
-    //return newOrder.Id;
   }
 }
 

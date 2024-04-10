@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BookWooks.OrderApi.Core.OrderAggregate.Entities;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
-
-namespace BookWooks.OrderApi.Infrastructure.Data.Config;
+﻿namespace BookWooks.OrderApi.Infrastructure.Data.Config;
 public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
 {
   public void Configure(EntityTypeBuilder<Customer> builder)

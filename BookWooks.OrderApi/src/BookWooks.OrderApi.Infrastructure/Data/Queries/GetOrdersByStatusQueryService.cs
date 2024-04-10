@@ -1,9 +1,4 @@
-﻿using BookWooks.OrderApi.UseCases.Orders;
-using BookWooks.OrderApi.UseCases.Orders.List;
-using Microsoft.EntityFrameworkCore;
-
-
-namespace BookWooks.OrderApi.Infrastructure.Data.Queries;
+﻿namespace BookWooks.OrderApi.Infrastructure.Data.Queries;
 public class GetOrdersByStatusQueryService : IGetOrdersByStatusQueryService
 {
   private readonly BookyWooksOrderDbContext _db;

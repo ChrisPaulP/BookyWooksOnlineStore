@@ -17,7 +17,7 @@ using Autofac;
 
 
 using BookWooks.OrderApi.UseCases.Contributors.Create;
-using BookWooks.OrderApi.UseCases.IntegrationEventHandlers;
+
 
 namespace BookWooks.OrderApi.UseCases;
 public class AutofacUseCasesModule : Module

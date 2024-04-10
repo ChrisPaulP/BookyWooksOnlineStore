@@ -1,7 +1,4 @@
-﻿using System.Linq.Expressions;
-using BookyWooks.SharedKernel;
-using Microsoft.EntityFrameworkCore;
-namespace BookWooks.OrderApi.Infrastructure.Data.Repositories.Abstract;
+﻿namespace BookWooks.OrderApi.Infrastructure.Data.Repositories.Abstract;
 public abstract class RepositoryBase<T> : IRepositoryBase<T>
        where T : class, IAggregateRoot
 {

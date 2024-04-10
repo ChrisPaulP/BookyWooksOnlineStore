@@ -1,7 +1,4 @@
-﻿using BookWooks.OrderApi.Core.Interfaces;
-using Microsoft.Extensions.Logging;
-
-namespace BookWooks.OrderApi.Infrastructure.Email;
+﻿namespace BookWooks.OrderApi.Infrastructure.Email;
 public class FakeEmailSender : IEmailSender
 {
   private readonly ILogger<FakeEmailSender> _logger;
