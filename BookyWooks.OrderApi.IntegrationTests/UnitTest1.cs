@@ -19,7 +19,7 @@ public class UnitTest1 : OrderApiBaseIntegrationTest
                         new OrderItem(Guid.NewGuid(), 9.99M, 1 ),
                         new OrderItem(Guid.NewGuid(), 5.99M, 4 ),
                     };
-        var DeliveryAddress = new Address("Test Street", "Test City", "Test Country", "Test Post Code");
+        var DeliveryAddress = new Address("Test Street", "Test City", "Test Country", "Test Post");
         var PaymentDetails = new PaymentDetails("1234 5678 9012 3456", "Christopher", "12/23", "123", 1);
         var command = new CreateOrderCommand
       (
