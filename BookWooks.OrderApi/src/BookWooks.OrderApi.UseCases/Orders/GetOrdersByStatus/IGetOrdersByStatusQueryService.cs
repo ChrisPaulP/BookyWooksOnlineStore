@@ -1,6 +1,4 @@
-﻿
-
-namespace BookWooks.OrderApi.UseCases.Orders.List;
+﻿namespace BookWooks.OrderApi.UseCases.Orders.List;
 public interface IGetOrdersByStatusQueryService
 {
   //Task<IEnumerable<OrderDTO>> ListOrdersAsync();

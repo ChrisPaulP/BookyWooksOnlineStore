@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BookWooks.OrderApi.Core.OrderAggregate.Entities;
-using BookWooks.OrderApi.UseCases.Contributors;
-using BookyWooks.SharedKernel;
-
-namespace BookWooks.OrderApi.UseCases.Orders.GetOrders;
+﻿namespace BookWooks.OrderApi.UseCases.Orders.GetOrders;
 public class GetOrdersHandler : IQueryHandler<GetOrdersQuery, Result<IEnumerable<OrderDTO>>>
 {
     private readonly IReadRepository<Order> _repository;

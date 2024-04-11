@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BookWooks.OrderApi.Core.OrderAggregate.Entities;
-using BookWooks.OrderApi.Core.OrderAggregate.Specifications;
-using BookWooks.OrderApi.UseCases.Orders.List;
-using BookyWooks.SharedKernel;
-using Microsoft.Extensions.Logging;
-
-namespace BookWooks.OrderApi.UseCases.Orders.ListOrdersForCustomer;
+﻿namespace BookWooks.OrderApi.UseCases.Orders.ListOrdersForCustomer;
 public class ListOrdersForCustomerHandler : IQueryHandler<ListOrdersForCustomerQuery, Result<IEnumerable<OrderDTO>>>
 {
   private readonly IReadRepository<Order> _readRepository;

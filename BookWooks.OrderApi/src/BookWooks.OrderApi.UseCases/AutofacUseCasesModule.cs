@@ -1,25 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Module = Autofac.Module;
-
-using BookWooks.OrderApi.UseCases.Create;
-using BookWooks.OrderApi.UseCases.Orders.Get;
-using BookWooks.OrderApi.UseCases.Orders.List;
-using BookyWooks.SharedKernel;
-using MediatR.Pipeline;
-using MediatR;
-
-using Autofac;
-
-
-using BookWooks.OrderApi.UseCases.Contributors.Create;
-
-
-namespace BookWooks.OrderApi.UseCases;
+﻿namespace BookWooks.OrderApi.UseCases;
 public class AutofacUseCasesModule : Module
 {
   private readonly bool _isDevelopment = false;
@@ -40,7 +19,6 @@ public class AutofacUseCasesModule : Module
       RegisterProductionOnlyDependencies(builder);
     }  
     RegisterMediatR(builder);
-    //RegisterIntegrationEventHandlers(builder);
   }
   private void RegisterMediatR(ContainerBuilder builder)
   {
@@ -50,12 +28,7 @@ public class AutofacUseCasesModule : Module
      .RegisterAssemblyTypes(typeof(CreateOrderCommand).Assembly)
      .AsClosedTypesOf(typeof(IRequestHandler<,>));
   }
-  //private void RegisterIntegrationEventHandlers(ContainerBuilder builder)
-  //{
-  //  builder.RegisterAssemblyTypes(typeof(BookStockCheckedEventHandler)
-  //         .GetTypeInfo().Assembly)
-  //         .AsClosedTypesOf(typeof(IIntegrationEventHandler<>)); // Registers Integration Event Handlers
-  //}
+
 
   private void RegisterDevelopmentOnlyDependencies(ContainerBuilder builder)
   {

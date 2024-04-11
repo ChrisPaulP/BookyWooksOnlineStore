@@ -1,9 +1,4 @@
-﻿using BookyWooks.SharedKernel;
-using BookWooks.OrderApi.Core.OrderAggregate.Specifications;
-using BookWooks.OrderApi.Core.OrderAggregate.Entities;
-
-
-namespace BookWooks.OrderApi.UseCases.Orders.Get;
+﻿namespace BookWooks.OrderApi.UseCases.Orders.Get;
 public class GetOrderDetailsHandler : IQueryHandler<GetOrderDetailsQuery, Result<OrderDTO>>
 {
  // private readonly IRepository<Order> _repository;

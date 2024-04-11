@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.Net;
-
-namespace BookWooks.OrderApi.Core.OrderAggregate.ValueObjects;
+﻿namespace BookWooks.OrderApi.Core.OrderAggregate.ValueObjects;
 public record DeliveryAddress
 {
   public string Street { get; private set; }

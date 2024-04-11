@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BookWooks.OrderApi.Core.OrderAggregate.Entities;
-using BookWooks.OrderApi.Core.OrderAggregate.Specifications;
-using BookyWooks.SharedKernel;
-
-namespace BookWooks.OrderApi.UseCases.Orders.OrderFulfillment;
+﻿namespace BookWooks.OrderApi.UseCases.Orders.OrderFulfillment;
 public class OrderFulfillmentHandler : ICommandHandler<OrderFulfillmentCommand, Result<Guid>>
 {
   private readonly IRepository<Order> _repository;

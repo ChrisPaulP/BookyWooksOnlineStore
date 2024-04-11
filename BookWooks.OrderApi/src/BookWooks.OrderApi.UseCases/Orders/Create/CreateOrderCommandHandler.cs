@@ -1,17 +1,4 @@
-﻿
-using Ardalis.GuardClauses;
-using BookWooks.OrderApi.Core.OrderAggregate.Entities;
-using BookWooks.OrderApi.Core.OrderAggregate.IntegrationEvents;
-using BookWooks.OrderApi.Core.OrderAggregate.ValueObjects;
-using BookWooks.OrderApi.UseCases.Create;
-
-using BookWooks.OrderApi.UseCases.Orders;
-using BookyWooks.Messaging.Events;
-using BookyWooks.SharedKernel;
-
-using Microsoft.Extensions.Logging;
-
-namespace BookWooks.OrderApi.UseCases.Contributors.Create;
+﻿namespace BookWooks.OrderApi.UseCases.Contributors.Create;
 public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Result<Guid>>
 {
   private readonly ILogger<CreateOrderCommandHandler> _logger;

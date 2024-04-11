@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BookWooks.OrderApi.Core.OrderAggregate.Entities;
-using BookWooks.OrderApi.Core.OrderAggregate.Specifications;
-using BookWooks.OrderApi.UseCases.Contributors;
-
-using BookyWooks.SharedKernel;
-using Microsoft.Extensions.Logging;
-
-namespace BookWooks.OrderApi.UseCases.Orders.List;
+﻿namespace BookWooks.OrderApi.UseCases.Orders.List;
 public class GetOrdersByStatusHandler : IQueryHandler<GetOrdersByStatusQuery, Result<IEnumerable<OrderDTO>>>
 {
   private readonly IGetOrdersByStatusQueryService _query;
