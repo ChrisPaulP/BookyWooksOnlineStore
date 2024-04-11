@@ -21,6 +21,7 @@ public class UnitTest1 : OrderApiBaseIntegrationTest
         var product2 = Product.Create("Book 2", "Book URL", 5.99M);
         await AddAsync(customer); // Add the customer to the database
         await AddAsync(product); // Add the customer to the database
+        await AddAsync(product2); // Add the customer to the database
 
         var orderItems = new List<OrderItem>()
                     {
