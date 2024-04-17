@@ -15,7 +15,7 @@ public static class Extentions
 
     public static IReadOnlyList<Type> RegisteredConsumers { get; private set; }
     public static IServiceCollection AddMessageBroker<TDbContext>
- (this IServiceCollection services, IConfiguration configuration, Assembly? assembly)
+ (this IServiceCollection services, IConfiguration configuration, Assembly? assembly, bool useSqlServer)
  where TDbContext : DbContext
     {
         services.Configure<RabbitMQConfiguration>(configuration.GetSection("RabbitMQConfiguration:Config"));
@@ -29,7 +29,8 @@ public static class Extentions
             {
                 //o.QueryDelay = TimeSpan.FromSeconds(1);
                 o.DuplicateDetectionWindow = TimeSpan.FromSeconds(30);
-                o.UseSqlServer().UseBusOutbox();
+                if (useSqlServer) o.UseSqlServer().UseBusOutbox();
+                else o.UsePostgres().UseBusOutbox(); 
             });
 
             config.SetKebabCaseEndpointNameFormatter();
@@ -57,6 +58,6 @@ public static class Extentions
             });
         });
         return services;
-    }
+    }   
 }
 

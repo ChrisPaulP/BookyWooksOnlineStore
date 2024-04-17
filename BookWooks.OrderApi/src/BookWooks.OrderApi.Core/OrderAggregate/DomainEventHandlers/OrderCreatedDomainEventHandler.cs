@@ -1,4 +1,5 @@
 ﻿using BookWooks.OrderApi.Core.OrderAggregate.Entities;
+using BookWooks.OrderApi.Core.OrderAggregate.Events;
 using BookyWooks.Messaging.Events;
 using BookyWooks.Messaging.MassTransit;
 
@@ -16,14 +17,13 @@ internal class OrderCreatedDomainEventHandler : INotificationHandler<OrderCreate
 
   public async Task Handle(OrderCreatedEvent domainEvent, CancellationToken cancellationToken)
   {
-    _logger.LogInformation("Handling Contributed Deleted event for {contributorId}", domainEvent.NewOrder.Message);
-    var checkStockAvailabilityIntegrationEvent = new CheckBookStockIntegrationEvent(domainEvent.NewOrder.Id);//, new List<OrderItem>());
+    _logger.LogInformation("Handling Order Created Domain event for {new order}", domainEvent.NewOrder.Message);
+    var orderStockList = domainEvent.NewOrder.OrderItems
+   .Select(orderItem => new OrderItemEventDto(orderItem.ProductId, orderItem.Quantity));
+    var checkStockAvailabilityIntegrationEvent = new CheckStockEvent(domainEvent.NewOrder.Id, orderStockList);
 
-    //await _integrationEventService.Publish(checkStockAvailabilityIntegrationEvent);
+ 
     await _massTransitService.Send(checkStockAvailabilityIntegrationEvent);
-    //await _orderIntegrationEventService.SaveChangesAsync();
 
-    // TODO: do meaningful work here
-    await Task.Delay(1);
   }
 }
