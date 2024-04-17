@@ -1,0 +1,6 @@
+@BookyWooks.Catalogue.Api_HostAddress = http://localhost:5090
+
+GET {{BookyWooks.Catalogue.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
