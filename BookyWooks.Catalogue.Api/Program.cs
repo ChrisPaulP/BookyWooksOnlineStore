@@ -28,6 +28,7 @@ builder.Services.AddDbContext<CatalogueDbContext>(x =>
 {
     x.UseNpgsql(builder.Configuration.GetConnectionString("Database")!, opt =>
     {
+        var x = builder.Configuration.GetConnectionString("Database");
         opt.EnableRetryOnFailure(5);
     });
 });

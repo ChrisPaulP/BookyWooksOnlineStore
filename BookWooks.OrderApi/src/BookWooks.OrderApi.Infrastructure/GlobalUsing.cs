@@ -6,7 +6,7 @@ global using BookWooks.OrderApi.Infrastructure.Data.Repositories.Abstract;
 global using BookyWooks.SharedKernel;
 global using Microsoft.Extensions.Caching.Distributed;
 global using Microsoft.Extensions.Logging;
-global using BookyWooks.Messaging.Events;
+global using BookyWooks.Messaging.Contracts;
 global using MassTransit;
 global using System.Linq.Expressions;
 global using BookWooks.OrderApi.Core.OrderAggregate.Entities;
