@@ -44,7 +44,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookyWooks.OrderApi.Integra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookyWooks.Messaging", "BookyWooks.Messaging\BookyWooks.Messaging.csproj", "{92EB22C2-06DF-46D7-969D-8206BDD07EF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookyWooks.Catalogue.Api", "BookyWooks.Catalogue.Api\BookyWooks.Catalogue.Api.csproj", "{2E3E09E1-2F37-4A4B-88AD-B178203C991F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookyWooks.Catalogue.Api", "BookyWooks.Catalogue.Api\BookyWooks.Catalogue.Api.csproj", "{2E3E09E1-2F37-4A4B-88AD-B178203C991F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SagaOrchestration", "SagaOrchestration", "{45392FAF-8976-4C5C-BC22-75BEDED05A4B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SagaOrchestration", "SagaOrchestration\SagaOrchestration.csproj", "{73229F29-7375-4D6C-9118-CE75DCD3CF8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -104,6 +108,10 @@ Global
 		{2E3E09E1-2F37-4A4B-88AD-B178203C991F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E3E09E1-2F37-4A4B-88AD-B178203C991F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E3E09E1-2F37-4A4B-88AD-B178203C991F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73229F29-7375-4D6C-9118-CE75DCD3CF8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73229F29-7375-4D6C-9118-CE75DCD3CF8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73229F29-7375-4D6C-9118-CE75DCD3CF8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73229F29-7375-4D6C-9118-CE75DCD3CF8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -124,6 +132,7 @@ Global
 		{52D0D4B6-E309-4ABA-BBC3-14A51B2FFEB5} = {8213A9FE-A86D-4758-906C-A0CC6C38E8D6}
 		{92EB22C2-06DF-46D7-969D-8206BDD07EF1} = {C75B7DBE-0351-4488-8B51-46BE843E6508}
 		{2E3E09E1-2F37-4A4B-88AD-B178203C991F} = {89BEE009-401A-421A-AAAB-9DA970D1BD25}
+		{73229F29-7375-4D6C-9118-CE75DCD3CF8D} = {45392FAF-8976-4C5C-BC22-75BEDED05A4B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C62E4639-BD4C-47C3-873D-B083250A5897}

@@ -34,4 +34,7 @@
   <ItemGroup>
     <None Include="C:\Users\porterc\source\repos\BookyWooksOnlineStore\BookWooks.OrderApi\src\BookWooks.OrderApi.Core\.editorconfig" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="OrderAggregate\IntegrationEvents\" />
+  </ItemGroup>
 </Project>

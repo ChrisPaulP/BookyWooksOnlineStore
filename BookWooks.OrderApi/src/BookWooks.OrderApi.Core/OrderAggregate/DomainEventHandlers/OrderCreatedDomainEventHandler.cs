@@ -1,10 +1,14 @@
 ﻿using BookWooks.OrderApi.Core.OrderAggregate.Entities;
 using BookWooks.OrderApi.Core.OrderAggregate.Events;
-using BookyWooks.Messaging.Events;
+using BookyWooks.Messaging.Constants;
+using BookyWooks.Messaging.Contracts.Events;
 using BookyWooks.Messaging.MassTransit;
+using BookyWooks.Messaging.Messages.InitialMessage;
+
+
 
 namespace BookWooks.OrderApi.Core.OrderAggregate.Handlers;
-internal class OrderCreatedDomainEventHandler : INotificationHandler<OrderCreatedEvent>
+internal class OrderCreatedDomainEventHandler : INotificationHandler<Events.OrderCreatedEvent>
 {
   private readonly ILogger<OrderCreatedDomainEventHandler> _logger;
   private readonly IMassTransitService _massTransitService;
@@ -15,15 +19,15 @@ internal class OrderCreatedDomainEventHandler : INotificationHandler<OrderCreate
     _massTransitService = massTransitService;
   }
 
-  public async Task Handle(OrderCreatedEvent domainEvent, CancellationToken cancellationToken)
+  public async Task Handle(Events.OrderCreatedEvent domainEvent, CancellationToken cancellationToken)
   {
     _logger.LogInformation("Handling Order Created Domain event for {new order}", domainEvent.NewOrder.Message);
     var orderStockList = domainEvent.NewOrder.OrderItems
    .Select(orderItem => new OrderItemEventDto(orderItem.ProductId, orderItem.Quantity));
-    var checkStockAvailabilityIntegrationEvent = new CheckStockEvent(domainEvent.NewOrder.Id, orderStockList);
+    var orderCreatedMessage = new OrderCreatedMessage(domainEvent.NewOrder.Id, domainEvent.NewOrder.CustomerId, domainEvent.NewOrder.OrderTotal, orderStockList);
 
  
-    await _massTransitService.Send(checkStockAvailabilityIntegrationEvent);
+    await _massTransitService.Send(orderCreatedMessage, QueueConstants.CreateOrderMessageQueueName);
 
   }
 }
