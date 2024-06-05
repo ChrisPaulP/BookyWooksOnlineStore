@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using BookWooks.OrderApi.Core.OrderAggregate.Enums;
+﻿using BookWooks.OrderApi.Core.OrderAggregate.Enums;
 using BookWooks.OrderApi.Core.OrderAggregate.ValueObjects;
 
 namespace BookWooks.OrderApi.Core.OrderAggregate.Entities;

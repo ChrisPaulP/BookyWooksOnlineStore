@@ -9,6 +9,7 @@ using Marten;
 using MassTransit;
 using MassTransit.Transports;
 using Microsoft.EntityFrameworkCore;
+using Tracing;
 
 namespace BookyWooks.Catalogue.Api.Consumers;
 
@@ -48,6 +49,7 @@ public class CheckBookStockCommandConsumer : IConsumer<CheckBookStockCommand>
         }
         else
         {
+            OpenTelemetryMetricConfiguration.OrderConsumedEventCounter.Add(1);
             await _context.SaveChangesAsync();
             var stockConfirmedEvent = new StockConfirmedEvent(@event.Message.CorrelationId, @event.Message.orderId, stockItems);
             await _massTransitService.Publish(stockConfirmedEvent);

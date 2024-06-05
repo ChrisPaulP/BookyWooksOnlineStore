@@ -29,6 +29,5 @@ global using MediatR;
 global using Microsoft.Extensions.Caching.StackExchangeRedis;
 global using Microsoft.Extensions.Configuration;
 global using Module = Autofac.Module;
-global using Serilog;
 global using BookWooks.OrderApi.Infrastructure.MassTransit;
 global using Microsoft.Extensions.DependencyInjection;

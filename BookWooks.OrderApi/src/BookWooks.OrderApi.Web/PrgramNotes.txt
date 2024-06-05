@@ -15,3 +15,9 @@ EnsureCreated() v Migrate()
 
  In summary, while EnsureCreated() creates the database based on the current model, migrations like InitialMigration.cs are part of a more formal process for managing database schema changes over time. 
  If you're using migrations, it's generally recommended to stick with dbContext.Database.Migrate() to ensure that your database schema evolves along with your application's DbContext model.
+
+ Difference between Pipeline Behaviour and Middleware
+
+ In summary, both logging behavior and middleware are essential components in an application, 
+ each serving distinct purposes in the request processing pipeline. 
+ While logging behavior focuses on logging request-specific information, middleware handles broader cross-cutting concerns and operations affecting the entire request pipeline.

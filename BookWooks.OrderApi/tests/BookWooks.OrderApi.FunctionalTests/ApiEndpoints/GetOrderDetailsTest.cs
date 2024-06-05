@@ -11,7 +11,6 @@ namespace BookWooks.OrderApi.FunctionalTests.ApiEndpoints;
 public class GetOrderDetailsTest : IClassFixture<CustomWebApplicationFactory<Program>>
 {
   private readonly HttpClient _client;
-
   public GetOrderDetailsTest(CustomWebApplicationFactory<Program> factory)
   {
     _client = factory.CreateClient();
@@ -20,7 +19,7 @@ public class GetOrderDetailsTest : IClassFixture<CustomWebApplicationFactory<Pro
   [Fact]
   public async Task ReturnsSeedOrderGivenId()
   {
-    Guid expectedOrderId = SeedData.Order1.Id;
+    Guid expectedOrderId = TestData.Order1.Id;
 
     //var response = await _client.GetAsync(GetOrderDetailsRequest.BuildRoute(expectedOrderId));
     //var content = await response.Content.ReadAsStringAsync();
@@ -29,7 +28,7 @@ public class GetOrderDetailsTest : IClassFixture<CustomWebApplicationFactory<Pro
     var result = await _client.GetAndDeserializeAsync<OrderRecord>(GetOrderDetailsRequest.BuildRoute(expectedOrderId));
 
     Assert.Equal(expectedOrderId, result.Id);
-    Assert.Equal(SeedData.Order1.Status.Name, result.Status);
+    Assert.Equal(TestData.Order1.Status.Name, result.Status);
   }
 
   [Fact]

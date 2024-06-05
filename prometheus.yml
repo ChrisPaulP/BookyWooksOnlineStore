@@ -1,0 +1,14 @@
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ['localhost:9090']
+         
+  - job_name: bookwooks.orderapi.web
+    scrape_interval: 2s
+    static_configs:
+      - targets: ['bookwooks.orderapi.web:8080']
+        
+  - job_name:  bookywooks.catalogue.api
+    scrape_interval: 2s
+    static_configs:
+      - targets: ['bookywooks.catalogue.api:8080']
