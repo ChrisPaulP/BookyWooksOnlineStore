@@ -21,7 +21,7 @@ public class GetOrdersByStatus : IClassFixture<CustomWebApplicationFactory<Progr
     var result = await _client.GetAndDeserializeAsync<GetOrderByStatusResponse>(GetOrderByStatusRequest.BuildRoute("Pending"));
 
     Assert.Single(result.Orders);
-    Assert.Contains(result.Orders, o => o.Status == SeedData.Order1.Status.Name);
+    Assert.Contains(result.Orders, o => o.Status == TestData.Order1.Status.Name);
    // Assert.Contains(result.Orders, o => o.Status == SeedData.Order1.Status.Name);
   }
 }

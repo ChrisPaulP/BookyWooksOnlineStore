@@ -12,6 +12,7 @@ using BookyWooks.Messaging.Constants;
 using Microsoft.Extensions.Hosting;
 using SagaOrchestration;
 using MassTransit.Configuration;
+using Logging;
 
 
 
@@ -37,6 +38,7 @@ IHost host = Host.CreateDefaultBuilder(args)
                 // Configure the saga repository to use the same DbContext
                 opt.AddDbContext<DbContext, StateMachineDbContext>((provider, builder) =>
                 {
+                    var t = hostContext.Configuration.GetConnectionString("DefaultConnection");
                     builder.UseSqlServer(hostContext.Configuration.GetConnectionString("DefaultConnection"),
                         m => { m.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name); });
                 });
@@ -78,11 +80,11 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddDbContext<StateMachineDbContext>(options =>
             options.UseSqlServer(hostContext.Configuration.GetConnectionString("DefaultConnection")));
 
-        //services.AddOpenTelemetryTracing(hostContext.Configuration);
+        services.AddOpenTelemetryTracing(hostContext.Configuration);
 
         services.AddHostedService<Worker>();
     })
-    .UseSerilog((_, config) => config.ReadFrom.Configuration(_.Configuration))
+    .UseSerilog(SeriLogger.Configure)
     .Build();
 
 using (var scope = host.Services.CreateScope())

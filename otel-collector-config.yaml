@@ -1,0 +1,32 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+exporters:
+  otlp:
+    endpoint: "jaeger:4317"
+    tls:
+      insecure: true
+  logging:
+    logLevel: debug
+
+processors:
+  resource:
+    attributes:
+      - action: insert
+        key: service.name
+        value: "my-service"  # Changed from from_attribute to value
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [resource]
+      exporters: [otlp, logging]  # Added logging exporter for debugging
+    logs:
+      receivers: [otlp]
+      processors: [resource]
+      exporters: [logging]  # Added logging exporter
+

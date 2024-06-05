@@ -1,0 +1,533 @@
+2024-05-28 11:45:42.885 +00:00 [INF] Registered 7 endpoints in 191,681 milliseconds.
+2024-05-28 11:45:53.868 +00:00 [INF] Configured endpoint complete-payment-command-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.CompletePaymentCommandConsumer
+2024-05-28 11:45:53.876 +00:00 [INF] Configured endpoint order-failed-event-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.OrderFailedEventConsumer
+2024-05-28 11:45:56.748 +00:00 [INF] Now listening on: http://[::]:8080
+2024-05-28 11:45:56.788 +00:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-28 11:45:56.819 +00:00 [INF] Hosting environment: Development
+2024-05-28 11:45:56.826 +00:00 [INF] Content root path: /app
+2024-05-28 11:45:57.227 +00:00 [INF] Bus started: "rabbitmq://rabbitmq/"
+2024-05-28 11:46:01.846 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger - null null
+2024-05-28 11:46:02.047 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger - 302 0 null 196.8227ms
+2024-05-28 11:46:02.062 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/index.html - null null
+2024-05-28 11:46:02.274 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/index.html - 200 null text/html; charset=utf-8 211.8406ms
+2024-05-28 11:46:02.912 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 11:46:02.922 +00:00 [WRN] Failed to determine the https port for redirect.
+2024-05-28 11:46:02.926 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 13.5806ms
+2024-05-28 11:46:02.936 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 11:46:02.937 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 11:46:02.943 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 5.9438ms
+2024-05-28 11:46:02.946 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 11:46:03.019 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 11:46:03.021 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 2.5016ms
+2024-05-28 11:46:03.025 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 11:46:03.030 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 11:46:03.033 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 2.6483ms
+2024-05-28 11:46:03.036 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 11:46:03.100 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - null null
+2024-05-28 11:46:03.209 +00:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2024-05-28 11:46:04.223 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 1123.2795ms
+2024-05-28 11:51:55.682 +00:00 [INF] Request starting HTTP/1.1 POST http://localhost:5001/Orders - application/json 711
+2024-05-28 11:51:55.695 +00:00 [INF] Executing endpoint 'HTTP: POST /Orders'
+2024-05-28 11:52:43.565 +00:00 [INF] Handling CreateOrderCommand
+2024-05-28 11:52:43.581 +00:00 [INF] Property OrderItems : [{"ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Price":10.99,"Quantity":2,"$type":"OrderItem"},{"ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Price":20.50,"Quantity":1,"$type":"OrderItem"}]
+2024-05-28 11:52:43.592 +00:00 [INF] Property CustomerId : "22e985e1-40a5-495b-9282-897853dd5d61"
+2024-05-28 11:52:43.597 +00:00 [INF] Property DeliveryAddress : {"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","Postcode":"12345","$type":"Address"}
+2024-05-28 11:52:43.603 +00:00 [INF] Property PaymentDetails : {"CardNumber":"1234 5678 9012 3456","CardHolderName":"John Doe","ExpiryDate":"12/24","Cvv":"123","PaymentMethod":0,"$type":"PaymentDetails"}
+2024-05-28 11:53:04.095 +00:00 [INF] ----- Creating Order - Order: {"OrderItems":[{"Price":10.99,"Message":"New Order Item Added","Quantity":2,"OrderId":"3b9953f5-4aef-4888-8ad3-3e90f1afb9d2","ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Id":"db687711-9c4e-4535-b0c5-657effa7e1a3","DomainEvents":[],"$type":"OrderItem"},{"Price":20.50,"Message":"New Order Item Added","Quantity":1,"OrderId":"3b9953f5-4aef-4888-8ad3-3e90f1afb9d2","ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Id":"7c296ebd-cd10-4116-810e-309e637fb1d7","DomainEvents":[],"$type":"OrderItem"}],"Status":{"Name":"Pending","Value":1,"$type":"OrderStatus"},"OrderTotal":42.48,"OrderPlaced":"0001-01-01T00:00:00.0000000+00:00","OrderPaid":false,"IsCancelled":false,"Message":"New Order Created","Payment":{"CardName":"John Doe","CardNumber":"1234 5678 9012 3456","Expiration":"12/24","CVV":"123","PaymentMethod":0,"$type":"Payment"},"DeliveryAddress":{"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","PostCode":"12345","$type":"DeliveryAddress"},"CustomerId":"22e985e1-40a5-495b-9282-897853dd5d61","Id":"3b9953f5-4aef-4888-8ad3-3e90f1afb9d2","DomainEvents":[{"NewOrder":{"OrderItems":[{"Price":10.99,"Message":"New Order Item Added","Quantity":2,"OrderId":"3b9953f5-4aef-4888-8ad3-3e90f1afb9d2","ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Id":"db687711-9c4e-4535-b0c5-657effa7e1a3","DomainEvents":[],"$type":"OrderItem"},{"Price":20.50,"Message":"New Order Item Added","Quantity":1,"OrderId":"3b9953f5-4aef-4888-8ad3-3e90f1afb9d2","ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Id":"7c296ebd-cd10-4116-810e-309e637fb1d7","DomainEvents":[],"$type":"OrderItem"}],"Status":{"Name":"Pending","Value":1,"$type":"OrderStatus"},"OrderTotal":42.48,"OrderPlaced":"0001-01-01T00:00:00.0000000+00:00","OrderPaid":false,"IsCancelled":false,"Message":"New Order Created","Payment":{"CardName":"John Doe","CardNumber":"1234 5678 9012 3456","Expiration":"12/24","CVV":"123","PaymentMethod":0,"$type":"Payment"},"DeliveryAddress":{"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","PostCode":"12345","$type":"DeliveryAddress"},"CustomerId":"22e985e1-40a5-495b-9282-897853dd5d61","Id":"3b9953f5-4aef-4888-8ad3-3e90f1afb9d2","DomainEvents":[{"NewOrder":{"OrderItems":[{"Price":10.99,"Message":"New Order Item Added","Quantity":2,"OrderId":"3b9953f5-4aef-4888-8ad3-3e90f1afb9d2","ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Id":"db687711-9c4e-4535-b0c5-657effa7e1a3","DomainEvents":[],"$type":"OrderItem"},{"Price":20.50,"Message":"New Order Item Added","Quantity":1,"OrderId":"3b9953f5-4aef-4888-8ad3-3e90f1afb9d2","ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Id":"7c296ebd-cd10-4116-810e-309e637fb1d7","DomainEvents":[],"$type":"OrderItem"}],"Status":{"Name":"Pending","Value":1,"$type":"OrderStatus"},"OrderTotal":42.48,"OrderPlaced":"0001-01-01T00:00:00.0000000+00:00","OrderPaid":false,"IsCancelled":false,"Message":"New Order Created","Payment":{"CardName":"John Doe","CardNumber":"1234 5678 9012 3456","Expiration":"12/24","CVV":"123","PaymentMethod":0,"$type":"Payment"},"DeliveryAddress":{"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","PostCode":"12345","$type":"DeliveryAddress"},"CustomerId":"22e985e1-40a5-495b-9282-897853dd5d61","Id":"3b9953f5-4aef-4888-8ad3-3e90f1afb9d2","DomainEvents":[{"NewOrder":{"OrderItems":null,"Status":null,"OrderTotal":null,"OrderPlaced":null,"OrderPaid":null,"IsCancelled":null,"Message":null,"Payment":null,"DeliveryAddress":null,"CustomerId":null,"Id":null,"DomainEvents":null,"$type":"Order"},"DateOccurred":"2024-05-28T11:52:56.6046966Z","$type":"OrderCreatedEvent"}],"$type":"Order"},"DateOccurred":"2024-05-28T11:52:56.6046966Z","$type":"OrderCreatedEvent"}],"$type":"Order"},"DateOccurred":"2024-05-28T11:52:56.6046966Z","$type":"OrderCreatedEvent"}],"$type":"Order"}
+2024-05-28 11:53:30.003 +00:00 [INF] Handling Order Created Domain event for {new order}
+2024-05-28 11:53:33.755 +00:00 [INF] Handled CreateOrderCommand with BookyWooks.SharedKernel.Result`1[System.Guid] in 50149 ms
+2024-05-28 11:53:33.800 +00:00 [INF] Executed endpoint 'HTTP: POST /Orders'
+2024-05-28 11:53:33.831 +00:00 [INF] Request finished HTTP/1.1 POST http://localhost:5001/Orders - 200 null application/json 98153.1234ms
+2024-05-28 11:54:30.509 +00:00 [INF] Order Failed notification sent to customer with Id: "22e985e1-40a5-495b-9282-897853dd5d61" for order Id: "3b9953f5-4aef-4888-8ad3-3e90f1afb9d2"
+2024-05-28 12:11:01.360 +00:00 [INF] Registered 7 endpoints in 149,097 milliseconds.
+2024-05-28 12:11:07.957 +00:00 [INF] Configured endpoint complete-payment-command-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.CompletePaymentCommandConsumer
+2024-05-28 12:11:07.985 +00:00 [INF] Configured endpoint order-failed-event-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.OrderFailedEventConsumer
+2024-05-28 12:11:10.783 +00:00 [INF] Now listening on: http://[::]:8080
+2024-05-28 12:11:10.787 +00:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-28 12:11:10.790 +00:00 [INF] Hosting environment: Development
+2024-05-28 12:11:10.794 +00:00 [INF] Content root path: /app
+2024-05-28 12:11:11.045 +00:00 [INF] Bus started: "rabbitmq://rabbitmq/"
+2024-05-28 12:11:16.337 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger - null null
+2024-05-28 12:11:16.629 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger - 302 0 null 301.8606ms
+2024-05-28 12:11:16.657 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/index.html - null null
+2024-05-28 12:11:16.956 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/index.html - 200 null text/html; charset=utf-8 299.4896ms
+2024-05-28 12:11:17.851 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 12:11:17.867 +00:00 [WRN] Failed to determine the https port for redirect.
+2024-05-28 12:11:17.874 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 23.1686ms
+2024-05-28 12:11:17.885 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 12:11:17.889 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 12:11:17.893 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 8.662ms
+2024-05-28 12:11:17.907 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 12:11:17.995 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 12:11:18.003 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 7.9419ms
+2024-05-28 12:11:18.010 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 12:11:18.015 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 12:11:18.021 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 11.6385ms
+2024-05-28 12:11:18.033 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 12:11:18.114 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - null null
+2024-05-28 12:11:18.276 +00:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2024-05-28 12:11:19.520 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 1406.0592ms
+2024-05-28 12:14:48.644 +00:00 [INF] Registered 7 endpoints in 40,257 milliseconds.
+2024-05-28 12:14:52.493 +00:00 [INF] Configured endpoint complete-payment-command-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.CompletePaymentCommandConsumer
+2024-05-28 12:14:52.508 +00:00 [INF] Configured endpoint order-failed-event-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.OrderFailedEventConsumer
+2024-05-28 12:14:53.459 +00:00 [INF] Now listening on: http://[::]:8080
+2024-05-28 12:14:53.482 +00:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-28 12:14:53.487 +00:00 [INF] Hosting environment: Development
+2024-05-28 12:14:53.492 +00:00 [INF] Content root path: /app
+2024-05-28 12:14:53.818 +00:00 [INF] Bus started: "rabbitmq://rabbitmq/"
+2024-05-28 12:14:58.912 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger - null null
+2024-05-28 12:14:59.149 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger - 302 0 null 239.1305ms
+2024-05-28 12:14:59.171 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/index.html - null null
+2024-05-28 12:14:59.416 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/index.html - 200 null text/html; charset=utf-8 243.5181ms
+2024-05-28 12:15:00.405 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 12:15:00.428 +00:00 [WRN] Failed to determine the https port for redirect.
+2024-05-28 12:15:00.435 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 29.6839ms
+2024-05-28 12:15:00.444 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 12:15:00.449 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 12:15:00.456 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 6.3255ms
+2024-05-28 12:15:00.472 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 12:15:00.583 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 12:15:00.596 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 13.0323ms
+2024-05-28 12:15:00.603 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 12:15:00.613 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 12:15:00.635 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 22.8726ms
+2024-05-28 12:15:00.658 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 12:15:00.735 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - null null
+2024-05-28 12:15:00.849 +00:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2024-05-28 12:15:02.862 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 2126.7386ms
+2024-05-28 12:16:19.429 +00:00 [INF] Request starting HTTP/1.1 POST http://localhost:5001/Orders - application/json 711
+2024-05-28 12:16:19.449 +00:00 [INF] Executing endpoint 'HTTP: POST /Orders'
+2024-05-28 12:16:19.997 +00:00 [INF] Handling CreateOrderCommand
+2024-05-28 12:16:20.026 +00:00 [INF] Property OrderItems : [{"ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Price":10.99,"Quantity":2,"$type":"OrderItem"},{"ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Price":20.50,"Quantity":1,"$type":"OrderItem"}]
+2024-05-28 12:16:20.042 +00:00 [INF] Property CustomerId : "22e985e1-40a5-495b-9282-897853dd5d61"
+2024-05-28 12:16:20.047 +00:00 [INF] Property DeliveryAddress : {"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","Postcode":"12345","$type":"Address"}
+2024-05-28 12:16:20.052 +00:00 [INF] Property PaymentDetails : {"CardNumber":"1234 5678 9012 3456","CardHolderName":"John Doe","ExpiryDate":"12/24","Cvv":"123","PaymentMethod":0,"$type":"PaymentDetails"}
+2024-05-28 12:16:20.095 +00:00 [INF] ----- Creating Order - Order: {"OrderItems":[{"Price":10.99,"Message":"New Order Item Added","Quantity":2,"OrderId":"35d55893-57ec-4368-8333-2baea27ad1fe","ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Id":"fe33181c-ad78-4521-8611-1724f1284e19","DomainEvents":[],"$type":"OrderItem"},{"Price":20.50,"Message":"New Order Item Added","Quantity":1,"OrderId":"35d55893-57ec-4368-8333-2baea27ad1fe","ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Id":"f92a10a8-3b72-466c-84d8-8a784ac0729a","DomainEvents":[],"$type":"OrderItem"}],"Status":{"Name":"Pending","Value":1,"$type":"OrderStatus"},"OrderTotal":42.48,"OrderPlaced":"0001-01-01T00:00:00.0000000+00:00","OrderPaid":false,"IsCancelled":false,"Message":"New Order Created","Payment":{"CardName":"John Doe","CardNumber":"1234 5678 9012 3456","Expiration":"12/24","CVV":"123","PaymentMethod":0,"$type":"Payment"},"DeliveryAddress":{"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","PostCode":"12345","$type":"DeliveryAddress"},"CustomerId":"22e985e1-40a5-495b-9282-897853dd5d61","Id":"35d55893-57ec-4368-8333-2baea27ad1fe","DomainEvents":[{"NewOrder":{"OrderItems":[{"Price":10.99,"Message":"New Order Item Added","Quantity":2,"OrderId":"35d55893-57ec-4368-8333-2baea27ad1fe","ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Id":"fe33181c-ad78-4521-8611-1724f1284e19","DomainEvents":[],"$type":"OrderItem"},{"Price":20.50,"Message":"New Order Item Added","Quantity":1,"OrderId":"35d55893-57ec-4368-8333-2baea27ad1fe","ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Id":"f92a10a8-3b72-466c-84d8-8a784ac0729a","DomainEvents":[],"$type":"OrderItem"}],"Status":{"Name":"Pending","Value":1,"$type":"OrderStatus"},"OrderTotal":42.48,"OrderPlaced":"0001-01-01T00:00:00.0000000+00:00","OrderPaid":false,"IsCancelled":false,"Message":"New Order Created","Payment":{"CardName":"John Doe","CardNumber":"1234 5678 9012 3456","Expiration":"12/24","CVV":"123","PaymentMethod":0,"$type":"Payment"},"DeliveryAddress":{"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","PostCode":"12345","$type":"DeliveryAddress"},"CustomerId":"22e985e1-40a5-495b-9282-897853dd5d61","Id":"35d55893-57ec-4368-8333-2baea27ad1fe","DomainEvents":[{"NewOrder":{"OrderItems":[{"Price":10.99,"Message":"New Order Item Added","Quantity":2,"OrderId":"35d55893-57ec-4368-8333-2baea27ad1fe","ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Id":"fe33181c-ad78-4521-8611-1724f1284e19","DomainEvents":[],"$type":"OrderItem"},{"Price":20.50,"Message":"New Order Item Added","Quantity":1,"OrderId":"35d55893-57ec-4368-8333-2baea27ad1fe","ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Id":"f92a10a8-3b72-466c-84d8-8a784ac0729a","DomainEvents":[],"$type":"OrderItem"}],"Status":{"Name":"Pending","Value":1,"$type":"OrderStatus"},"OrderTotal":42.48,"OrderPlaced":"0001-01-01T00:00:00.0000000+00:00","OrderPaid":false,"IsCancelled":false,"Message":"New Order Created","Payment":{"CardName":"John Doe","CardNumber":"1234 5678 9012 3456","Expiration":"12/24","CVV":"123","PaymentMethod":0,"$type":"Payment"},"DeliveryAddress":{"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","PostCode":"12345","$type":"DeliveryAddress"},"CustomerId":"22e985e1-40a5-495b-9282-897853dd5d61","Id":"35d55893-57ec-4368-8333-2baea27ad1fe","DomainEvents":[{"NewOrder":{"OrderItems":null,"Status":null,"OrderTotal":null,"OrderPlaced":null,"OrderPaid":null,"IsCancelled":null,"Message":null,"Payment":null,"DeliveryAddress":null,"CustomerId":null,"Id":null,"DomainEvents":null,"$type":"Order"},"DateOccurred":"2024-05-28T12:16:20.0709539Z","$type":"OrderCreatedEvent"}],"$type":"Order"},"DateOccurred":"2024-05-28T12:16:20.0709539Z","$type":"OrderCreatedEvent"}],"$type":"Order"},"DateOccurred":"2024-05-28T12:16:20.0709539Z","$type":"OrderCreatedEvent"}],"$type":"Order"}
+2024-05-28 12:16:20.696 +00:00 [INF] Handling Order Created Domain event for {new order}
+2024-05-28 12:16:21.500 +00:00 [INF] Handled CreateOrderCommand with BookyWooks.SharedKernel.Result`1[System.Guid] in 1441 ms
+2024-05-28 12:16:21.525 +00:00 [INF] Executed endpoint 'HTTP: POST /Orders'
+2024-05-28 12:16:21.534 +00:00 [INF] Request finished HTTP/1.1 POST http://localhost:5001/Orders - 200 null application/json 2104.6588ms
+2024-05-28 12:16:27.789 +00:00 [INF] Order Failed notification sent to customer with Id: "22e985e1-40a5-495b-9282-897853dd5d61" for order Id: "35d55893-57ec-4368-8333-2baea27ad1fe"
+2024-05-28 12:23:51.846 +00:00 [INF] Registered 7 endpoints in 80,090 milliseconds.
+2024-05-28 12:23:56.026 +00:00 [INF] Configured endpoint complete-payment-command-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.CompletePaymentCommandConsumer
+2024-05-28 12:23:56.038 +00:00 [INF] Configured endpoint order-failed-event-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.OrderFailedEventConsumer
+2024-05-28 12:23:59.611 +00:00 [INF] Now listening on: http://[::]:8080
+2024-05-28 12:23:59.623 +00:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-28 12:23:59.631 +00:00 [INF] Hosting environment: Development
+2024-05-28 12:23:59.641 +00:00 [INF] Content root path: /app
+2024-05-28 12:23:59.908 +00:00 [INF] Bus started: "rabbitmq://rabbitmq/"
+2024-05-28 12:24:49.222 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger - null null
+2024-05-28 12:24:49.575 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger - 302 0 null 358.8919ms
+2024-05-28 12:24:50.632 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/index.html - null null
+2024-05-28 12:24:50.865 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/index.html - 200 null text/html; charset=utf-8 239.2439ms
+2024-05-28 12:25:10.726 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 12:25:12.240 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - null null
+2024-05-28 12:25:17.209 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 12:25:17.489 +00:00 [WRN] Failed to determine the https port for redirect.
+2024-05-28 12:25:17.601 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 6855.4033ms
+2024-05-28 12:25:17.601 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 371.1254ms
+2024-05-28 12:25:18.640 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 12:25:19.719 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 12:25:18.640 +00:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2024-05-28 12:25:19.805 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 65.2539ms
+2024-05-28 12:25:19.805 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 1144.7503ms
+2024-05-28 12:25:19.834 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 12:25:19.834 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 12:25:19.834 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 12:25:19.834 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 12:25:20.937 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 8698.4009ms
+2024-05-28 12:29:02.899 +00:00 [INF] Request starting HTTP/1.1 POST http://localhost:5001/Orders - application/json 711
+2024-05-28 12:29:03.165 +00:00 [INF] Executing endpoint 'HTTP: POST /Orders'
+2024-05-28 12:29:07.984 +00:00 [INF] Handling CreateOrderCommand
+2024-05-28 12:29:07.995 +00:00 [INF] Property OrderItems : [{"ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Price":10.99,"Quantity":2,"$type":"OrderItem"},{"ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Price":20.50,"Quantity":1,"$type":"OrderItem"}]
+2024-05-28 12:29:08.003 +00:00 [INF] Property CustomerId : "22e985e1-40a5-495b-9282-897853dd5d61"
+2024-05-28 12:29:08.006 +00:00 [INF] Property DeliveryAddress : {"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","Postcode":"12345","$type":"Address"}
+2024-05-28 12:29:08.010 +00:00 [INF] Property PaymentDetails : {"CardNumber":"1234 5678 9012 3456","CardHolderName":"John Doe","ExpiryDate":"12/24","Cvv":"123","PaymentMethod":0,"$type":"PaymentDetails"}
+2024-05-28 12:29:08.047 +00:00 [INF] ----- Creating Order - Order: {"OrderItems":[{"Price":10.99,"Message":"New Order Item Added","Quantity":2,"OrderId":"64c2008c-ee0a-41d5-813d-98e50dbc0dab","ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Id":"1d97381c-d0ef-4e16-a904-3a5da2351e55","DomainEvents":[],"$type":"OrderItem"},{"Price":20.50,"Message":"New Order Item Added","Quantity":1,"OrderId":"64c2008c-ee0a-41d5-813d-98e50dbc0dab","ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Id":"7a785a7d-d860-4267-ae30-270c2f6a12c6","DomainEvents":[],"$type":"OrderItem"}],"Status":{"Name":"Pending","Value":1,"$type":"OrderStatus"},"OrderTotal":42.48,"OrderPlaced":"0001-01-01T00:00:00.0000000+00:00","OrderPaid":false,"IsCancelled":false,"Message":"New Order Created","Payment":{"CardName":"John Doe","CardNumber":"1234 5678 9012 3456","Expiration":"12/24","CVV":"123","PaymentMethod":0,"$type":"Payment"},"DeliveryAddress":{"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","PostCode":"12345","$type":"DeliveryAddress"},"CustomerId":"22e985e1-40a5-495b-9282-897853dd5d61","Id":"64c2008c-ee0a-41d5-813d-98e50dbc0dab","DomainEvents":[{"NewOrder":{"OrderItems":[{"Price":10.99,"Message":"New Order Item Added","Quantity":2,"OrderId":"64c2008c-ee0a-41d5-813d-98e50dbc0dab","ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Id":"1d97381c-d0ef-4e16-a904-3a5da2351e55","DomainEvents":[],"$type":"OrderItem"},{"Price":20.50,"Message":"New Order Item Added","Quantity":1,"OrderId":"64c2008c-ee0a-41d5-813d-98e50dbc0dab","ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Id":"7a785a7d-d860-4267-ae30-270c2f6a12c6","DomainEvents":[],"$type":"OrderItem"}],"Status":{"Name":"Pending","Value":1,"$type":"OrderStatus"},"OrderTotal":42.48,"OrderPlaced":"0001-01-01T00:00:00.0000000+00:00","OrderPaid":false,"IsCancelled":false,"Message":"New Order Created","Payment":{"CardName":"John Doe","CardNumber":"1234 5678 9012 3456","Expiration":"12/24","CVV":"123","PaymentMethod":0,"$type":"Payment"},"DeliveryAddress":{"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","PostCode":"12345","$type":"DeliveryAddress"},"CustomerId":"22e985e1-40a5-495b-9282-897853dd5d61","Id":"64c2008c-ee0a-41d5-813d-98e50dbc0dab","DomainEvents":[{"NewOrder":{"OrderItems":[{"Price":10.99,"Message":"New Order Item Added","Quantity":2,"OrderId":"64c2008c-ee0a-41d5-813d-98e50dbc0dab","ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Id":"1d97381c-d0ef-4e16-a904-3a5da2351e55","DomainEvents":[],"$type":"OrderItem"},{"Price":20.50,"Message":"New Order Item Added","Quantity":1,"OrderId":"64c2008c-ee0a-41d5-813d-98e50dbc0dab","ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Id":"7a785a7d-d860-4267-ae30-270c2f6a12c6","DomainEvents":[],"$type":"OrderItem"}],"Status":{"Name":"Pending","Value":1,"$type":"OrderStatus"},"OrderTotal":42.48,"OrderPlaced":"0001-01-01T00:00:00.0000000+00:00","OrderPaid":false,"IsCancelled":false,"Message":"New Order Created","Payment":{"CardName":"John Doe","CardNumber":"1234 5678 9012 3456","Expiration":"12/24","CVV":"123","PaymentMethod":0,"$type":"Payment"},"DeliveryAddress":{"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","PostCode":"12345","$type":"DeliveryAddress"},"CustomerId":"22e985e1-40a5-495b-9282-897853dd5d61","Id":"64c2008c-ee0a-41d5-813d-98e50dbc0dab","DomainEvents":[{"NewOrder":{"OrderItems":null,"Status":null,"OrderTotal":null,"OrderPlaced":null,"OrderPaid":null,"IsCancelled":null,"Message":null,"Payment":null,"DeliveryAddress":null,"CustomerId":null,"Id":null,"DomainEvents":null,"$type":"Order"},"DateOccurred":"2024-05-28T12:29:08.0397979Z","$type":"OrderCreatedEvent"}],"$type":"Order"},"DateOccurred":"2024-05-28T12:29:08.0397979Z","$type":"OrderCreatedEvent"}],"$type":"Order"},"DateOccurred":"2024-05-28T12:29:08.0397979Z","$type":"OrderCreatedEvent"}],"$type":"Order"}
+2024-05-28 12:29:08.301 +00:00 [INF] Handling Order Created Domain event for {new order}
+2024-05-28 12:29:09.048 +00:00 [INF] Handled CreateOrderCommand with BookyWooks.SharedKernel.Result`1[System.Guid] in 1016 ms
+2024-05-28 12:29:09.060 +00:00 [INF] Executed endpoint 'HTTP: POST /Orders'
+2024-05-28 12:29:09.068 +00:00 [INF] Request finished HTTP/1.1 POST http://localhost:5001/Orders - 200 null application/json 6190.0821ms
+2024-05-28 12:29:13.047 +00:00 [INF] Order Failed notification sent to customer with Id: "22e985e1-40a5-495b-9282-897853dd5d61" for order Id: "64c2008c-ee0a-41d5-813d-98e50dbc0dab"
+2024-05-28 12:31:31.931 +00:00 [INF] Registered 7 endpoints in 61,114 milliseconds.
+2024-05-28 12:31:34.184 +00:00 [INF] Configured endpoint complete-payment-command-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.CompletePaymentCommandConsumer
+2024-05-28 12:31:34.190 +00:00 [INF] Configured endpoint order-failed-event-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.OrderFailedEventConsumer
+2024-05-28 12:31:50.405 +00:00 [INF] Now listening on: http://[::]:8080
+2024-05-28 12:31:50.413 +00:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-28 12:31:50.418 +00:00 [INF] Hosting environment: Development
+2024-05-28 12:31:50.422 +00:00 [INF] Content root path: /app
+2024-05-28 12:31:50.638 +00:00 [INF] Bus started: "rabbitmq://rabbitmq/"
+2024-05-28 12:32:26.680 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger - null null
+2024-05-28 12:32:26.890 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger - 302 0 null 215.7064ms
+2024-05-28 12:32:27.564 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/index.html - null null
+2024-05-28 12:32:27.687 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/index.html - 200 null text/html; charset=utf-8 123.3236ms
+2024-05-28 12:32:28.542 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 12:32:28.571 +00:00 [WRN] Failed to determine the https port for redirect.
+2024-05-28 12:32:28.574 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 31.6072ms
+2024-05-28 12:32:28.580 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 12:32:29.550 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 12:32:29.553 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 3.1115ms
+2024-05-28 12:32:29.556 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 12:32:30.305 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 12:32:30.307 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 2.4458ms
+2024-05-28 12:32:30.310 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 12:32:32.707 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 12:32:32.752 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 45.1094ms
+2024-05-28 12:32:32.797 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 12:32:57.117 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - null null
+2024-05-28 12:32:57.368 +00:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2024-05-28 12:32:58.106 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 988.8703ms
+2024-05-28 12:33:18.551 +00:00 [INF] Request starting HTTP/1.1 POST http://localhost:5001/Orders - application/json 711
+2024-05-28 12:33:18.627 +00:00 [INF] Executing endpoint 'HTTP: POST /Orders'
+2024-05-28 12:33:18.818 +00:00 [INF] Handling CreateOrderCommand
+2024-05-28 12:33:18.829 +00:00 [INF] Property OrderItems : [{"ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Price":10.99,"Quantity":2,"$type":"OrderItem"},{"ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Price":20.50,"Quantity":1,"$type":"OrderItem"}]
+2024-05-28 12:33:18.838 +00:00 [INF] Property CustomerId : "22e985e1-40a5-495b-9282-897853dd5d61"
+2024-05-28 12:33:18.841 +00:00 [INF] Property DeliveryAddress : {"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","Postcode":"12345","$type":"Address"}
+2024-05-28 12:33:18.844 +00:00 [INF] Property PaymentDetails : {"CardNumber":"1234 5678 9012 3456","CardHolderName":"John Doe","ExpiryDate":"12/24","Cvv":"123","PaymentMethod":0,"$type":"PaymentDetails"}
+2024-05-28 12:33:18.861 +00:00 [INF] ----- Creating Order - Order: {"OrderItems":[{"Price":10.99,"Message":"New Order Item Added","Quantity":2,"OrderId":"ae08b35c-2e45-4693-b050-57a94bdf6ad8","ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Id":"44719e56-bee0-4673-b555-33110617d76e","DomainEvents":[],"$type":"OrderItem"},{"Price":20.50,"Message":"New Order Item Added","Quantity":1,"OrderId":"ae08b35c-2e45-4693-b050-57a94bdf6ad8","ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Id":"1b97c044-e69c-45c3-b7f5-cdd5da2a4307","DomainEvents":[],"$type":"OrderItem"}],"Status":{"Name":"Pending","Value":1,"$type":"OrderStatus"},"OrderTotal":42.48,"OrderPlaced":"0001-01-01T00:00:00.0000000+00:00","OrderPaid":false,"IsCancelled":false,"Message":"New Order Created","Payment":{"CardName":"John Doe","CardNumber":"1234 5678 9012 3456","Expiration":"12/24","CVV":"123","PaymentMethod":0,"$type":"Payment"},"DeliveryAddress":{"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","PostCode":"12345","$type":"DeliveryAddress"},"CustomerId":"22e985e1-40a5-495b-9282-897853dd5d61","Id":"ae08b35c-2e45-4693-b050-57a94bdf6ad8","DomainEvents":[{"NewOrder":{"OrderItems":[{"Price":10.99,"Message":"New Order Item Added","Quantity":2,"OrderId":"ae08b35c-2e45-4693-b050-57a94bdf6ad8","ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Id":"44719e56-bee0-4673-b555-33110617d76e","DomainEvents":[],"$type":"OrderItem"},{"Price":20.50,"Message":"New Order Item Added","Quantity":1,"OrderId":"ae08b35c-2e45-4693-b050-57a94bdf6ad8","ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Id":"1b97c044-e69c-45c3-b7f5-cdd5da2a4307","DomainEvents":[],"$type":"OrderItem"}],"Status":{"Name":"Pending","Value":1,"$type":"OrderStatus"},"OrderTotal":42.48,"OrderPlaced":"0001-01-01T00:00:00.0000000+00:00","OrderPaid":false,"IsCancelled":false,"Message":"New Order Created","Payment":{"CardName":"John Doe","CardNumber":"1234 5678 9012 3456","Expiration":"12/24","CVV":"123","PaymentMethod":0,"$type":"Payment"},"DeliveryAddress":{"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","PostCode":"12345","$type":"DeliveryAddress"},"CustomerId":"22e985e1-40a5-495b-9282-897853dd5d61","Id":"ae08b35c-2e45-4693-b050-57a94bdf6ad8","DomainEvents":[{"NewOrder":{"OrderItems":[{"Price":10.99,"Message":"New Order Item Added","Quantity":2,"OrderId":"ae08b35c-2e45-4693-b050-57a94bdf6ad8","ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Id":"44719e56-bee0-4673-b555-33110617d76e","DomainEvents":[],"$type":"OrderItem"},{"Price":20.50,"Message":"New Order Item Added","Quantity":1,"OrderId":"ae08b35c-2e45-4693-b050-57a94bdf6ad8","ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Id":"1b97c044-e69c-45c3-b7f5-cdd5da2a4307","DomainEvents":[],"$type":"OrderItem"}],"Status":{"Name":"Pending","Value":1,"$type":"OrderStatus"},"OrderTotal":42.48,"OrderPlaced":"0001-01-01T00:00:00.0000000+00:00","OrderPaid":false,"IsCancelled":false,"Message":"New Order Created","Payment":{"CardName":"John Doe","CardNumber":"1234 5678 9012 3456","Expiration":"12/24","CVV":"123","PaymentMethod":0,"$type":"Payment"},"DeliveryAddress":{"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","PostCode":"12345","$type":"DeliveryAddress"},"CustomerId":"22e985e1-40a5-495b-9282-897853dd5d61","Id":"ae08b35c-2e45-4693-b050-57a94bdf6ad8","DomainEvents":[{"NewOrder":{"OrderItems":null,"Status":null,"OrderTotal":null,"OrderPlaced":null,"OrderPaid":null,"IsCancelled":null,"Message":null,"Payment":null,"DeliveryAddress":null,"CustomerId":null,"Id":null,"DomainEvents":null,"$type":"Order"},"DateOccurred":"2024-05-28T12:33:18.8552191Z","$type":"OrderCreatedEvent"}],"$type":"Order"},"DateOccurred":"2024-05-28T12:33:18.8552191Z","$type":"OrderCreatedEvent"}],"$type":"Order"},"DateOccurred":"2024-05-28T12:33:18.8552191Z","$type":"OrderCreatedEvent"}],"$type":"Order"}
+2024-05-28 12:33:19.069 +00:00 [INF] Handling Order Created Domain event for {new order}
+2024-05-28 12:33:19.515 +00:00 [INF] Handled CreateOrderCommand with BookyWooks.SharedKernel.Result`1[System.Guid] in 668 ms
+2024-05-28 12:33:19.527 +00:00 [INF] Executed endpoint 'HTTP: POST /Orders'
+2024-05-28 12:33:19.532 +00:00 [INF] Request finished HTTP/1.1 POST http://localhost:5001/Orders - 200 null application/json 981.5801ms
+2024-05-28 12:33:24.297 +00:00 [INF] Order Failed notification sent to customer with Id: "22e985e1-40a5-495b-9282-897853dd5d61" for order Id: "ae08b35c-2e45-4693-b050-57a94bdf6ad8"
+2024-05-28 12:54:47.028 +00:00 [INF] Registered 7 endpoints in 66,856 milliseconds.
+2024-05-28 12:54:49.850 +00:00 [INF] Configured endpoint complete-payment-command-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.CompletePaymentCommandConsumer
+2024-05-28 12:54:49.859 +00:00 [INF] Configured endpoint order-failed-event-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.OrderFailedEventConsumer
+2024-05-28 12:55:18.649 +00:00 [INF] Now listening on: http://[::]:8080
+2024-05-28 12:55:18.654 +00:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-28 12:55:18.656 +00:00 [INF] Hosting environment: Development
+2024-05-28 12:55:18.662 +00:00 [INF] Content root path: /app
+2024-05-28 12:55:18.902 +00:00 [INF] Bus started: "rabbitmq://rabbitmq/"
+2024-05-28 12:55:37.456 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger - null null
+2024-05-28 12:55:37.670 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger - 302 0 null 215.0315ms
+2024-05-28 12:55:38.409 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/index.html - null null
+2024-05-28 12:55:38.523 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/index.html - 200 null text/html; charset=utf-8 113.393ms
+2024-05-28 12:55:41.872 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 12:55:41.902 +00:00 [WRN] Failed to determine the https port for redirect.
+2024-05-28 12:55:41.905 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 32.963ms
+2024-05-28 12:55:41.911 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 12:55:44.017 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 12:55:44.106 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 88.6764ms
+2024-05-28 12:55:44.109 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 12:55:45.004 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 12:55:45.009 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 5.2864ms
+2024-05-28 12:55:45.012 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 12:55:47.052 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 12:55:47.079 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 26.8852ms
+2024-05-28 12:55:47.082 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 12:55:48.626 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - null null
+2024-05-28 12:55:48.755 +00:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2024-05-28 12:55:49.421 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 794.7907ms
+2024-05-28 14:02:17.952 +01:00 [INF] Registered 7 endpoints in 67,785 milliseconds.
+2024-05-28 14:02:20.100 +01:00 [INF] Configured endpoint complete-payment-command-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.CompletePaymentCommandConsumer
+2024-05-28 14:02:20.109 +01:00 [INF] Configured endpoint order-failed-event-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.OrderFailedEventConsumer
+2024-05-28 14:02:22.662 +01:00 [INF] Now listening on: http://localhost:57679
+2024-05-28 14:02:22.678 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-28 14:02:22.689 +01:00 [INF] Hosting environment: Development
+2024-05-28 14:02:22.693 +01:00 [INF] Content root path: C:\Users\porterc\source\repos\BookyWooksOnlineStore\BookWooks.OrderApi\src\BookWooks.OrderApi.Web
+2024-05-28 14:02:22.894 +01:00 [INF] Bus started: "rabbitmq://localhost/"
+2024-05-28 14:02:34.143 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:57679/swagger - null null
+2024-05-28 14:02:34.390 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:57679/swagger - 302 0 null 6338.1636ms
+2024-05-28 14:02:35.088 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:57679/swagger/index.html - null null
+2024-05-28 14:02:35.297 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:57679/swagger/index.html - 200 null text/html; charset=utf-8 899.6883ms
+2024-05-28 14:02:37.091 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:57679/_vs/browserLink - null null
+2024-05-28 14:02:36.074 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:57679/_framework/aspnetcore-browser-refresh.js - null null
+2024-05-28 14:02:38.679 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:57679/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 14:02:38.705 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:57679/_framework/aspnetcore-browser-refresh.js - 200 13780 application/javascript; charset=utf-8 3328.5903ms
+2024-05-28 14:02:38.723 +01:00 [WRN] Failed to determine the https port for redirect.
+2024-05-28 14:02:38.731 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:57679/swagger/swagger-ui-bundle.js.map - 404 0 null 1638.6823ms
+2024-05-28 14:02:40.504 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:57679/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 14:02:40.516 +01:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:57679/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 14:02:40.522 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:57679/swagger/swagger-ui-bundle.js.map - 404 0 null 1785.9185ms
+2024-05-28 14:02:40.535 +01:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:57679/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 14:02:40.541 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:57679/_vs/browserLink - 200 null text/javascript; charset=UTF-8 4450.7041ms
+2024-05-28 14:02:41.419 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:57679/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 14:02:41.431 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:57679/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 631.5103ms
+2024-05-28 14:02:44.833 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:57679/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 14:02:44.840 +01:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:57679/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 14:02:44.850 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:57679/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 3416.5162ms
+2024-05-28 14:02:44.864 +01:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:57679/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 14:02:45.774 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost:57679/swagger/v1/swagger.json - null null
+2024-05-28 14:02:45.801 +01:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2024-05-28 14:02:46.544 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost:57679/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 1543.6919ms
+2024-05-28 13:17:44.264 +00:00 [INF] Registered 7 endpoints in 31,951 milliseconds.
+2024-05-28 13:17:49.161 +00:00 [INF] Configured endpoint complete-payment-command-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.CompletePaymentCommandConsumer
+2024-05-28 13:17:49.171 +00:00 [INF] Configured endpoint order-failed-event-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.OrderFailedEventConsumer
+2024-05-28 13:18:14.889 +00:00 [INF] Now listening on: http://[::]:8080
+2024-05-28 13:18:14.905 +00:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-28 13:18:14.919 +00:00 [INF] Hosting environment: Development
+2024-05-28 13:18:14.957 +00:00 [INF] Content root path: /app
+2024-05-28 13:18:15.091 +00:00 [INF] Bus started: "rabbitmq://rabbitmq/"
+2024-05-28 13:18:20.644 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger - null null
+2024-05-28 13:18:20.829 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger - 302 0 null 187.2623ms
+2024-05-28 13:18:20.859 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/index.html - null null
+2024-05-28 13:18:21.182 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/index.html - 200 null text/html; charset=utf-8 322.7933ms
+2024-05-28 13:18:22.280 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 13:18:22.293 +00:00 [WRN] Failed to determine the https port for redirect.
+2024-05-28 13:18:22.298 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 17.8166ms
+2024-05-28 13:18:22.315 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 13:18:22.326 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 13:18:22.331 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 4.8309ms
+2024-05-28 13:18:22.337 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 13:18:22.432 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 13:18:22.442 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 9.712ms
+2024-05-28 13:18:22.448 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 13:18:22.455 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 13:18:22.459 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 3.8057ms
+2024-05-28 13:18:22.464 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 13:18:22.569 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - null null
+2024-05-28 13:18:22.793 +00:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2024-05-28 13:18:24.018 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 1448.9285ms
+2024-05-28 13:31:38.110 +00:00 [INF] Registered 7 endpoints in 667,374 milliseconds.
+2024-05-28 13:31:41.355 +00:00 [INF] Configured endpoint complete-payment-command-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.CompletePaymentCommandConsumer
+2024-05-28 13:31:41.363 +00:00 [INF] Configured endpoint order-failed-event-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.OrderFailedEventConsumer
+2024-05-28 13:31:50.934 +00:00 [INF] Now listening on: http://[::]:8080
+2024-05-28 13:31:50.959 +00:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-28 13:31:50.985 +00:00 [INF] Hosting environment: Development
+2024-05-28 13:31:50.989 +00:00 [INF] Content root path: /app
+2024-05-28 13:31:51.229 +00:00 [INF] Bus started: "rabbitmq://rabbitmq/"
+2024-05-28 13:32:02.969 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger - null null
+2024-05-28 13:32:03.048 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger - 302 0 null 79.2528ms
+2024-05-28 13:32:03.057 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/index.html - null null
+2024-05-28 13:32:03.133 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/index.html - 200 null text/html; charset=utf-8 76.0705ms
+2024-05-28 13:32:03.253 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 13:32:03.261 +00:00 [WRN] Failed to determine the https port for redirect.
+2024-05-28 13:32:03.264 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 11.5808ms
+2024-05-28 13:32:03.270 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 13:32:03.275 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 13:32:03.278 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 3.2931ms
+2024-05-28 13:32:03.282 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 13:32:03.339 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 13:32:03.342 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 3.0311ms
+2024-05-28 13:32:03.345 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 13:32:03.348 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 13:32:03.352 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 3.4436ms
+2024-05-28 13:32:03.355 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 13:32:03.414 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - null null
+2024-05-28 13:32:03.525 +00:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2024-05-28 13:32:04.279 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 864.455ms
+2024-05-28 13:36:03.604 +00:00 [INF] Registered 7 endpoints in 16,878 milliseconds.
+2024-05-28 13:36:06.315 +00:00 [INF] Configured endpoint complete-payment-command-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.CompletePaymentCommandConsumer
+2024-05-28 13:36:06.324 +00:00 [INF] Configured endpoint order-failed-event-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.OrderFailedEventConsumer
+2024-05-28 13:36:09.621 +00:00 [INF] Now listening on: http://[::]:8080
+2024-05-28 13:36:09.624 +00:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-28 13:36:09.628 +00:00 [INF] Hosting environment: Development
+2024-05-28 13:36:09.631 +00:00 [INF] Content root path: /app
+2024-05-28 13:36:09.850 +00:00 [INF] Bus started: "rabbitmq://rabbitmq/"
+2024-05-28 13:36:14.535 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger - null null
+2024-05-28 13:36:14.745 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger - 302 0 null 221.6045ms
+2024-05-28 13:36:14.775 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/index.html - null null
+2024-05-28 13:36:15.061 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/index.html - 200 null text/html; charset=utf-8 285.6958ms
+2024-05-28 13:36:15.829 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 13:36:15.841 +00:00 [WRN] Failed to determine the https port for redirect.
+2024-05-28 13:36:15.848 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 17.783ms
+2024-05-28 13:36:15.870 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 13:36:15.865 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 13:36:15.901 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 35.6659ms
+2024-05-28 13:36:15.925 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 13:36:16.009 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 13:36:16.014 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 5.0669ms
+2024-05-28 13:36:16.021 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 13:36:16.024 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 13:36:16.029 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 4.5789ms
+2024-05-28 13:36:16.032 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 13:36:16.119 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - null null
+2024-05-28 13:36:16.249 +00:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2024-05-28 13:36:17.328 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 1208.8976ms
+2024-05-28 15:29:52.886 +00:00 [INF] Registered 7 endpoints in 16,390 milliseconds.
+2024-05-28 15:29:55.808 +00:00 [INF] Configured endpoint complete-payment-command-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.CompletePaymentCommandConsumer
+2024-05-28 15:29:55.816 +00:00 [INF] Configured endpoint order-failed-event-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.OrderFailedEventConsumer
+2024-05-28 15:30:02.691 +00:00 [INF] Now listening on: http://[::]:8080
+2024-05-28 15:30:02.695 +00:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-28 15:30:02.724 +00:00 [INF] Hosting environment: Development
+2024-05-28 15:30:02.731 +00:00 [INF] Content root path: /app
+2024-05-28 15:30:03.055 +00:00 [INF] Bus started: "rabbitmq://rabbitmq/"
+2024-05-28 15:30:08.040 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger - null null
+2024-05-28 15:30:08.304 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger - 302 0 null 272.6415ms
+2024-05-28 15:30:08.323 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/index.html - null null
+2024-05-28 15:30:08.681 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/index.html - 200 null text/html; charset=utf-8 357.4967ms
+2024-05-28 15:30:09.234 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 15:30:09.249 +00:00 [WRN] Failed to determine the https port for redirect.
+2024-05-28 15:30:09.253 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 18.3896ms
+2024-05-28 15:30:09.261 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 15:30:09.269 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 15:30:09.275 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 5.451ms
+2024-05-28 15:30:09.286 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 15:30:09.371 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 15:30:09.376 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 4.4258ms
+2024-05-28 15:30:09.379 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 15:30:09.386 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 15:30:09.390 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 3.5789ms
+2024-05-28 15:30:09.393 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 15:30:09.475 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - null null
+2024-05-28 15:30:09.602 +00:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2024-05-28 15:30:10.545 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 1069.8744ms
+2024-05-28 15:32:53.941 +00:00 [INF] Registered 7 endpoints in 38,933 milliseconds.
+2024-05-28 15:32:57.872 +00:00 [INF] Configured endpoint complete-payment-command-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.CompletePaymentCommandConsumer
+2024-05-28 15:32:57.882 +00:00 [INF] Configured endpoint order-failed-event-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.OrderFailedEventConsumer
+2024-05-28 15:33:13.151 +00:00 [INF] Now listening on: http://[::]:8080
+2024-05-28 15:33:13.154 +00:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-28 15:33:13.157 +00:00 [INF] Hosting environment: Development
+2024-05-28 15:33:13.161 +00:00 [INF] Content root path: /app
+2024-05-28 15:33:13.329 +00:00 [INF] Bus started: "rabbitmq://rabbitmq/"
+2024-05-28 15:33:18.816 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger - null null
+2024-05-28 15:33:19.130 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger - 302 0 null 324.749ms
+2024-05-28 15:33:19.206 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/index.html - null null
+2024-05-28 15:33:19.610 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/index.html - 200 null text/html; charset=utf-8 403.7625ms
+2024-05-28 15:33:20.849 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 15:33:20.894 +00:00 [WRN] Failed to determine the https port for redirect.
+2024-05-28 15:33:20.898 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 48.9951ms
+2024-05-28 15:33:20.910 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 15:33:20.915 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 15:33:20.923 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 13.4631ms
+2024-05-28 15:33:20.934 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 15:33:21.028 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 15:33:21.032 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 4.4553ms
+2024-05-28 15:33:21.037 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 15:33:21.060 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 15:33:21.064 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 3.7004ms
+2024-05-28 15:33:21.068 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 15:33:21.152 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - null null
+2024-05-28 15:33:21.174 +00:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2024-05-28 15:33:23.612 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 2460.0303ms
+2024-05-28 15:39:17.913 +00:00 [INF] Registered 7 endpoints in 27,351 milliseconds.
+2024-05-28 15:39:21.787 +00:00 [INF] Configured endpoint complete-payment-command-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.CompletePaymentCommandConsumer
+2024-05-28 15:39:21.796 +00:00 [INF] Configured endpoint order-failed-event-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.OrderFailedEventConsumer
+2024-05-28 15:39:44.852 +00:00 [INF] Now listening on: http://[::]:8080
+2024-05-28 15:39:44.858 +00:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-28 15:39:44.861 +00:00 [INF] Hosting environment: Development
+2024-05-28 15:39:44.865 +00:00 [INF] Content root path: /app
+2024-05-28 15:39:45.133 +00:00 [INF] Bus started: "rabbitmq://rabbitmq/"
+2024-05-28 15:39:50.929 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger - null null
+2024-05-28 15:39:51.261 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger - 302 0 null 433.4345ms
+2024-05-28 15:39:51.353 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/index.html - null null
+2024-05-28 15:39:51.736 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/index.html - 200 null text/html; charset=utf-8 382.1629ms
+2024-05-28 15:39:52.661 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 15:39:52.672 +00:00 [WRN] Failed to determine the https port for redirect.
+2024-05-28 15:39:52.693 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 31.4732ms
+2024-05-28 15:39:52.701 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 15:39:52.724 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 15:39:52.728 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 4.3936ms
+2024-05-28 15:39:52.732 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 15:39:52.824 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 15:39:52.830 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 5.5264ms
+2024-05-28 15:39:52.837 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 15:39:52.842 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 15:39:52.865 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 23.0782ms
+2024-05-28 15:39:52.888 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 15:39:52.947 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - null null
+2024-05-28 15:39:53.090 +00:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2024-05-28 15:39:54.604 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 1657.3064ms
+2024-05-28 16:18:34.401 +00:00 [INF] Registered 7 endpoints in 29,516 milliseconds.
+2024-05-28 16:18:38.544 +00:00 [INF] Configured endpoint complete-payment-command-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.CompletePaymentCommandConsumer
+2024-05-28 16:18:38.554 +00:00 [INF] Configured endpoint order-failed-event-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.OrderFailedEventConsumer
+2024-05-28 16:18:41.848 +00:00 [INF] Now listening on: http://[::]:8080
+2024-05-28 16:18:41.851 +00:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-28 16:18:41.854 +00:00 [INF] Hosting environment: Development
+2024-05-28 16:18:41.857 +00:00 [INF] Content root path: /app
+2024-05-28 16:18:42.093 +00:00 [INF] Bus started: "rabbitmq://rabbitmq/"
+2024-05-28 16:18:47.102 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger - null null
+2024-05-28 16:18:47.351 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger - 302 0 null 256.291ms
+2024-05-28 16:18:47.375 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/index.html - null null
+2024-05-28 16:18:47.649 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/index.html - 200 null text/html; charset=utf-8 273.736ms
+2024-05-28 16:18:48.802 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 16:18:48.820 +00:00 [WRN] Failed to determine the https port for redirect.
+2024-05-28 16:18:48.825 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 23.135ms
+2024-05-28 16:18:48.839 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 16:18:48.844 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 16:18:48.850 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 5.8334ms
+2024-05-28 16:18:48.878 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 16:18:48.997 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 16:18:49.002 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 4.0677ms
+2024-05-28 16:18:49.014 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 16:18:49.016 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 16:18:49.020 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 4.1222ms
+2024-05-28 16:18:49.023 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 16:18:49.106 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - null null
+2024-05-28 16:18:49.235 +00:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2024-05-28 16:18:50.275 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 1169.6609ms
+2024-05-28 16:25:57.699 +00:00 [INF] Request starting HTTP/1.1 POST http://localhost:5001/Orders - application/json 711
+2024-05-28 16:25:57.730 +00:00 [INF] Executing endpoint 'HTTP: POST /Orders'
+2024-05-28 16:26:02.836 +00:00 [INF] Handling CreateOrderCommand
+2024-05-28 16:26:02.848 +00:00 [INF] Property OrderItems : [{"ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Price":10.99,"Quantity":2,"$type":"OrderItem"},{"ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Price":20.50,"Quantity":1,"$type":"OrderItem"}]
+2024-05-28 16:26:02.857 +00:00 [INF] Property CustomerId : "22e985e1-40a5-495b-9282-897853dd5d61"
+2024-05-28 16:26:02.860 +00:00 [INF] Property DeliveryAddress : {"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","Postcode":"12345","$type":"Address"}
+2024-05-28 16:26:02.864 +00:00 [INF] Property PaymentDetails : {"CardNumber":"1234 5678 9012 3456","CardHolderName":"John Doe","ExpiryDate":"12/24","Cvv":"123","PaymentMethod":0,"$type":"PaymentDetails"}
+2024-05-28 16:26:02.884 +00:00 [INF] ----- Creating Order - Order: {"OrderItems":[{"Price":10.99,"Message":"New Order Item Added","Quantity":2,"OrderId":"fb599dc6-d996-4815-80da-b8fafeaf898e","ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Id":"7036c3e2-65e4-4585-af25-4b2abd50698b","DomainEvents":[],"$type":"OrderItem"},{"Price":20.50,"Message":"New Order Item Added","Quantity":1,"OrderId":"fb599dc6-d996-4815-80da-b8fafeaf898e","ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Id":"e89393a2-e89e-4fbc-b977-81bdad9bfcae","DomainEvents":[],"$type":"OrderItem"}],"Status":{"Name":"Pending","Value":1,"$type":"OrderStatus"},"OrderTotal":42.48,"OrderPlaced":"0001-01-01T00:00:00.0000000+00:00","OrderPaid":false,"IsCancelled":false,"Message":"New Order Created","Payment":{"CardName":"John Doe","CardNumber":"1234 5678 9012 3456","Expiration":"12/24","CVV":"123","PaymentMethod":0,"$type":"Payment"},"DeliveryAddress":{"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","PostCode":"12345","$type":"DeliveryAddress"},"CustomerId":"22e985e1-40a5-495b-9282-897853dd5d61","Id":"fb599dc6-d996-4815-80da-b8fafeaf898e","DomainEvents":[{"NewOrder":{"OrderItems":[{"Price":10.99,"Message":"New Order Item Added","Quantity":2,"OrderId":"fb599dc6-d996-4815-80da-b8fafeaf898e","ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Id":"7036c3e2-65e4-4585-af25-4b2abd50698b","DomainEvents":[],"$type":"OrderItem"},{"Price":20.50,"Message":"New Order Item Added","Quantity":1,"OrderId":"fb599dc6-d996-4815-80da-b8fafeaf898e","ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Id":"e89393a2-e89e-4fbc-b977-81bdad9bfcae","DomainEvents":[],"$type":"OrderItem"}],"Status":{"Name":"Pending","Value":1,"$type":"OrderStatus"},"OrderTotal":42.48,"OrderPlaced":"0001-01-01T00:00:00.0000000+00:00","OrderPaid":false,"IsCancelled":false,"Message":"New Order Created","Payment":{"CardName":"John Doe","CardNumber":"1234 5678 9012 3456","Expiration":"12/24","CVV":"123","PaymentMethod":0,"$type":"Payment"},"DeliveryAddress":{"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","PostCode":"12345","$type":"DeliveryAddress"},"CustomerId":"22e985e1-40a5-495b-9282-897853dd5d61","Id":"fb599dc6-d996-4815-80da-b8fafeaf898e","DomainEvents":[{"NewOrder":{"OrderItems":[{"Price":10.99,"Message":"New Order Item Added","Quantity":2,"OrderId":"fb599dc6-d996-4815-80da-b8fafeaf898e","ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Id":"7036c3e2-65e4-4585-af25-4b2abd50698b","DomainEvents":[],"$type":"OrderItem"},{"Price":20.50,"Message":"New Order Item Added","Quantity":1,"OrderId":"fb599dc6-d996-4815-80da-b8fafeaf898e","ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Id":"e89393a2-e89e-4fbc-b977-81bdad9bfcae","DomainEvents":[],"$type":"OrderItem"}],"Status":{"Name":"Pending","Value":1,"$type":"OrderStatus"},"OrderTotal":42.48,"OrderPlaced":"0001-01-01T00:00:00.0000000+00:00","OrderPaid":false,"IsCancelled":false,"Message":"New Order Created","Payment":{"CardName":"John Doe","CardNumber":"1234 5678 9012 3456","Expiration":"12/24","CVV":"123","PaymentMethod":0,"$type":"Payment"},"DeliveryAddress":{"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","PostCode":"12345","$type":"DeliveryAddress"},"CustomerId":"22e985e1-40a5-495b-9282-897853dd5d61","Id":"fb599dc6-d996-4815-80da-b8fafeaf898e","DomainEvents":[{"NewOrder":{"OrderItems":null,"Status":null,"OrderTotal":null,"OrderPlaced":null,"OrderPaid":null,"IsCancelled":null,"Message":null,"Payment":null,"DeliveryAddress":null,"CustomerId":null,"Id":null,"DomainEvents":null,"$type":"Order"},"DateOccurred":"2024-05-28T16:26:02.8771248Z","$type":"OrderCreatedEvent"}],"$type":"Order"},"DateOccurred":"2024-05-28T16:26:02.8771248Z","$type":"OrderCreatedEvent"}],"$type":"Order"},"DateOccurred":"2024-05-28T16:26:02.8771248Z","$type":"OrderCreatedEvent"}],"$type":"Order"}
+2024-05-28 16:26:03.114 +00:00 [INF] Handling Order Created Domain event for {new order}
+2024-05-28 16:26:03.832 +00:00 [INF] Handled CreateOrderCommand with BookyWooks.SharedKernel.Result`1[System.Guid] in 962 ms
+2024-05-28 16:26:03.865 +00:00 [INF] Executed endpoint 'HTTP: POST /Orders'
+2024-05-28 16:26:03.894 +00:00 [INF] Request finished HTTP/1.1 POST http://localhost:5001/Orders - 200 null application/json 6194.5669ms
+2024-05-28 16:26:08.348 +00:00 [INF] Order Failed notification sent to customer with Id: "22e985e1-40a5-495b-9282-897853dd5d61" for order Id: "fb599dc6-d996-4815-80da-b8fafeaf898e"
+2024-05-28 16:50:26.907 +00:00 [INF] Registered 7 endpoints in 52,827 milliseconds.
+2024-05-28 16:50:34.335 +00:00 [INF] Configured endpoint complete-payment-command-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.CompletePaymentCommandConsumer
+2024-05-28 16:50:34.353 +00:00 [INF] Configured endpoint order-failed-event-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.OrderFailedEventConsumer
+2024-05-28 16:55:13.111 +00:00 [INF] Registered 7 endpoints in 75,817 milliseconds.
+2024-05-28 16:55:16.682 +00:00 [INF] Configured endpoint complete-payment-command-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.CompletePaymentCommandConsumer
+2024-05-28 16:55:16.692 +00:00 [INF] Configured endpoint order-failed-event-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.OrderFailedEventConsumer
+2024-05-28 16:55:44.702 +00:00 [INF] Now listening on: http://[::]:8080
+2024-05-28 16:55:44.705 +00:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-28 16:55:44.708 +00:00 [INF] Hosting environment: Development
+2024-05-28 16:55:44.711 +00:00 [INF] Content root path: /app
+2024-05-28 16:55:44.937 +00:00 [INF] Bus started: "rabbitmq://rabbitmq/"
+2024-05-28 16:55:50.352 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger - null null
+2024-05-28 16:55:50.625 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger - 302 0 null 267.5595ms
+2024-05-28 16:55:50.650 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/index.html - null null
+2024-05-28 16:55:50.871 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/index.html - 200 null text/html; charset=utf-8 220.9373ms
+2024-05-28 16:55:51.891 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 16:55:51.904 +00:00 [WRN] Failed to determine the https port for redirect.
+2024-05-28 16:55:51.911 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 19.6318ms
+2024-05-28 16:55:51.924 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 16:55:51.946 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 16:55:51.956 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 10.1279ms
+2024-05-28 16:55:51.963 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 16:55:52.123 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 16:55:52.152 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 28.717ms
+2024-05-28 16:55:52.164 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 16:55:52.170 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 6.2407ms
+2024-05-28 16:55:52.167 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 16:55:52.215 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 16:55:52.284 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - null null
+2024-05-28 16:55:52.819 +00:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2024-05-28 16:55:54.906 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 2621.2383ms
+2024-05-28 17:00:56.727 +00:00 [INF] Request starting HTTP/1.1 POST http://localhost:5001/Orders - application/json 711
+2024-05-28 17:00:56.740 +00:00 [INF] Executing endpoint 'HTTP: POST /Orders'
+2024-05-28 17:01:00.557 +00:00 [INF] Handling CreateOrderCommand
+2024-05-28 17:01:00.567 +00:00 [INF] Property OrderItems : [{"ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Price":10.99,"Quantity":2,"$type":"OrderItem"},{"ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Price":20.50,"Quantity":1,"$type":"OrderItem"}]
+2024-05-28 17:01:00.575 +00:00 [INF] Property CustomerId : "22e985e1-40a5-495b-9282-897853dd5d61"
+2024-05-28 17:01:00.579 +00:00 [INF] Property DeliveryAddress : {"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","Postcode":"12345","$type":"Address"}
+2024-05-28 17:01:00.582 +00:00 [INF] Property PaymentDetails : {"CardNumber":"1234 5678 9012 3456","CardHolderName":"John Doe","ExpiryDate":"12/24","Cvv":"123","PaymentMethod":0,"$type":"PaymentDetails"}
+2024-05-28 17:01:00.597 +00:00 [INF] ----- Creating Order - Order: {"OrderItems":[{"Price":10.99,"Message":"New Order Item Added","Quantity":2,"OrderId":"6c7840ba-f920-4906-97e2-ee0da94e52ac","ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Id":"339703e1-82d2-411a-a175-e0861a3e7b8a","DomainEvents":[],"$type":"OrderItem"},{"Price":20.50,"Message":"New Order Item Added","Quantity":1,"OrderId":"6c7840ba-f920-4906-97e2-ee0da94e52ac","ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Id":"107fe363-bfc4-495f-a365-a7b4681ad67b","DomainEvents":[],"$type":"OrderItem"}],"Status":{"Name":"Pending","Value":1,"$type":"OrderStatus"},"OrderTotal":42.48,"OrderPlaced":"0001-01-01T00:00:00.0000000+00:00","OrderPaid":false,"IsCancelled":false,"Message":"New Order Created","Payment":{"CardName":"John Doe","CardNumber":"1234 5678 9012 3456","Expiration":"12/24","CVV":"123","PaymentMethod":0,"$type":"Payment"},"DeliveryAddress":{"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","PostCode":"12345","$type":"DeliveryAddress"},"CustomerId":"22e985e1-40a5-495b-9282-897853dd5d61","Id":"6c7840ba-f920-4906-97e2-ee0da94e52ac","DomainEvents":[{"NewOrder":{"OrderItems":[{"Price":10.99,"Message":"New Order Item Added","Quantity":2,"OrderId":"6c7840ba-f920-4906-97e2-ee0da94e52ac","ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Id":"339703e1-82d2-411a-a175-e0861a3e7b8a","DomainEvents":[],"$type":"OrderItem"},{"Price":20.50,"Message":"New Order Item Added","Quantity":1,"OrderId":"6c7840ba-f920-4906-97e2-ee0da94e52ac","ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Id":"107fe363-bfc4-495f-a365-a7b4681ad67b","DomainEvents":[],"$type":"OrderItem"}],"Status":{"Name":"Pending","Value":1,"$type":"OrderStatus"},"OrderTotal":42.48,"OrderPlaced":"0001-01-01T00:00:00.0000000+00:00","OrderPaid":false,"IsCancelled":false,"Message":"New Order Created","Payment":{"CardName":"John Doe","CardNumber":"1234 5678 9012 3456","Expiration":"12/24","CVV":"123","PaymentMethod":0,"$type":"Payment"},"DeliveryAddress":{"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","PostCode":"12345","$type":"DeliveryAddress"},"CustomerId":"22e985e1-40a5-495b-9282-897853dd5d61","Id":"6c7840ba-f920-4906-97e2-ee0da94e52ac","DomainEvents":[{"NewOrder":{"OrderItems":[{"Price":10.99,"Message":"New Order Item Added","Quantity":2,"OrderId":"6c7840ba-f920-4906-97e2-ee0da94e52ac","ProductId":"4f136e9f-ff8c-4c1f-9a33-d12f689bdab8","Id":"339703e1-82d2-411a-a175-e0861a3e7b8a","DomainEvents":[],"$type":"OrderItem"},{"Price":20.50,"Message":"New Order Item Added","Quantity":1,"OrderId":"6c7840ba-f920-4906-97e2-ee0da94e52ac","ProductId":"6ec1297b-ec0a-4aa1-be25-6726e3b51a27","Id":"107fe363-bfc4-495f-a365-a7b4681ad67b","DomainEvents":[],"$type":"OrderItem"}],"Status":{"Name":"Pending","Value":1,"$type":"OrderStatus"},"OrderTotal":42.48,"OrderPlaced":"0001-01-01T00:00:00.0000000+00:00","OrderPaid":false,"IsCancelled":false,"Message":"New Order Created","Payment":{"CardName":"John Doe","CardNumber":"1234 5678 9012 3456","Expiration":"12/24","CVV":"123","PaymentMethod":0,"$type":"Payment"},"DeliveryAddress":{"Street":"123 Main Street","City":"Exampleville","Country":"Exampleland","PostCode":"12345","$type":"DeliveryAddress"},"CustomerId":"22e985e1-40a5-495b-9282-897853dd5d61","Id":"6c7840ba-f920-4906-97e2-ee0da94e52ac","DomainEvents":[{"NewOrder":{"OrderItems":null,"Status":null,"OrderTotal":null,"OrderPlaced":null,"OrderPaid":null,"IsCancelled":null,"Message":null,"Payment":null,"DeliveryAddress":null,"CustomerId":null,"Id":null,"DomainEvents":null,"$type":"Order"},"DateOccurred":"2024-05-28T17:01:00.5908546Z","$type":"OrderCreatedEvent"}],"$type":"Order"},"DateOccurred":"2024-05-28T17:01:00.5908546Z","$type":"OrderCreatedEvent"}],"$type":"Order"},"DateOccurred":"2024-05-28T17:01:00.5908546Z","$type":"OrderCreatedEvent"}],"$type":"Order"}
+2024-05-28 17:01:00.772 +00:00 [INF] Handling Order Created Domain event for {new order}
+2024-05-28 17:01:01.445 +00:00 [INF] Handled CreateOrderCommand with BookyWooks.SharedKernel.Result`1[System.Guid] in 860 ms
+2024-05-28 17:01:01.465 +00:00 [INF] Executed endpoint 'HTTP: POST /Orders'
+2024-05-28 17:01:01.494 +00:00 [INF] Request finished HTTP/1.1 POST http://localhost:5001/Orders - 200 null application/json 4766.1621ms
+2024-05-28 17:01:06.571 +00:00 [INF] Order Failed notification sent to customer with Id: "22e985e1-40a5-495b-9282-897853dd5d61" for order Id: "6c7840ba-f920-4906-97e2-ee0da94e52ac"
+2024-05-28 17:18:23.681 +00:00 [INF] Registered 7 endpoints in 28,130 milliseconds.
+2024-05-28 17:18:26.954 +00:00 [INF] Configured endpoint complete-payment-command-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.CompletePaymentCommandConsumer
+2024-05-28 17:18:26.966 +00:00 [INF] Configured endpoint order-failed-event-queue, Consumer: BookWooks.OrderApi.Infrastructure.Consumers.OrderFailedEventConsumer
+2024-05-28 17:18:55.647 +00:00 [INF] Now listening on: http://[::]:8080
+2024-05-28 17:18:55.672 +00:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-28 17:18:55.695 +00:00 [INF] Hosting environment: Development
+2024-05-28 17:18:55.721 +00:00 [INF] Content root path: /app
+2024-05-28 17:18:55.944 +00:00 [INF] Bus started: "rabbitmq://rabbitmq/"
+2024-05-28 17:19:01.396 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger - null null
+2024-05-28 17:19:01.607 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger - 302 0 null 218.9894ms
+2024-05-28 17:19:01.636 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/index.html - null null
+2024-05-28 17:19:01.981 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/index.html - 200 null text/html; charset=utf-8 344.4143ms
+2024-05-28 17:19:02.638 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 17:19:02.648 +00:00 [WRN] Failed to determine the https port for redirect.
+2024-05-28 17:19:02.652 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 13.7316ms
+2024-05-28 17:19:02.663 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 17:19:02.688 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - null null
+2024-05-28 17:19:02.692 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-bundle.js.map - 404 0 null 3.6181ms
+2024-05-28 17:19:02.695 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-bundle.js.map, Response status code: 404
+2024-05-28 17:19:02.770 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 17:19:02.773 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 3.6754ms
+2024-05-28 17:19:02.779 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 17:19:02.782 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - null null
+2024-05-28 17:19:02.785 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - 404 0 null 3.3394ms
+2024-05-28 17:19:02.789 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5001/swagger/swagger-ui-standalone-preset.js.map, Response status code: 404
+2024-05-28 17:19:02.851 +00:00 [INF] Request starting HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - null null
+2024-05-28 17:19:02.950 +00:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2024-05-28 17:19:03.863 +00:00 [INF] Request finished HTTP/1.1 GET http://localhost:5001/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 1012.381ms

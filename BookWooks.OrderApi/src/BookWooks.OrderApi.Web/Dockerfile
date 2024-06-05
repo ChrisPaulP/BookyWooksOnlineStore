@@ -4,6 +4,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER app
 WORKDIR /app
 EXPOSE 8080
+EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
@@ -17,6 +18,8 @@ COPY ["BookyWooks.SharedKernel/BookyWooks.SharedKernel.csproj", "BookyWooks.Shar
 COPY ["BookWooks.OrderApi/src/BookWooks.OrderApi.Core/BookWooks.OrderApi.Core.csproj", "BookWooks.OrderApi/src/BookWooks.OrderApi.Core/"]
 COPY ["BookyWooks.Messaging/BookyWooks.Messaging.csproj", "BookyWooks.Messaging/"]
 COPY ["BookWooks.OrderApi/src/BookWooks.OrderApi.UseCases/BookWooks.OrderApi.UseCases.csproj", "BookWooks.OrderApi/src/BookWooks.OrderApi.UseCases/"]
+COPY ["Logging/Logging.csproj", "Logging/"]
+COPY ["Tracing/Tracing.csproj", "Tracing/"]
 RUN dotnet restore "./BookWooks.OrderApi/src/BookWooks.OrderApi.Web/BookWooks.OrderApi.Web.csproj"
 COPY . .
 WORKDIR "/src/BookWooks.OrderApi/src/BookWooks.OrderApi.Web"

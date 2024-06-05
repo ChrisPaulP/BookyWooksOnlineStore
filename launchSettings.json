@@ -4,7 +4,9 @@
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
       "serviceActions": {
-        "bookwooks.orderapi.web": "StartDebugging"
+        "bookwooks.orderapi.web": "StartDebugging",
+        "bookywooks.catalogue.api": "StartDebugging",
+        "sagaorchestration": "StartDebugging"
       }
     }
   }

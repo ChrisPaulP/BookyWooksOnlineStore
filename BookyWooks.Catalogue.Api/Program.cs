@@ -7,9 +7,11 @@ using MassTransit;
 using System;
 using Microsoft.EntityFrameworkCore;
 using BookyWooks.Catalogue.Api.MassTransit;
+using Serilog;
+using Logging;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Host.UseSerilog(SeriLogger.Configure);
 // Add services to the container.
 var assembly = typeof(Program).Assembly;
 builder.Services.AddMediatR(config =>
@@ -26,6 +28,7 @@ builder.Services.AddControllers();
 //}).UseLightweightSessions();
 builder.Services.AddDbContext<CatalogueDbContext>(x =>
 {
+    var yt = builder.Configuration.GetConnectionString("Database");
     x.UseNpgsql(builder.Configuration.GetConnectionString("Database")!, opt =>
     {
         var x = builder.Configuration.GetConnectionString("Database");
@@ -39,7 +42,8 @@ builder.Services.AddScoped<IMassTransitService, CatalogueMassTransitService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMessageBroker<CatalogueDbContext>(builder.Configuration, Assembly.GetExecutingAssembly(), false);
-
+builder.Services.AddOpenTelemetryTracing(builder.Configuration);
+builder.Services.AddOpenTelemetryMetrics(builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -53,7 +57,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
+app.UseOpenTelemetryPrometheusScrapingEndpoint();
 app.MapControllers();
 
 app.Run();

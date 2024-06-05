@@ -1,4 +1,6 @@
-﻿namespace BookWooks.OrderApi.UseCases.Contributors.Create;
+﻿using Tracing;
+
+namespace BookWooks.OrderApi.UseCases.Contributors.Create;
 public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Result<Guid>>
 {
   private readonly ILogger<CreateOrderCommandHandler> _logger;
@@ -23,7 +25,7 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Res
       newOrder.AddOrderItem(item.ProductId, item.Price, item.Quantity);
     }
     _logger.LogInformation("----- Creating Order - Order: {@Order}", newOrder);
-    
+    OpenTelemetryMetricConfiguration.OrderStartedEventCounter.Add(1, new KeyValuePair<string, object?>("event.name", "OrderCreatedEvent"));
     await _orderRepository.AddAsync(newOrder);
     await _orderRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
     return Result.Success(newOrder.Id);

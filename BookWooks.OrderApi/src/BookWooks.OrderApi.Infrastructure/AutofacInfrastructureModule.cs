@@ -29,7 +29,6 @@ public class AutofacInfrastructureModule : Module
     RegisterMediatR(builder);
     RegisterMassTransitService(builder);
    // RegisterEventBusSubscriptionsManager(builder);
-    RegisterLogger(builder);   
     RegisterDistributedCacheService(builder);
     RegisterRedisCache(builder);
     RegisterNewtonSoftService(builder);
@@ -118,11 +117,11 @@ public class AutofacInfrastructureModule : Module
   //         .As<IEventBusSubscriptionsManager>()
   //         .SingleInstance();
   //}
-  public void RegisterLogger(ContainerBuilder builder)
-  {
-    builder.RegisterInstance(Log.Logger)
-           .SingleInstance();
-  }
+  //public void RegisterLogger(ContainerBuilder builder)
+  //{
+  //  builder.RegisterInstance(Log.Logger)
+  //         .SingleInstance();
+  //}
   private void RegisterDistributedCacheService(ContainerBuilder builder)
   {
     builder.RegisterType<DistributedCacheService>().As<ICacheService>();
