@@ -15,7 +15,10 @@ namespace BookyWooks.SharedKernel
         {
             Id = Guid.NewGuid();
         }
-
+        protected EntityBase(Guid id)
+        {
+            Id = id;
+        }
         public void RegisterDomainEvent(DomainEventBase domainEvent) => _domainEvents.Add(domainEvent);
         public void ClearDomainEvents() => _domainEvents.Clear();
     }

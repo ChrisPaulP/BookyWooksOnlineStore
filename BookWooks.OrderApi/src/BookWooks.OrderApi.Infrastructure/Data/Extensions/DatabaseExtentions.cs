@@ -9,12 +9,21 @@ public static class DatabaseExtentions
     using var scope = app.Services.CreateScope();
 
     var context = scope.ServiceProvider.GetRequiredService<BookyWooksOrderDbContext>();
-
+    //if (context.Database.CanConnect())
+    //{
+    //  await context.Database.EnsureDeletedAsync();
+    //}
     await context.Database.MigrateAsync();
-
+    await ClearData(context);
     await SeedAsync(context);
   }
-
+  private static async Task ClearData(BookyWooksOrderDbContext context)
+  {
+    context.Orders.RemoveRange(context.Orders);
+    context.Products.RemoveRange(context.Products);
+    context.Customers.RemoveRange(context.Customers);
+    await context.SaveChangesAsync();
+  }
   private static async Task SeedAsync(BookyWooksOrderDbContext context)
   {
     await SeedCustomerAsync(context);

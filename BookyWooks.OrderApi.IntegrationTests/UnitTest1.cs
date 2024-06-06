@@ -17,8 +17,8 @@ public class UnitTest1 : OrderApiBaseIntegrationTest
         //await AddAsync(new Order("1", "Chris Porter", GetPreconfiguredDeliveryAddresses(), CardTypeEnum.MasterCard, "001", "1212121212", "Chris Porter", DateTime.Now.AddYears(1)));
         // Create a new customer
         var customer = Customer.Create("Customer Name", "Unique Email");
-        var product = Product.Create("Book 1", "Book URL", 9.99M);
-        var product2 = Product.Create("Book 2", "Book URL", 5.99M);
+        var product = Product.Create(Guid.NewGuid(), "Book 1", "Book URL", 9.99M);
+        var product2 = Product.Create(Guid.NewGuid(), "Book 2", "Book URL", 5.99M);
         await AddAsync(customer); // Add the customer to the database
         await AddAsync(product); // Add the customer to the database
         await AddAsync(product2); // Add the customer to the database

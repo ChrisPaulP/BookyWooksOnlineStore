@@ -15,7 +15,7 @@ namespace BookWooks.OrderApi.TestContainersIntegrationTests
         {
             // Create a new customer
             var customer = Customer.Create("Customer Name", "Unique Email");
-            var product = Product.Create("Book 1", "Book URL", 9.99M);
+            var product = Product.Create(Guid.NewGuid(), "Book 1", "Book URL", 9.99M);
             await AddAsync(customer); // Add the customer to the database
             await AddAsync(product); // Add the customer to the database
             // Create order items

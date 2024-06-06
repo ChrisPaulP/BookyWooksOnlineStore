@@ -13,10 +13,9 @@ public class InitialData
 {
   private const string ChrisEmail = "chris@gmail.com";
   private const string RebeccaEmail = "rebecca@gmail.com";
-  private const string HarryPotterTitle = "Harry Potter The Goblet of Fire";
-  private const string TheStandTitle = "The Stand";
-  private const string MagpieMurdersTitle = "Magpie Murders";
-
+  private const string ToKill = "To Kill a Mockingbird";
+  private const string Nineteen = "1984";
+  private const string Pride = "Pride and Prejudice";
   public static readonly List<Customer> Customers = new()
   {
     Customer.Create("chris", ChrisEmail),
@@ -25,9 +24,9 @@ public class InitialData
 
   public static readonly List<Product> Products = new()
   {
-    Product.Create(HarryPotterTitle, "harrypotter.pic", 10),
-    Product.Create(TheStandTitle, "stand.pic", 15),
-    Product.Create(MagpieMurdersTitle, "magpiemurders.pic", 5),
+    Product.Create(new Guid("1e9c1a7e-1d9b-4c0e-8a15-5e12b5f5ad34"),ToKill, "to-kill-a-mockingbird.png", 10.99M),
+    Product.Create(new Guid("2d65ff2a-c57a-44c8-8e49-51af4e276f68"),Nineteen, "1984.png", 8.99M),
+    Product.Create(new Guid("3c4e6b45-738f-4a9a-85f5-68e26b3a58f9"),Pride, "pride-and-prejudice.png", 9.99M),
   };
 
   public static IEnumerable<Order> OrdersWithItems => CreateOrders();
@@ -41,18 +40,18 @@ public class InitialData
     var orders = new List<Order>
     {
       CreateOrder(ChrisEmail, deliveryAddresses[0], payments[0],
-        new List<(string title, int quantity, int price)>
+        new List<(string title, int quantity, decimal price)>
         {
-          (HarryPotterTitle, 1, 1),
-          (TheStandTitle, 1, 1)
+          (ToKill, 1, 10.99M),
+          (Nineteen, 1, 8.99M)
         }),
 
-      CreateOrder(RebeccaEmail, deliveryAddresses[0], payments[1],
-        new List<(string title, int quantity, int price)>
+      CreateOrder(RebeccaEmail, deliveryAddresses[1], payments[1],
+        new List<(string title, int quantity, decimal price)>
         {
-          (HarryPotterTitle, 1, 4),
-          (TheStandTitle, 1, 2),
-          (MagpieMurdersTitle, 1, 1)
+          (ToKill, 1, 10.99M),
+          (Nineteen, 1, 8.99M),
+          (Pride, 1, 9.99M)
         })
     };
 
@@ -77,7 +76,7 @@ public class InitialData
         };
   }
 
-  private static Order CreateOrder(string email, DeliveryAddress deliveryAddress, Payment payment, List<(string title, int quantity, int price)> items)
+  private static Order CreateOrder(string email, DeliveryAddress deliveryAddress, Payment payment, List<(string title, int quantity, decimal price)> items)
   {
     var customerId = GetCustomerIdByEmail(email);
     var order = Order.Create(customerId, deliveryAddress, payment);
@@ -85,7 +84,7 @@ public class InitialData
     foreach (var item in items)
     {
       var productId = GetProductIdByTitle(item.title);
-      order.AddOrderItem(productId, item.quantity, item.price);
+      order.AddOrderItem(productId, item.price, item.quantity);
     }
 
     return order;

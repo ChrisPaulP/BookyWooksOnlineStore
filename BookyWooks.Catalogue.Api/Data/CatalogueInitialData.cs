@@ -18,78 +18,107 @@ public class CatalogueInitialData : IInitialData
         await session.SaveChangesAsync();
     }
 
-    private static IEnumerable<Product> GetPreconfiguredProducts() => new List<Product>()
-            {
-                new Product()
-                {
-                    Id = new Guid("5334c996-8457-4cf0-815c-ed2b77c4ff61"),
-                    Name = "IPhone X",
-                    Description = "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",
-                    ImageFile = "product-1.png",
-                    Price = 950.00M,
-                    Category = new List<string> { "Smart Phone" },
-                    Quantity = 10
-                },
-                new Product()
-                {
-                    Id = new Guid("c67d6323-e8b1-4bdf-9a75-b0d0d2e7e914"),
-                    Name = "Samsung 10",
-                    Description = "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",
-                    ImageFile = "product-2.png",
-                    Price = 840.00M,
-                    Category = new List<string> { "Smart Phone" },
-                    Quantity = 10
-                },
-                new Product()
-                {
-                    Id = new Guid("4f136e9f-ff8c-4c1f-9a33-d12f689bdab8"),
-                    Name = "Huawei Plus",
-                    Description = "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",
-                    ImageFile = "product-3.png",
-                    Price = 650.00M,
-                    Category = new List<string> { "White Appliances" },
-                    Quantity = 10
-                },
-                new Product()
-                {
-                    Id = new Guid("6ec1297b-ec0a-4aa1-be25-6726e3b51a27"),
-                    Name = "Xiaomi Mi 9",
-                    Description = "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",
-                    ImageFile = "product-4.png",
-                    Price = 470.00M,
-                    Category = new List<string> { "White Appliances" },
-                    Quantity = 10
-                },
-                new Product()
-                {
-                    Id = new Guid("b786103d-c621-4f5a-b498-23452610f88c"),
-                    Name = "HTC U11+ Plus",
-                    Description = "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",
-                    ImageFile = "product-5.png",
-                    Price = 380.00M,
-                    Category = new List<string> { "Smart Phone" },
-                    Quantity = 10
-                },
-                new Product()
-                {
-                    Id = new Guid("c4bbc4a2-4555-45d8-97cc-2a99b2167bff"),
-                    Name = "LG G7 ThinQ",
-                    Description = "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",
-                    ImageFile = "product-6.png",
-                    Price = 240.00M,
-                    Category = new List<string> { "Home Kitchen" },
-                    Quantity = 10
-                },
-                new Product()
-                {
-                    Id = new Guid("93170c85-7795-489c-8e8f-7dcf3b4f4188"),
-                    Name = "Panasonic Lumix",
-                    Description = "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",
-                    ImageFile = "product-6.png",
-                    Price = 240.00M,
-                    Category = new List<string> { "Camera" },
-                    Quantity = 10
-                }
-            };
-
+    private static IEnumerable<Product> GetPreconfiguredProducts() => new List<Product>
+   {
+         new Product()
+             {
+                 Id = new Guid("1e9c1a7e-1d9b-4c0e-8a15-5e12b5f5ad34"),
+                 Name = "To Kill a Mockingbird",
+                 Description = "A novel about the serious issues of rape and racial inequality, told through the eyes of a young girl.",
+                 ImageFile = "to-kill-a-mockingbird.png",
+                 Price = 10.99M,
+                 Category = new List<string> { "Fiction" },
+                 Quantity = 10
+             },
+             new Product()
+             {
+                 Id = new Guid("2d65ff2a-c57a-44c8-8e49-51af4e276f68"),
+                 Name = "1984",
+                 Description = "A dystopian social science fiction novel and cautionary tale about the dangers of totalitarianism.",
+                 ImageFile = "1984.png",
+                 Price = 8.99M,
+                 Category = new List<string> { "Dystopian" },
+                 Quantity = 10
+             },
+             new Product()
+             {
+                 Id = new Guid("3c4e6b45-738f-4a9a-85f5-68e26b3a58f9"),
+                 Name = "Pride and Prejudice",
+                 Description = "A romantic novel that charts the emotional development of the protagonist, Elizabeth Bennet.",
+                 ImageFile = "pride-and-prejudice.png",
+                 Price = 9.99M,
+                 Category = new List<string> { "Romance" },
+                 Quantity = 10
+             },
+             new Product()
+             {
+                 Id = new Guid("4a2ebc70-4e79-4d35-ae39-0c8adfa7e9b6"),
+                 Name = "The Great Gatsby",
+                 Description = "A story about the young and mysterious millionaire Jay Gatsby and his quixotic passion for the beautiful Daisy Buchanan.",
+                 ImageFile = "the-great-gatsby.png",
+                 Price = 10.99M,
+                 Category = new List<string> { "Tragedy" },
+                 Quantity = 10
+             },
+             new Product()
+             {
+                 Id = new Guid("5c34768f-fc3f-4c9a-8054-dfe19874b2c1"),
+                 Name = "Harry Potter and the Philosopher's Stone",
+                 Description = "The first novel in the Harry Potter series and J.K. Rowling's debut novel.",
+                 ImageFile = "harry-potter.png",
+                 Price = 12.99M,
+                 Category = new List<string> { "Fantasy" },
+                 Quantity = 10
+             },
+             new Product()
+             {
+                 Id = new Guid("6a2d3e3c-7b64-4785-a41c-0e4382a3a72c"),
+                 Name = "The Hobbit",
+                 Description = "A fantasy novel and children's Product by J.R.R. Tolkien.",
+                 ImageFile = "the-hobbit.png",
+                 Price = 11.99M,
+                 Category = new List<string> { "Fantasy" },
+                 Quantity = 10
+             },
+             new Product()
+             {
+                 Id = new Guid("7c348f0b-846a-4eb6-9a87-44cbe28f5672"),
+                 Name = "Moby Dick",
+                 Description = "A novel by Herman Melville in which Captain Ahab seeks vengeance on a giant white whale named Moby Dick.",
+                 ImageFile = "moby-dick.png",
+                 Price = 14.99M,
+                 Category = new List<string> { "Adventure" },
+                 Quantity = 10
+             },
+             new Product()
+             {
+                 Id = new Guid("8b567e9c-07e8-45c3-a0f1-6c52685a03b8"),
+                 Name = "War and Peace",
+                 Description = "A novel by Leo Tolstoy that chronicles the French invasion of Russia and its impact on Tsarist society.",
+                 ImageFile = "war-and-peace.png",
+                 Price = 15.99M,
+                 Category = new List<string> { "Historical Fiction" },
+                 Quantity = 10
+             },
+             new Product()
+             {
+                 Id = new Guid("9a5e87c3-5f49-4f0e-8b82-d84f8d93c85f"),
+                 Name = "The Catcher in the Rye",
+                 Description = "A novel by J.D. Salinger about the events and circumstances that occur around 16-year-old Holden Caulfield.",
+                 ImageFile = "the-catcher-in-the-rye.png",
+                 Price = 9.99M,
+                 Category = new List<string> { "Fiction" },
+                 Quantity = 10
+             },
+             new Product()
+             {
+                 Id = new Guid("0b85e87c-3a5f-4f9e-8c72-d74e7a03c85e"),
+                 Name = "The Lord of the Rings",
+                 Description = "An epic high-fantasy novel written by English author and scholar J.R.R. Tolkien.",
+                 ImageFile = "the-lord-of-the-rings.png",
+                 Price = 19.99M,
+                 Category = new List<string> { "Fantasy" },
+                 Quantity = 10
+             }
+   };
 }

@@ -12,8 +12,14 @@ public static class DatabaseExtensions
         var context = scope.ServiceProvider.GetRequiredService<CatalogueDbContext>();
 
         await context.Database.MigrateAsync();
-
+        await ClearData(context);
         await SeedAsync(context);
+    }
+
+    private static async Task ClearData(CatalogueDbContext context)
+    {
+        context.Products.RemoveRange(context.Products);
+        await context.SaveChangesAsync();
     }
 
     private static async Task SeedAsync(CatalogueDbContext context)
