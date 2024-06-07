@@ -19,7 +19,7 @@ global using BookWooks.OrderApi.Core.Interfaces;
 global using System.Net.Mail;
 global using BookWooks.OrderApi.Infrastructure.Data;
 global using BookyWooks.Messaging.MassTransit;
-global using Autofac;
+
 global using BookWooks.OrderApi.Infrastructure.Caching;
 global using BookWooks.OrderApi.Infrastructure.Data.Queries;
 global using BookWooks.OrderApi.Infrastructure.Data.Repositories;
@@ -28,6 +28,5 @@ global using BookWooks.OrderApi.UseCases.Orders.Get;
 global using MediatR;
 global using Microsoft.Extensions.Caching.StackExchangeRedis;
 global using Microsoft.Extensions.Configuration;
-global using Module = Autofac.Module;
 global using BookWooks.OrderApi.Infrastructure.MassTransit;
 global using Microsoft.Extensions.DependencyInjection;

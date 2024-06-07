@@ -6,8 +6,11 @@
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="OrderAggregate\IntegrationEvents\**" />
     <Compile Remove="Services\**" />
+    <EmbeddedResource Remove="OrderAggregate\IntegrationEvents\**" />
     <EmbeddedResource Remove="Services\**" />
+    <None Remove="OrderAggregate\IntegrationEvents\**" />
     <None Remove="Services\**" />
   </ItemGroup>
   <ItemGroup>
@@ -19,7 +22,6 @@
     <PackageReference Include="Ardalis.SharedKernel" />
     <PackageReference Include="Ardalis.SmartEnum" />
     <PackageReference Include="Ardalis.Specification" />
-    <PackageReference Include="Autofac" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
   </ItemGroup>
@@ -33,8 +35,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="C:\Users\porterc\source\repos\BookyWooksOnlineStore\BookWooks.OrderApi\src\BookWooks.OrderApi.Core\.editorconfig" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="OrderAggregate\IntegrationEvents\" />
   </ItemGroup>
 </Project>

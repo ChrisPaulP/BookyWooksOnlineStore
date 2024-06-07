@@ -3,9 +3,9 @@ global using BookWooks.OrderApi.UseCases.Cancel;
 global using BookyWooks.SharedKernel;
 global using Microsoft.Extensions.Logging;
 global using BookWooks.OrderApi.Core.OrderAggregate.Entities;
-global using Autofac;
+
 global using MediatR;
-global using Module = Autofac.Module;
+
 global using BookWooks.OrderApi.Core.OrderAggregate.Specifications;
 global using Ardalis.GuardClauses;
 global using BookWooks.OrderApi.Core.OrderAggregate.ValueObjects;
