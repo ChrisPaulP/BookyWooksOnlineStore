@@ -12,11 +12,6 @@
       "VirtualHost": "/",
       "Port": 5672
     },
-    "AdditionalConfig": {
-      "Retry": 5,
-      "QueueName": "Booky Wooks QueueTest",
-      "BrokerName": "Booky Wooks BrokerTest"
-    },
     "Serilog": {
       "MinimumLevel": {
         "Default": "Information"

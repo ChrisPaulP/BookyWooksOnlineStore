@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
+
 
 namespace BookyWooks.Messaging.Constants;
 
@@ -20,11 +16,6 @@ public class QueueConstants
     public const string CompletePaymentCommandQueueName = "complete-payment-command-queue";
     //public const string StockRollBackMessageQueueName = "stock-rollback-message-queue";
     public const string CheckBookStockCommandQueueName = "check-book-stock-command-queue";
-
-    //public const string StockConfirmedEventQueueName = "stock-confirmed-event-queue"; // remove this. It is just for test and needs to be removed
-
-    //public const string THISISATEST = "THISISATEST";
-
     public static string GetQueueNameForConsumer(Type consumerType)
     {
         // Remove "Consumer" suffix from the consumer type name
