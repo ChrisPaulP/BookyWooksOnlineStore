@@ -20,4 +20,12 @@ public static class OpenTelemetryMetricConfiguration
     public static readonly Counter<int> OrderLongRunningRequestCounter = OrderMeter.CreateCounter<int>("order.long.running.request.count");
     public static readonly Histogram<long> OrderMethodDuration = OrderMeter.CreateHistogram<long>("order.method.duration", "milliseconds");
 
+    // Identity metrics
+    private static readonly Meter IdentityMeter = new("BookyWooks.Identity");
+    public static readonly Counter<int> UserCreatedEventCounter = IdentityMeter.CreateCounter<int>("user.created.event.count");
+    public static readonly Counter<int> UserDeletedEventCounter = IdentityMeter.CreateCounter<int>("user.deleted.event.count");
+    public static readonly Counter<int> UserUpdatedEventCounter = IdentityMeter.CreateCounter<int>("user.updated.event.count");
+    public static readonly Counter<int> UserLoggedInEventCounter = IdentityMeter.CreateCounter<int>("user.loggedin.event.count");
+    public static readonly Counter<int> UserLoggedOutEventCounter = IdentityMeter.CreateCounter<int>("user.loggedout.event.count");
+
 }
