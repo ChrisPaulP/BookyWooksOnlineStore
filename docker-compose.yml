@@ -1,16 +1,9 @@
-version: '3.4'
-
 services:
   bookwooks.orderapi.web:
     image: ${DOCKER_REGISTRY-}bookwooksorderapiweb
     build:
       context: .
       dockerfile: BookWooks.OrderApi/src/BookWooks.OrderApi.Web/Dockerfile
-    depends_on:
-      - sqldata
-      - rabbitmq
-      - jaeger
-      # - otel-collector
     networks:
       - booky_wooks_network
 
@@ -19,87 +12,50 @@ services:
     build:
       context: .
       dockerfile: BookyWooks.Catalogue.Api/Dockerfile
-    depends_on:
-      - postgresdb
-      - rabbitmq
-      - jaeger
-      # - otel-collector
     networks:
       - booky_wooks_network
 
   sagaorchestration:
-    container_name: booky_wooks_sagaorchestration
     image: ${DOCKER_REGISTRY-}sagaorchestration
     build:
       context: .
       dockerfile: SagaOrchestration/Dockerfile
-    depends_on:
-      - statemachinedb
-      - rabbitmq
-      - jaeger
-      # - otel-collector
     networks:
       - booky_wooks_network
 
   sqldata:
-    container_name: booky_wooks_sqldata
     image: "mcr.microsoft.com/mssql/server:2022-latest"
-    environment:
-      - "SA_PASSWORD=Your_password123"
-      - "ACCEPT_EULA=Y"
-    restart: always
-    ports:
-      - "5433:1433"
     volumes:
       - booky_wooks_sql_data:/var/opt/mssql
     networks:
       - booky_wooks_network
 
   statemachinedb:
-    container_name: booky_wooks_statemachinedb
     image: "mcr.microsoft.com/mssql/server:2022-latest"
-    environment:
-      - "SA_PASSWORD=Your_password123"
-      - "ACCEPT_EULA=Y"
-    restart: always
-    ports:
-      - "5434:1433"
+    networks:
+      - booky_wooks_network
+
+  identityserverdb:
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    volumes:
+      - booky_wooks_identityserver_data:/var/lib/postgresql/data/
     networks:
       - booky_wooks_network
 
   postgresdb:
-    container_name: booky_wooks_postgresdb
     image: postgres:latest
-    environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin1234
-      - POSTGRES_DB=CatalogueDb
-    restart: always
-    ports:
-      - "5435:5432"
     volumes:
       - booky_wooks_postgres_data:/var/lib/postgresql/data/
     networks:
       - booky_wooks_network
 
   rabbitmq:
-    container_name: booky_wooks_rabbitmq
-    hostname: "rabbitmq"
     image: rabbitmq:3-management-alpine
-    restart: always
-    ports:
-      - "15672:15672"
-      - "5672:5672"
     networks:
       - booky_wooks_network
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
-    environment:
-      - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ports:
-      - "9200:9200"
     volumes:
       - elasticsearch-logs:/usr/share/elasticsearch/data
     networks:
@@ -107,12 +63,6 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.9.2
-    environment:
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
-    depends_on:
-      - elasticsearch
-    ports:
-      - "5601:5601"
     networks:
       - booky_wooks_network
 
@@ -123,13 +73,11 @@ services:
 
   prometheus:
     image: prom/prometheus:v2.48.1
-    ports:
-      - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       - booky_wooks_network
- 
+
   # otel-collector:
   #   image: otel/opentelemetry-collector:0.56.0
   #   command: ["--config=/etc/otel-collector-config.yaml"]
@@ -139,11 +87,35 @@ services:
   #     - "4317:4317"
   #   networks:
   #     - booky_wooks_network
-networks:
-  booky_wooks_network:
-    external: true
+
+  # bookywooks.identity:
+  #   image: ${DOCKER_REGISTRY-}bookywooksidentity
+  #   build:
+  #     context: .
+  #     dockerfile: BookyWooks.Identity/Dockerfile
+
+  ocelot.gateway:
+    image: ${DOCKER_REGISTRY-}ocelotgateway
+    build:
+      context: .
+      dockerfile: OcelotGateway/Dockerfile
+    networks:
+      - booky_wooks_network
+
+  bookywooks.identityserver:
+    image: ${DOCKER_REGISTRY-}bookywooksidentityserver
+    build:
+      context: .
+      dockerfile: BookyWooks.IdentityServer/Dockerfile
+    networks:
+      - booky_wooks_network
 
 volumes:
   booky_wooks_postgres_data:
   elasticsearch-logs:
   booky_wooks_sql_data:
+  booky_wooks_identityserver_data:
+  
+networks:
+  booky_wooks_network:
+    external: true

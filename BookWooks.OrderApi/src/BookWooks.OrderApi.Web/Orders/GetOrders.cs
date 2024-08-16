@@ -1,8 +1,10 @@
 ﻿
+using Azure;
 using BookWooks.OrderApi.UseCases.Orders.GetOrders;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookWooks.OrderApi.Web.Orders;
-
+[Authorize]
 public class GetOrders : EndpointWithoutRequest<GetOrdersResponse>
 {
   private readonly IMediator _mediator;
@@ -15,7 +17,6 @@ public class GetOrders : EndpointWithoutRequest<GetOrdersResponse>
   public override void Configure()
   {
     Get("/Orders");
-    AllowAnonymous();
   }
 
   public override async Task HandleAsync(CancellationToken ct)

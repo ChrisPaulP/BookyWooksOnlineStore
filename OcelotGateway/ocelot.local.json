@@ -1,0 +1,96 @@
+﻿{
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:7165"
+  },
+
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/orders/{path}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 57679
+        }
+      ],
+      "UpstreamPathTemplate": "/services/OrderService/{path}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put",
+        "Delete"
+      ],
+      "UpstreamScheme": "https",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "TestKey",
+        "AllowedScopes": [
+          "order_scope"
+        ]
+      },
+      "Description": "Route for Order Service: Example - Request comes in to https://localhost:7165/services/OrderService/12345 the API gateway will forward it to https://localhost:57679/orders/12345"
+    },
+
+    {
+      "DownstreamPathTemplate": "/{path}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7191
+        }
+      ],
+      "UpstreamPathTemplate": "/services/BookCatalogueService/{path}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put",
+        "Delete"
+      ],
+      "UpstreamScheme": "https",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "TestKey",
+        "AllowedScopes": [
+          "bookcatalogue_scope"
+        ]
+      },
+      "FileCacheOptions": {
+        "TtlSeconds": 60
+      },
+      "Description": "Route for Book Catalogue Service with file caching: Example - Request comes in to https://localhost:7165/services/BookCatalogueService/bookcatalogue the API gateway will forward it to http://localhost:7191/bookcatalogue"
+    }
+  ]
+}
+  
+    //{
+    //  "DownstreamPathTemplate": "/{path}",
+    //  "DownstreamScheme": "https",
+    //  "DownstreamHostAndPorts": [
+    //    {
+    //      "Host": "localhost",
+    //      "Port": 5004
+    //    }
+    //  ],
+    //  "UpstreamPathTemplate": "/services/AccountService/{path}",
+    //  "UpstreamHttpMethod": [
+    //    "Get",
+    //    "Post",
+    //    "Put",
+    //    "Delete"
+    //  ],
+    //  "UpstreamScheme": "https",
+    //  "AuthenticationOptions": {
+    //    "AuthenticationProviderKey": "TestKey",
+    //    "AllowedScopes": [
+    //      "accountfull_scope"
+    //    ]
+    //  },
+    //  "RateLimitOptions": {
+    //    "ClientWhitelist": [],
+    //    "EnableRateLimiting": true,
+    //    "Period": "3s",
+    //    "PeriodTimespan": 1,
+    //    "Limit": 1
+    //  },
+    //  "Description": "Route for Account Service with rate limiting"
+    //},
+

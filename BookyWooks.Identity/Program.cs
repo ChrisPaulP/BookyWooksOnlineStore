@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using BookyWooks.Messaging.MassTransit;
 using Tracing;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -22,7 +23,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<IdentityDbContext>()
     .AddDefaultTokenProviders();
 
-// Configure IdentityServer with various options and resources
+builder.Services.AddSingleton<JwtTokenService>();
+//Configure IdentityServer with various options and resources
 builder.Services.AddIdentityServer(options =>
 {
     options.Events.RaiseErrorEvents = true;     // Enable raising error events
@@ -30,18 +32,17 @@ builder.Services.AddIdentityServer(options =>
     options.Events.RaiseFailureEvents = true;  // Enable raising failure events    
     options.Events.RaiseSuccessEvents = true; // Enable raising success events   
     options.EmitStaticAudienceClaim = true; // Emit a static audience claim   
-    options.IssuerUri = "BookyWooks";  // Set the issuer URI
+    options.IssuerUri = "BookyWooks"; //  "http://bookywooks.identity";  // Set the issuer URI
 })
-
+    .AddAspNetIdentity<ApplicationUser>() // Add ASP.NET Identity support
+    .AddInMemoryClients(Configuration.Clients)  // Add in-memory clients
     .AddInMemoryIdentityResources(Configuration.IdentityResources)     // Add in-memory identity resources                                                                       
     .AddInMemoryApiResources(Configuration.ApiResources) // Add in-memory API resources                                                         
-    .AddInMemoryApiScopes(Configuration.ApiScopes)
-    .AddInMemoryClients(Configuration.Clients)  // Add in-memory clients                                                
-    .AddAspNetIdentity<ApplicationUser>() // Add ASP.NET Identity support
+    .AddInMemoryApiScopes(Configuration.ApiScopes)                                                       
     .AddDeveloperSigningCredential() // Add a developer signing credential                                
     .AddResourceOwnerValidator<IdentityResourceOwnerPasswordValidator>(); // Add a resource owner validator
 
-builder.Services.AddAuthentication();
+//builder.Services.AddAuthentication();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 //builder.Services.AddEndpointsApiExplorer();
 
@@ -79,8 +80,15 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<LogContextMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity Microservice"));
-app.UseAuthentication();
-app.UseAuthorization();
-app.UseOpenTelemetryPrometheusScrapingEndpoint();
+app.UseRouting();
+//app.UseHttpsRedirection();
 
+app.UseIdentityServer(); // added this
+//app.UseAuthentication();
+//app.UseAuthorization();
+app.UseOpenTelemetryPrometheusScrapingEndpoint();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapDefaultControllerRoute();
+});
 app.Run();

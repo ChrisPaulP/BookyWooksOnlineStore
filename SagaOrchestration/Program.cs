@@ -38,8 +38,8 @@ IHost host = Host.CreateDefaultBuilder(args)
                 // Configure the saga repository to use the same DbContext
                 opt.AddDbContext<DbContext, StateMachineDbContext>((provider, builder) =>
                 {
-                    var t = hostContext.Configuration.GetConnectionString("DefaultConnection");
-                    builder.UseSqlServer(hostContext.Configuration.GetConnectionString("DefaultConnection"),
+                    var t = hostContext.Configuration.GetConnectionString("SagaOrchestrationDatabase");
+                    builder.UseSqlServer(hostContext.Configuration.GetConnectionString("SagaOrchestrationDatabase"),
                         m => { m.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name); });
                 });
 

@@ -6,7 +6,9 @@
       "serviceActions": {
         "bookwooks.orderapi.web": "StartDebugging",
         "bookywooks.catalogue.api": "StartDebugging",
-        "sagaorchestration": "StartDebugging"
+        "sagaorchestration": "StartDebugging",
+        "ocelotgateway": "StartDebugging",
+        "bookywooks.identityserver": "StartDebugging"
       }
     }
   }

@@ -26,7 +26,7 @@ public static class InfrastructureDependencyInjection
     // Quick Note. The commented out code above can be used, however I prefer the below way as its more readable and clear.
     services.AddScoped<BookyWooksOrderDbContext>(provider =>
     {
-      var connectionString = configuration.GetConnectionString("DefaultConnection");
+      var connectionString = configuration.GetConnectionString("OrderDatabase");
 
       var optionsBuilder = new DbContextOptionsBuilder<BookyWooksOrderDbContext>();
       optionsBuilder.UseSqlServer(connectionString);
@@ -82,7 +82,8 @@ public static class InfrastructureDependencyInjection
   private static void RegisterDevelopmentOnlyDependencies(IServiceCollection services)
   {
     services.AddScoped<IEmailSender, FakeEmailSender>();
-    services.AddScoped<IGetOrdersByStatusQueryService, FakeGetOrdersByStatusQueryService>();
+    //services.AddScoped<IGetOrdersByStatusQueryService, FakeGetOrdersByStatusQueryService>();
+    services.AddScoped<IGetOrdersByStatusQueryService, GetOrdersByStatusQueryService>();
     // Uncomment and adapt if needed
     // services.AddScoped<IListContributorsQueryService, FakeListContributorsQueryService>();
   }
@@ -90,7 +91,6 @@ public static class InfrastructureDependencyInjection
   private static void RegisterProductionOnlyDependencies(IServiceCollection services)
   {
     services.AddScoped<IEmailSender, SmtpEmailSender>();
-    services.AddScoped<IGetOrdersByStatusQueryService, GetOrdersByStatusQueryService>();
     services.AddScoped<IGetOrdersByStatusQueryService, GetOrdersByStatusQueryService>();
   }
 }

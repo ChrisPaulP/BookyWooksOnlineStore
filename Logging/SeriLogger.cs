@@ -11,7 +11,7 @@ public static class SeriLogger
     public static Action<HostBuilderContext, LoggerConfiguration> Configure =>
         (context, configuration) =>
         {
-            var elasticUri = context.Configuration.GetValue<string>("ElasticConfiguration:Uri");
+            var elasticUri = context.Configuration.GetValue<string>("ElasticConfiguration:Url");
 
             configuration
                 .Enrich.FromLogContext()

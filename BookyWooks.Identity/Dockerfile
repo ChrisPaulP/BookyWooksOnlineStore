@@ -10,6 +10,9 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["BookyWooks.Identity/BookyWooks.Identity.csproj", "BookyWooks.Identity/"]
+COPY ["BookyWooks.Messaging/BookyWooks.Messaging.csproj", "BookyWooks.Messaging/"]
+COPY ["BookyWooks.SharedKernel/BookyWooks.SharedKernel.csproj", "BookyWooks.SharedKernel/"]
+COPY ["Tracing/Tracing.csproj", "Tracing/"]
 RUN dotnet restore "./BookyWooks.Identity/BookyWooks.Identity.csproj"
 COPY . .
 WORKDIR "/src/BookyWooks.Identity"

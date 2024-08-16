@@ -1,4 +1,5 @@
 ﻿using BookyWooks.Identity.Models;
+using BookyWooks.Identity.Services;
 using BookyWooks.Messaging.Messages.Events;
 using BookyWooks.SharedKernel;
 using IdentityServer4;
@@ -16,18 +17,27 @@ using Tracing;
 namespace BookyWooks.Identity.Controllers;
 
 [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
+[Route("api/[controller]")]
 // [Route("api/[controller]/[action]")]
 [ApiController]
 public class AuthController : ControllerBase
 {
     private readonly UserManager<ApplicationUser> _userManager;
-
+    private readonly JwtTokenService _jwtTokenService;
     private readonly IPublishEndpoint _publishEndpoint;
 
-    public AuthController(UserManager<ApplicationUser> userManager, IPublishEndpoint publishEndpoint)
+    public AuthController(UserManager<ApplicationUser> userManager, IPublishEndpoint publishEndpoint, JwtTokenService jwtTokenService)
     {
         _userManager = userManager;
         _publishEndpoint = publishEndpoint;
+        _jwtTokenService = jwtTokenService;
+    }
+    [HttpPost]
+    public IActionResult Login([FromBody] LoginModel user)
+    {
+        var loginResult = _jwtTokenService.GenerateAuthToken(user);
+
+        return loginResult is null ? Unauthorized() : Ok(loginResult);
     }
 
     [HttpPost, Route("~/Api/Auth/SignUp")]

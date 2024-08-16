@@ -1,5 +1,8 @@
-﻿namespace BookWooks.OrderApi.Web.Orders;
+﻿using Microsoft.AspNetCore.Authorization;
 
+namespace BookWooks.OrderApi.Web.Orders;
+
+[Authorize]
 public class GetOrderDetails : Endpoint<GetOrderDetailsRequest, GetOrderDetailsResponse>
 {
   private readonly IMediator _mediator;
@@ -12,7 +15,6 @@ public class GetOrderDetails : Endpoint<GetOrderDetailsRequest, GetOrderDetailsR
   public override void Configure()
   {
     Get(GetOrderDetailsRequest.Route);
-    AllowAnonymous();
   }
 
   public override async Task HandleAsync(GetOrderDetailsRequest request,

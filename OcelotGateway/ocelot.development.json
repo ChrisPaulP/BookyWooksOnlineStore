@@ -1,0 +1,62 @@
+﻿{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/orders/{path}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "bookwooks.orderapi.web",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/services/OrderService/{path}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put",
+        "Delete"
+      ],
+      "UpstreamScheme": "http",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "IdentityApiKey",
+        "AllowedScopes": [
+          "orderfull_scope"
+        ]
+      },
+      "Description": "Route for Order Service: Example - Request comes in to http://localhost:61901/services/OrderService/12345 the API gateway will forward it to http://localhost:5001/orders/12345"
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/BookCatalogue/{path}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "bookywooks.catalogue.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/services/BookCatalogueService/{path}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put",
+        "Delete"
+      ],
+      "UpstreamScheme": "http",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "IdentityApiKey",
+        "AllowedScopes": [
+          "bookcataloguefull_scope"
+        ]
+      },
+      "FileCacheOptions": {
+        "TtlSeconds": 60
+      },
+      "Description": "Route for Book Catalogue Service with file caching: Example - Request comes in to http://localhost:61901/services/BookCatalogueService/bookcatalogue the API gateway will forward it to http://localhost:7191/bookcatalogue"
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:61901"
+  }
+}
+
