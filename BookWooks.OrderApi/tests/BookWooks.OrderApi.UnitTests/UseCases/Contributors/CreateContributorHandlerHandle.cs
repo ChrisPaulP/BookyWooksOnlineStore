@@ -1,4 +1,4 @@
-﻿using Ardalis.SharedKernel;
+﻿
 
 using BookWooks.OrderApi.UseCases.Contributors.Create;
 using FluentAssertions;

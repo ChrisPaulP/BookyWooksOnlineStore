@@ -1,7 +1,6 @@
 ﻿using BookWooks.OrderApi.Infrastructure.Data;
 
 
-using BookWooks.OrderApi.Web;
 using DotNet.Testcontainers.Builders;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;

@@ -15,7 +15,7 @@ public class GetOrdersByStatusQueryService : IGetOrdersByStatusQueryService
         .Include(b => b.OrderItems)
         .Select(o => new OrderDTO(
           o.Id,
-          o.Status.Name,
+          o.Status.Label,
           o.OrderItems.Select(item => new OrderItemDTO(item.ProductId, item.Price, item.Quantity)).ToList()
       ))
         .ToListAsync();

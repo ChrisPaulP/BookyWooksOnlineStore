@@ -1,5 +1,5 @@
 ﻿namespace BookyWooks.SharedKernel;
-public class SpecificationEvaluator<TEntity, TKey> where TEntity : class, IAggregateRoot //where TEntity : EntityBase<TKey> 
+public class SpecificationEvaluator<TEntity> where TEntity : class, IAggregateRoot //where TEntity : EntityBase<TKey> 
 {
     public static IQueryable<TEntity> GetQuery(IQueryable<TEntity> inputQuery, ISpecification<TEntity> specification)
     {

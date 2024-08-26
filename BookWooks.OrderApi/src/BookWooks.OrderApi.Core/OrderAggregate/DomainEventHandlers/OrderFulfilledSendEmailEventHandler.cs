@@ -1,4 +1,6 @@
-﻿namespace BookWooks.OrderApi.Core.OrderAggregate.Handlers;
+﻿using Microsoft.IdentityModel.Tokens;
+
+namespace BookWooks.OrderApi.Core.OrderAggregate.Handlers;
 public class OrderFulfilledSendEmailEventHandler : INotificationHandler<OrderFulfilledEvent>
 {
   private readonly IEmailSender _emailSender;
@@ -15,7 +17,9 @@ public class OrderFulfilledSendEmailEventHandler : INotificationHandler<OrderFul
   public Task Handle(OrderFulfilledEvent domainEvent, CancellationToken cancellationToken)
   {
     Guard.Against.Null(domainEvent, nameof(domainEvent));
+    
+    //ArgumentException.ThrowIfNullOrEmpty(domainEvent, nameof(domainEvent));
 
-    return _emailSender.SendEmailAsync("test@test.com", "test@test.com", $"{domainEvent.FulfilledOrder.Message} was completed.", domainEvent.FulfilledOrder.Status.Name);
+    return _emailSender.SendEmailAsync("test@test.com", "test@test.com", $"{domainEvent.FulfilledOrder.Message} was completed.", domainEvent.FulfilledOrder.Status.Label);
   }
 }

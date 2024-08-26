@@ -53,7 +53,7 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
   }
   public IQueryable<T> ApplySpecification(ISpecification<T> spec)
   {
-    return SpecificationEvaluator<T, Guid>.GetQuery(_entitySet.AsQueryable(), spec);
+    return SpecificationEvaluator<T>.GetQuery(_entitySet.AsQueryable(), spec);
   }
 
   public virtual async Task<T?> GetByIdAsync(Guid id)

@@ -1,7 +1,7 @@
 ﻿
 using Ardalis.HttpClientTestExtensions;
 
-using BookWooks.OrderApi.Web;
+
 using Xunit;
 using BookWooks.OrderApi.Web.Orders;
 
@@ -28,7 +28,7 @@ public class GetOrderDetailsTest : IClassFixture<CustomWebApplicationFactory<Pro
     var result = await _client.GetAndDeserializeAsync<OrderRecord>(GetOrderDetailsRequest.BuildRoute(expectedOrderId));
 
     Assert.Equal(expectedOrderId, result.Id);
-    Assert.Equal(TestData.Order1.Status.Name, result.Status);
+    Assert.Equal(TestData.Order1.Status.Label, result.Status);
   }
 
   [Fact]

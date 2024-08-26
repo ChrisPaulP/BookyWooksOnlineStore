@@ -29,7 +29,11 @@ public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        Guard.Against.Null(request);
+        //Guard.Against.Null(request);
+        if(request == null)
+        {
+            throw new ArgumentNullException(nameof(request));
+        }
         if (_logger.IsEnabled(LogLevel.Information))
         {
             _logger.LogInformation("Handling {RequestName}", typeof(TRequest).Name);

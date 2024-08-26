@@ -1,5 +1,5 @@
 ﻿namespace BookWooks.OrderApi.UseCases.Orders.Get;
-public class GetOrderDetailsHandler : IQueryHandler<GetOrderDetailsQuery, Result<OrderDTO>>
+public class GetOrderDetailsHandler : IQueryHandler<GetOrderDetailsQuery, DetailedResult<OrderDTO>>
 {
  // private readonly IRepository<Order> _repository;
   private readonly IReadRepository<Order> _readRepository;
@@ -9,17 +9,17 @@ public class GetOrderDetailsHandler : IQueryHandler<GetOrderDetailsQuery, Result
     _readRepository = readRepository;
   }
 
-  public async Task<Result<OrderDTO>> Handle(GetOrderDetailsQuery request, CancellationToken cancellationToken)
+  public async Task<DetailedResult<OrderDTO>> Handle(GetOrderDetailsQuery request, CancellationToken cancellationToken)
   {
     var spec = new OrderByIdSpec(request.OrderId);
     //var order = await _repository.FindAsync(spec);
     var order = await _readRepository.FindAsync(spec);
     if (order == null)
     {
-      return Result.NotFound();
+      return StandardResult.NotFound();
     }
     // Project the orders into OrderDTO objects
-    var orderDTO = new OrderDTO(order.Id, order.Status.Name, order.OrderItems.Select(item => new OrderItemDTO(item.ProductId, item.Price, item.Quantity)));//.ToList());
+    var orderDTO = new OrderDTO(order.Id, order.Status.Label, order.OrderItems.Select(item => new OrderItemDTO(item.ProductId, item.Price, item.Quantity)));//.ToList());
 
     return orderDTO;
 

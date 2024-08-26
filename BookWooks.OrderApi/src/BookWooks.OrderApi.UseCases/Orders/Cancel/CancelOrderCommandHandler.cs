@@ -1,5 +1,5 @@
 ﻿namespace BookWooks.OrderApi.UseCases.Contributors.Create;
-public class CancelOrderHandler : ICommandHandler<CancelOrderCommand, Result>
+public class CancelOrderHandler : ICommandHandler<CancelOrderCommand, StandardResult>
 {
   private readonly IRepository<Order> _repository;
 
@@ -11,17 +11,17 @@ public class CancelOrderHandler : ICommandHandler<CancelOrderCommand, Result>
     _logger = logger;
   }
 
-  public async Task<Result> Handle(CancelOrderCommand request,
+  public async Task<StandardResult> Handle(CancelOrderCommand request,
     CancellationToken cancellationToken)
   {
     _logger.LogInformation("Setting order  {orderId} to cancelled", request.Id);
     var orderToCancel = await _repository.GetByIdAsync(request.Id);
-    if (orderToCancel == null) return Result.NotFound();
+    if (orderToCancel == null) return StandardResult.NotFound();
 
     orderToCancel.CancelOrder();
     _repository.Update(orderToCancel);
     await _repository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
-    return Result.Success();
+    return StandardResult.Success();
   }
 }
 

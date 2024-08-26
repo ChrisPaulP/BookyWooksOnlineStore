@@ -1,10 +1,4 @@
-﻿using Ardalis.SharedKernel;
-
-using MediatR;
-using Microsoft.Extensions.Logging;
-using NSubstitute;
-using Xunit;
-
+﻿
 namespace BookWooks.OrderApi.UnitTests.Core.Services;
 //public class DeleteContributorService_DeleteContributor
 //{

@@ -24,6 +24,6 @@ public class OrderConstructor
   {
     _testOrder = CreateOrder();
 
-    Assert.Equal(_testName, _testOrder.Status.Name);
+    Assert.Equal(_testName, _testOrder.Status.Label);
   }
 }

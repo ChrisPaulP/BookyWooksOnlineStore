@@ -7,6 +7,5 @@ global using BookWooks.OrderApi.Core.OrderAggregate.Entities;
 global using MediatR;
 
 global using BookWooks.OrderApi.Core.OrderAggregate.Specifications;
-global using Ardalis.GuardClauses;
 global using BookWooks.OrderApi.Core.OrderAggregate.ValueObjects;
 global using BookWooks.OrderApi.UseCases.Create;

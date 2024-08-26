@@ -1,5 +1,5 @@
 ﻿namespace BookWooks.OrderApi.UseCases.Orders.GetOrders;
-public class GetOrdersHandler : IQueryHandler<GetOrdersQuery, Result<IEnumerable<OrderDTO>>>
+public class GetOrdersHandler : IQueryHandler<GetOrdersQuery, DetailedResult<IEnumerable<OrderDTO>>>
 {
     private readonly IReadRepository<Order> _repository;
 
@@ -8,11 +8,11 @@ public class GetOrdersHandler : IQueryHandler<GetOrdersQuery, Result<IEnumerable
     _repository = repository;
   }
 
-  public async Task<Result<IEnumerable<OrderDTO>>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)
+  public async Task<DetailedResult<IEnumerable<OrderDTO>>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)
   {
       var result = await _repository.ListAllAsync();
       var orders = result.Select(order => 
-      new OrderDTO(order.Id,order.Status.Name,
+      new OrderDTO(order.Id,order.Status.Label,
       null
       //order.OrderItems.Select(item => new OrderItemDTO(item.BookId, item.BookTitle, item.BookPrice, item.Quantity))
       ));
@@ -20,10 +20,10 @@ public class GetOrdersHandler : IQueryHandler<GetOrdersQuery, Result<IEnumerable
       foreach (var order in result)
       {
         Console.WriteLine($"Order Id: {order.Id}");
-        Console.WriteLine($"Order Status: {order.Status.Name}");
+        Console.WriteLine($"Order Status: {order.Status.Label}");
         Console.WriteLine($"Order Items: {order.OrderItems}");
       }
 
-    return Result.Success(orders);
+    return StandardResult.Success(orders);
   }
 }

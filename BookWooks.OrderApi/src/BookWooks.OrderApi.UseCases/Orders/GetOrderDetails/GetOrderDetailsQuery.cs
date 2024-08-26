@@ -1,3 +1,3 @@
 ﻿namespace BookWooks.OrderApi.UseCases.Orders.Get;
-public record GetOrderDetailsQuery(Guid OrderId) : IQuery<Result<OrderDTO>>;
+public record GetOrderDetailsQuery(Guid OrderId) : IQuery<DetailedResult<OrderDTO>>;
 

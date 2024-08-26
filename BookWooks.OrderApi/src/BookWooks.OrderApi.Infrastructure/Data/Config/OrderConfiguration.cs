@@ -28,7 +28,9 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
     //   .IsRequired();
 
     builder.Property(o => o.Status)
-          .HasConversion(o => o.Value,o => OrderStatus.FromValue(o));
+      .HasConversion(
+        s => s.Label,
+        s => OrderStatus.FromLabel(s));
 
     builder.HasMany(o => o.OrderItems)
         .WithOne()
