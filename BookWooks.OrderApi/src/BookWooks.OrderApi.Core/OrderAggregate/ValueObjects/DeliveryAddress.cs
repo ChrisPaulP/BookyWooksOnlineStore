@@ -20,11 +20,11 @@ public record DeliveryAddress
   }
   public static DeliveryAddress Of(string street, string city, string country, string postCode)
   {
-    ArgumentException.ThrowIfNullOrEmpty(street);
+ArgumentException.ThrowIfNullOrEmpty(street);
     ArgumentException.ThrowIfNullOrEmpty(city);
     ArgumentException.ThrowIfNullOrEmpty(country);
     ArgumentException.ThrowIfNullOrEmpty(postCode);
-    ArgumentOutOfRangeException.ThrowIfGreaterThan(postCode.Length, 10);
+    ArgumentOutOfRangeException.ThrowIfGreaterThan(postCode.Length, 10, "Post Code");
 
     return new DeliveryAddress(street, city, country, postCode);
   }

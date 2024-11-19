@@ -24,19 +24,16 @@ public class GetOrders : EndpointWithoutRequest<GetOrdersResponse>
     var command = new GetOrdersQuery(0, 0);
 
     var result = await _mediator.Send(command);
-
+    
+    var orders = result.Value.Select(o => new OrderRecord(o.Id, o.Status, o.OrderItems?.ToOrderItemRecord() ?? new List<OrderItemRecord>())).ToList();
     if (result.Status == ResultStatus.NotFound)
     {
       await SendNotFoundAsync(ct);
+      Response = new GetOrdersResponse(orders, result.Errors);
       return;
-    }
-
-    if (result.IsSuccess)
-    {
-      Response = new GetOrdersResponse
-      {
-        Orders = result.Value.Select(o => new OrderRecord(o.Id, o.Status, o.OrderItems?.ToOrderItemRecord() ?? new List<OrderItemRecord>())).ToList()
-      };
-    }
+    } 
+    Response = new GetOrdersResponse(orders);     
   }
 }
+
+

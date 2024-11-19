@@ -1,50 +1,149 @@
-using BookWooks.OrderApi.Core.OrderAggregate.Entities;
-using OrderItem = BookWooks.OrderApi.UseCases.Create.OrderItem;
-
 namespace BookWooks.OrderApi.TestContainersIntegrationTests
 {
-    public class CreateOrder : OrderApiBaseIntegrationTest
+    [Collection("Order Test Collection")]
+    public class CreateOrder : ApiTestBase<Program, BookyWooksOrderDbContext>
     {
         private readonly HttpClient _client;
-        public CreateOrder(OrderApiApplicationFactory<Program> apiFactory) : base(apiFactory)
+        private readonly ITestHarness _harness;
+
+        public CreateOrder(CustomOrderTestFactory<Program> apiFactory) : base(apiFactory, apiFactory.DisposeAsync)
         {
-                _client = apiFactory.CreateClient();
+            _client = apiFactory.CreateClient();
+            _harness = apiFactory.Services.GetTestHarness();
         }
+
         [Fact]
         public async Task SuccesfullyCreateNewOrder()
         {
-            // Create a new customer
-            var customer = Customer.Create("Customer Name", "Unique Email");
-            var product = Product.Create(Guid.NewGuid(), "Book 1", "Book URL", 9.99M);
-            await AddAsync(customer); // Add the customer to the database
-            await AddAsync(product); // Add the customer to the database
-            // Create order items
-            var orderItems = new List<OrderItem>()
-    {
-        new OrderItem(product.Id, 9.99M, 1),
-        new OrderItem(product.Id, 5.99M, 4)
-    };
-
-            // Create delivery address
+            var (customer, product) = await OrderTestHelper.SetupCustomerAndProductAsync(AddAsync<Customer>, AddAsync<Product>);
             var deliveryAddress = new Address("Test Street", "Test City", "Test Country", "Post Code");
+            var command = OrderTestHelper.CreateOrderCommand(customer, product, deliveryAddress);
 
-            // Create payment details
-            var paymentDetails = new PaymentDetails("1234 5678 9012 3456", "Christopher", "12/23", "123", 1);
-
-            // Create a command to create the order
-            var command = new CreateOrderCommand(
-                OrderItems: orderItems,
-                CustomerId: customer.Id,
-                DeliveryAddress: deliveryAddress,
-                PaymentDetails: paymentDetails
-            );
-
-            // Send the command to create the order
             var commandResult = await SendAsync(command);
 
-            // Assert that the command execution was successful
             Assert.True(commandResult.IsSuccess);
         }
 
+        [Fact]
+        public async Task InvalidStreetName()
+        {
+            var (customer, product) = await OrderTestHelper.SetupCustomerAndProductAsync(AddAsync<Customer>, AddAsync<Product>);
+            var deliveryAddress = new Address(null, "Test City", "Test Country", "Post Code");
+            var command = OrderTestHelper.CreateOrderCommand(customer, product, deliveryAddress);
+
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(async () => await SendAsync(command));
+            Assert.Equal("street", exception.ParamName);
+        }
+
+        [Fact]
+        public async Task PostCodeExceedsCharacterRestriction()
+        {
+            var (customer, product) = await OrderTestHelper.SetupCustomerAndProductAsync(AddAsync<Customer>, AddAsync<Product>);
+            var deliveryAddress = new Address("Test Street", "Test City", "Test Country", "Post Code 12345678910");
+            var command = OrderTestHelper.CreateOrderCommand(customer, product, deliveryAddress);
+
+            var exception = await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await SendAsync(command));
+            Assert.Equal("Post Code", exception.ParamName);
+        }
+
+        [Fact]
+        public async Task PublishOrderCreated()
+        {
+            await _harness.Start();
+
+            var (customer, product) = await OrderTestHelper.SetupCustomerAndProductAsync(AddAsync<Customer>, AddAsync<Product>);
+            var deliveryAddress = new Address("Test Street", "Test City", "Test Country", "Post Code");
+            var command = OrderTestHelper.CreateOrderCommand(customer, product, deliveryAddress);
+
+            var commandResult = await SendAsync(command);
+
+            var isEventPublished = await _harness.Sent.Any<OrderCreatedMessage>();
+            isEventPublished.Should().BeTrue();
+
+            var messageSent = await _harness.Sent.SelectAsync<OrderCreatedMessage>()
+            .FirstOrDefault();
+
+            Assert.Equal(command.CustomerId, messageSent?.Context.Message.customerId);
+
+            await _harness.Stop();
+        }
+
+        [Fact]
+        public async Task CompletePayment()
+        {
+            await _harness.Start();
+
+            var endPointName = _harness.EndpointNameFormatter.Consumer<CompletePaymentCommandConsumer>();
+
+            var command = new CompletePaymentCommand(
+                CorrelationId: Guid.NewGuid(),
+                customerId: Guid.NewGuid(),
+                orderTotal: 9.99M
+            );
+
+            await _harness.Bus.Publish(command);
+
+            var isEventPublished = await _harness.Published.Any<CompletePaymentCommand>();
+            isEventPublished.Should().BeTrue();
+
+            var consumerHarness = _harness.GetConsumerHarness<CompletePaymentCommandConsumer>();
+
+            var isEventConsumed = await consumerHarness.Consumed.Any<CompletePaymentCommand>(x =>
+            {
+                var message = x.Context.Message;
+                return message.customerId == command.customerId;
+            });
+
+            isEventConsumed.Should().BeTrue();
+
+            await _harness.Stop();
+        }
+
+        [Fact]
+        public async Task PublishOrderCreatedMessage()
+        {
+           EndpointConvention.Map<OrderCreatedMessage>(new Uri("queue:order-created"));
+           await _harness.Start();
+           var x = _harness.GetConsumerEndpoint<OrderCreatedConsumer>(); 
+
+            var orderItems = new List<OrderItemEventDto>
+            {
+                new OrderItemEventDto(Guid.NewGuid(), 1, true)
+            };
+
+            var message = new OrderCreatedMessage(
+                orderId: Guid.NewGuid(),
+                customerId: Guid.NewGuid(),
+                orderTotal: 9.99M,
+                orderItems: orderItems
+            );
+
+            var endPointName = _harness.EndpointNameFormatter.Consumer<OrderCreatedConsumer>();
+            
+
+
+            await _harness.Bus.Send(message);
+
+            //var sendEndpoint = await _harness.Bus.GetSendEndpoint(new Uri("queue:order-created"));
+            //await sendEndpoint.Send(message);
+
+            //Assert.True(await _harness.Consumed.Any<OrderCreatedMessage>());
+            //Assert.True(await _harness.Consumed.Any<OrderCreatedConsumer>());
+
+            var isEventPublished = await _harness.Sent.Any<OrderCreatedMessage>();
+            isEventPublished.Should().BeTrue();
+
+            var consumerHarness = _harness.GetConsumerHarness<OrderCreatedConsumer>();
+
+            var isEventConsumed = await consumerHarness.Consumed.Any<OrderCreatedMessage>(x =>
+            {
+                var message = x.Context.Message;
+                return message.customerId == message.customerId;
+            });
+
+            isEventConsumed.Should().BeTrue();
+
+            await _harness.Stop();
+        }
     }
 }

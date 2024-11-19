@@ -66,6 +66,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OcelotGateway", "OcelotGate
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookyWooks.IdentityServer", "BookyWooks.IdentityServer\BookyWooks.IdentityServer.csproj", "{708DECBA-1DB8-41DE-A094-8B568CAC8DBE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SagaOrchestration.Tests", "SagaOrchestration.Tests", "{83CA4CAE-DB5E-4CEA-8BBB-80D424BE48B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SagaOrchestration.IntegrationTests", "SagaOrchestration.IntegrationTests\SagaOrchestration.IntegrationTests.csproj", "{09477A0C-FA41-4C2A-8993-8A7C3EF5C530}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationTestingSetup", "IntegrationTestingSetup", "{1E9BF29B-1DDD-4C5E-AE08-1C59A57B96E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTestingSetup", "IntegrationTestingSetup\IntegrationTestingSetup.csproj", "{0F095138-CA80-4963-86A6-3C0D916C1B89}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -144,6 +152,14 @@ Global
 		{708DECBA-1DB8-41DE-A094-8B568CAC8DBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{708DECBA-1DB8-41DE-A094-8B568CAC8DBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{708DECBA-1DB8-41DE-A094-8B568CAC8DBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09477A0C-FA41-4C2A-8993-8A7C3EF5C530}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09477A0C-FA41-4C2A-8993-8A7C3EF5C530}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09477A0C-FA41-4C2A-8993-8A7C3EF5C530}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09477A0C-FA41-4C2A-8993-8A7C3EF5C530}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F095138-CA80-4963-86A6-3C0D916C1B89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F095138-CA80-4963-86A6-3C0D916C1B89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F095138-CA80-4963-86A6-3C0D916C1B89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F095138-CA80-4963-86A6-3C0D916C1B89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -171,6 +187,10 @@ Global
 		{33D797E5-560C-4A52-A1F5-0FCCD8459870} = {22C55C28-F788-4ED5-BA9A-48152390FEB4}
 		{82B5087E-E0EE-426F-B293-F007357C8CAE} = {AE699687-2E57-43FE-A9E1-52B3A47CCE28}
 		{708DECBA-1DB8-41DE-A094-8B568CAC8DBE} = {89BEE009-401A-421A-AAAB-9DA970D1BD25}
+		{83CA4CAE-DB5E-4CEA-8BBB-80D424BE48B7} = {45392FAF-8976-4C5C-BC22-75BEDED05A4B}
+		{09477A0C-FA41-4C2A-8993-8A7C3EF5C530} = {83CA4CAE-DB5E-4CEA-8BBB-80D424BE48B7}
+		{1E9BF29B-1DDD-4C5E-AE08-1C59A57B96E0} = {C6070EED-0BA4-4181-8EAF-35C5136B701A}
+		{0F095138-CA80-4963-86A6-3C0D916C1B89} = {1E9BF29B-1DDD-4C5E-AE08-1C59A57B96E0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C62E4639-BD4C-47C3-873D-B083250A5897}

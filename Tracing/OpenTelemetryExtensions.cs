@@ -63,9 +63,10 @@ public static class OpenTelemetryExtensions
                 opt.SetDbStatementForStoredProcedure = true;
                 opt.EnrichWithIDbCommand = (activity, command) =>
                 {
-                    // var stateDisplayName = $"{command.CommandType} main";
-                    // activity.DisplayName = stateDisplayName;
-                    // activity.SetTag("db.name", stateDisplayName);
+                    Console.WriteLine("TEST");
+                    var stateDisplayName = $"{command.CommandType} main";
+                    activity.DisplayName = stateDisplayName;
+                    activity.SetTag("db.name", stateDisplayName);
                 };
             });
 

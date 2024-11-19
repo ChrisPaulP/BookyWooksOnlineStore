@@ -13,10 +13,14 @@ public class GetOrdersHandler : IQueryHandler<GetOrdersQuery, DetailedResult<IEn
       var result = await _repository.ListAllAsync();
       var orders = result.Select(order => 
       new OrderDTO(order.Id,order.Status.Label,
-      null
+      order.OrderItems?.Select(item => new OrderItemDTO(item.ProductId, item.Price, item.Quantity)) ?? Enumerable.Empty<OrderItemDTO>()
       //order.OrderItems.Select(item => new OrderItemDTO(item.BookId, item.BookTitle, item.BookPrice, item.Quantity))
       ));
 
+      if (!orders.Any())
+      {
+        return StandardResult.NotFound("No orders were found");
+      }
       foreach (var order in result)
       {
         Console.WriteLine($"Order Id: {order.Id}");

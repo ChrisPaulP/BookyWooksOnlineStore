@@ -53,7 +53,6 @@ public static class Extentions
             config.UsingRabbitMq((context, configurator) =>
             {
                 var rabbitMqConfig = context.GetRequiredService<IOptions<RabbitMQConfiguration>>().Value;
-                var c = rabbitMqConfig.HostName; // = "amqp://localhost:5672";
                 configurator.Host(rabbitMqConfig.HostName, "/", host =>
                 {
                     host.Username(rabbitMqConfig.UserName);

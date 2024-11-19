@@ -2,7 +2,7 @@
 
 namespace BookWooks.OrderApi.Web.Orders;
 
-[Authorize]
+//[Authorize]
 public class GetOrderDetails : Endpoint<GetOrderDetailsRequest, GetOrderDetailsResponse>
 {
   private readonly IMediator _mediator;
@@ -15,14 +15,15 @@ public class GetOrderDetails : Endpoint<GetOrderDetailsRequest, GetOrderDetailsR
   public override void Configure()
   {
     Get(GetOrderDetailsRequest.Route);
+    AllowAnonymous();
   }
 
   public override async Task HandleAsync(GetOrderDetailsRequest request,
   CancellationToken ct)
   {
-    var command = new GetOrderDetailsQuery(request.OrderId);
+    var query = new GetOrderDetailsQuery(request.OrderId);
 
-    var result = await _mediator.Send(command);
+    var result = await _mediator.Send(query);
 
     if (result.Status == ResultStatus.NotFound)
     {

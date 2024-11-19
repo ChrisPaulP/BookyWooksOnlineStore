@@ -17,6 +17,9 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Det
     CancellationToken cancellationToken)
   {
     var deliveryAddress = DeliveryAddress.Of(request.DeliveryAddress.Street, request.DeliveryAddress.City, request.DeliveryAddress.Country, request.DeliveryAddress.Postcode);
+    if (deliveryAddress == null)
+      return StandardResult.CriticalError("The order failed to create");
+
     var paymentDetails = Payment.Of(request.PaymentDetails.CardHolderName, request.PaymentDetails.CardNumber, request.PaymentDetails.ExpiryDate, request.PaymentDetails.Cvv, request.PaymentDetails.PaymentMethod);
     var newOrder = Order.Create(request.CustomerId, deliveryAddress, paymentDetails);
     if (newOrder == null)

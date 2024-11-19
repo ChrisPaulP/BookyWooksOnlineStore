@@ -1,11 +1,14 @@
 global using Xunit;
-global using MediatR;
 global using BookWooks.OrderApi.Infrastructure.Data;
-global using DotNet.Testcontainers.Builders;
-global using DotNet.Testcontainers.Containers;
-global using Microsoft.AspNetCore.Hosting;
-global using Microsoft.AspNetCore.Mvc.Testing;
-global using Microsoft.EntityFrameworkCore;
-
-global using Microsoft.Extensions.DependencyInjection;
 global using BookWooks.OrderApi.UseCases.Create;
+global using BookWooks.OrderApi.Core.OrderAggregate.Entities;
+global using BookyWooks.Messaging.Contracts.Commands;
+global using BookyWooks.Messaging.Messages.InitialMessage;
+global using FluentAssertions;
+global using IntegrationTestingSetup;
+global using MassTransit.Testing;
+global using OrderItem = BookWooks.OrderApi.UseCases.Create.OrderItem;
+global using BookWooks.OrderApi.TestContainersIntegrationTests.Consumers;
+global using MassTransit;
+global using BookyWooks.Messaging.Contracts.Events;
+global using Microsoft.Extensions.DependencyInjection;

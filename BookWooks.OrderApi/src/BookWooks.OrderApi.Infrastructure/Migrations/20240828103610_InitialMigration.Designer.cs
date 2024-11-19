@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookWooks.OrderApi.Infrastructure.Migrations
 {
     [DbContext(typeof(BookyWooksOrderDbContext))]
-    [Migration("20240403180702_InitialMigration")]
+    [Migration("20240828103610_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -72,8 +72,9 @@ namespace BookWooks.OrderApi.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("OrderPlaced")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.ComplexProperty<Dictionary<string, object>>("Payment", "BookWooks.OrderApi.Core.OrderAggregate.Entities.Order.Payment#Payment", b1 =>
                         {

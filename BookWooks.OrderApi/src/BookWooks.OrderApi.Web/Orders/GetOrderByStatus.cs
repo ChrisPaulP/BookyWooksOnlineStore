@@ -22,18 +22,18 @@ public class GetOrderByStatus : Endpoint<GetOrderByStatusRequest, GetOrderByStat
 
     var result = await _mediator.Send(command);
 
+    var orders = result.Value.Select(o => new OrderRecord(o.Id, o.Status, o.OrderItems?.ToOrderItemRecord() ?? new List<OrderItemRecord>())).ToList();
     if (result.Status == ResultStatus.NotFound)
     {
       await SendNotFoundAsync(ct);
+      Response = new GetOrderByStatusResponse(orders, result.Errors);
       return;
     }
 
     if (result.IsSuccess)
     {
-      Response = new GetOrderByStatusResponse
-      {
-        Orders = result.Value.Select(o => new OrderRecord(o.Id, o.Status, o.OrderItems?.ToOrderItemRecord() ?? new List<OrderItemRecord>())).ToList()
-      };
+     
+      Response = new GetOrderByStatusResponse(orders);
     }
   }
 }

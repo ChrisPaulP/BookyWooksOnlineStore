@@ -1,0 +1,5 @@
+﻿Integration tests ensure that different parts of the system work together as expected.
+
+Eg Saving to a database or publishing a message to a message broker.
+
+

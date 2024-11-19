@@ -1,6 +1,11 @@
 ﻿namespace BookWooks.OrderApi.Web.Orders;
-
 public class GetOrdersResponse
 {
-  public List<OrderRecord> Orders { get; set; } = new List<OrderRecord>();
+  public GetOrdersResponse(List<OrderRecord> orders, IEnumerable<string>? errors = null)
+  {
+    Orders = orders;
+    Errors = errors ?? Enumerable.Empty<string>();
+  }
+  public List<OrderRecord> Orders { get;} 
+  public IEnumerable<string> Errors { get; }
 }
