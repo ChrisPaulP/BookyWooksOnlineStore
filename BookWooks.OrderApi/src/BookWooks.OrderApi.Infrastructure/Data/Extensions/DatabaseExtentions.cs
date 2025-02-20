@@ -1,7 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Builder;
-
-namespace BookWooks.OrderApi.Infrastructure.Data.Extensions;
+﻿namespace BookWooks.OrderApi.Infrastructure.Data.Extensions;
 public static class DatabaseExtentions
 {
   public static async Task InitialiseDatabaseAsync(this WebApplication app)

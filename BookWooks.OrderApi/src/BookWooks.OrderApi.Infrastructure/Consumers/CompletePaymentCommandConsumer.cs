@@ -1,26 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BookyWooks.Messaging.Contracts.Commands;
-
-
-namespace BookWooks.OrderApi.Infrastructure.Consumers;
-public class CompletePaymentCommandConsumer : IConsumer<CompletePaymentCommand>
+﻿namespace BookWooks.OrderApi.Infrastructure.Consumers;
+public class CompletePaymentCommandConsumer : InboxConsumer<CompletePaymentCommand, BookyWooksOrderDbContext>
 {
-  private readonly ILogger<CompletePaymentCommand> _logger;
+  private readonly ILogger<CompletePaymentCommandConsumer> _logger;
+  private readonly ICommandScheduler _commandsScheduler;
 
-  public CompletePaymentCommandConsumer(ILogger<CompletePaymentCommand> logger)
+  public CompletePaymentCommandConsumer(IServiceScopeFactory serviceScopeFactory, ILogger<CompletePaymentCommandConsumer> logger, ICommandScheduler commandsScheduler)
+      : base(serviceScopeFactory)
   {
     _logger = logger;
+    _commandsScheduler = commandsScheduler;
   }
 
-  public async Task Consume(ConsumeContext<CompletePaymentCommand> context)
+  public override async Task Consume(CompletePaymentCommand message)
   {
-    // TODO: Send email to customer
-    await Task.Delay(1000);
-    _logger.LogInformation("Order Failed notification sent to customer with Id: {CustomerId} for order Id: {MessageOrderId}",
-       context.Message.customerId, context.Message.orderTotal);
+    await _commandsScheduler.EnqueueAsync(new CompletePaymentInternalCommand(Guid.NewGuid(), message.CustomerId));
+
+    _logger.LogInformation("CompletePaymentCommand saved for CustomerId: {CustomerId}, OrderTotal: {OrderTotal}",
+        message.CustomerId, message.OrderTotal);
+
+    //// TODO: Send email to customer
+    //await Task.Delay(1000);
+    //_logger.LogInformation("Order Failed notification sent to customer with Id: {CustomerId} for order Id: {MessageOrderId}",
+    //   message.customerId, message.orderTotal);
   }
 }

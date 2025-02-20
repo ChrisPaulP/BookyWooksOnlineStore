@@ -1,4 +1,8 @@
-﻿namespace BookWooks.OrderApi.UseCases.Orders.OrderFulfillment;
+﻿using BookyWooks.SharedKernel.Commands;
+using BookyWooks.SharedKernel.Repositories;
+using BookyWooks.SharedKernel.ResultPattern;
+
+namespace BookWooks.OrderApi.UseCases.Orders.OrderFulfillment;
 public class OrderFulfillmentHandler : ICommandHandler<OrderFulfillmentCommand, DetailedResult<Guid>>
 {
   private readonly IRepository<Order> _repository;

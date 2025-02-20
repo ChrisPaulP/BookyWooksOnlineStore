@@ -1,49 +1,42 @@
-﻿namespace BookWooks.OrderApi.Web.Orders;
-public class Create : Endpoint<CreateOrderRequest, CreateOrderResponse>
+﻿
+namespace BookWooks.OrderApi.Web.Orders;
+
+public class Create : IEndpoint
 {
-  private readonly IMediator _mediator;
-
-  public Create(IMediator mediator)
+  public void MapEndpoint(WebApplication app)
   {
-    _mediator = mediator;
+    app.MapPost(CreateOrderRequest.Route, HandleAsync)
+      .AddEndpointFilter<ValidationFilter<CreateOrderRequest>>();
   }
 
-  public override void Configure()
+  private static async Task<IResponse> HandleAsync(
+      CreateOrderRequest request,
+      IMediator mediator,
+      IDiagnosticsActivityLogger diagnosticsActivityLogger,
+      CancellationToken ct)
   {
-    Post(CreateOrderRequest.Route);
-    AllowAnonymous();
-    Summary(s =>
-    {
-      s.ExampleRequest = new CreateOrderRequest { Address = new() };
-    });
-  }
+    diagnosticsActivityLogger.LogStart(ApplicationName.Order, Event.OrderStarted, "Processing order creation");
 
-  public override async Task HandleAsync(
-    CreateOrderRequest request,
-    CancellationToken ct)
-  {
-    using var activity = ActivitySourceProvider.Source.StartActivity();
-    activity?.AddEvent(new("Order creation started."));
-    OpenTelemetryMetricConfiguration.OrderStartedEventCounter.Add(1, new KeyValuePair<string, object?>("event.name", "OrderCreatedEvent"));
-    var result = await _mediator.Send(new CreateOrderCommand(request.OrderItems.ToOrderCommandOrderItems(), request.CustomerId, new Address(request.Address.Street, request.Address.City, request.Address.Country, request.Address.Postcode), new PaymentDetails(request.Payment.CardNumber, request.Payment.CardHolderName, request.Payment.ExpiryDate, request.Payment.Cvv, request.Payment.PaymentMethod)));
+    var result = await mediator.Send(new CreateOrderCommand(
+      request.CustomerId, 
+      new Address(request.Address.Street, request.Address.City, request.Address.Country, request.Address.Postcode), 
+      new PaymentDetails(request.Payment.CardHolderNumber, request.Payment.CardHolderName, request.Payment.ExpiryDate, request.Payment.PaymentMethod),
+      request.OrderItems.Select(x => new OrderItem(x.ProductId, x.ProductName, x.ProductDescription, x.Price, x.Quantity))), 
+      ct);
 
-    if (result.Status == ResultStatus.CriticalError)
-    {
-      activity?.AddEvent(new("Order created successfully."));
-      Response = new CreateOrderResponse(result.Value, request.CustomerId);
-    }
-
-
-    if (result.IsSuccess)
-    {
-      activity?.AddEvent(new("Order created successfully."));
-      Response = new CreateOrderResponse(result.Value, request.CustomerId);
-    }
-    else
-    {
-      activity?.AddEvent(new("Order creation failed."));
-      Response = new CreateOrderResponse(Guid.Empty, Guid.Empty, result.Errors);
-    }
+    return result.Match<IResponse>(
+            Right: orderId =>
+            {
+              diagnosticsActivityLogger.LogSuccess("Order successfully created");
+              return new CreateOrderResponse(orderId, request.CustomerId);
+            },
+            Left: errors =>
+            {
+              var validationError = errors.Errors.FirstOrDefault();
+              diagnosticsActivityLogger.LogError($"Order creation failed: {validationError}");
+              return new BusinessRuleViolationsResponse("Business rule errors", StatusCodes.Status400BadRequest, errors);
+            }
+        );
   }
 }
 

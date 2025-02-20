@@ -1,4 +1,9 @@
-﻿namespace BookWooks.OrderApi.Infrastructure.Data.Repositories.Abstract;
+﻿using BookyWooks.SharedKernel.Repositories;
+using BookyWooks.SharedKernel.Specification;
+using BookyWooks.SharedKernel.UnitOfWork;
+using LanguageExt;
+
+namespace BookWooks.OrderApi.Infrastructure.Data.Repositories.Abstract;
 public abstract class RepositoryBase<T> : IRepositoryBase<T>
        where T : class, IAggregateRoot
 {

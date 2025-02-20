@@ -1,4 +1,8 @@
-﻿namespace BookWooks.OrderApi.UseCases.Contributors.Create;
+﻿using BookyWooks.SharedKernel.Commands;
+using BookyWooks.SharedKernel.Repositories;
+using BookyWooks.SharedKernel.ResultPattern;
+
+namespace BookWooks.OrderApi.UseCases.Contributors.Create;
 public class CancelOrderHandler : ICommandHandler<CancelOrderCommand, StandardResult>
 {
   private readonly IRepository<Order> _repository;
@@ -16,7 +20,7 @@ public class CancelOrderHandler : ICommandHandler<CancelOrderCommand, StandardRe
   {
     _logger.LogInformation("Setting order  {orderId} to cancelled", request.Id);
     var orderToCancel = await _repository.GetByIdAsync(request.Id);
-    if (orderToCancel == null) return StandardResult.NotFound();
+    if (orderToCancel == null) return StandardResult.NotFound("could not find");
 
     orderToCancel.CancelOrder();
     _repository.Update(orderToCancel);

@@ -1,20 +1,11 @@
-﻿
-
-using BookyWooks.Messaging.Constants;
+﻿using BookyWooks.Messaging.Constants;
 using BookyWooks.Messaging.RabbitMq;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System.Buffers.Text;
-using System.Drawing;
-using System.Net;
 using System.Reflection;
-using static MassTransit.Monitoring.Performance.BuiltInCounters;
-using System.Text;
-using static MassTransit.Util.ChartTable;
-
 namespace BookyWooks.Messaging.MassTransit;
 
 public static class Extentions
@@ -34,8 +25,8 @@ public static class Extentions
             {
                 //o.QueryDelay = TimeSpan.FromSeconds(1);
                 o.DuplicateDetectionWindow = TimeSpan.FromSeconds(30);
-                if (useSqlServer) o.UseSqlServer().UseBusOutbox();
-                else o.UsePostgres().UseBusOutbox(); 
+                if (useSqlServer) o.UseSqlServer(); //.UseBusOutbox();
+                else o.UsePostgres(); //.UseBusOutbox(); 
             });
 
             config.SetKebabCaseEndpointNameFormatter();
@@ -66,11 +57,11 @@ public static class Extentions
                     ReceiveEndpointNames.Add(endpointName); // Store the endpoint name
                     configurator.ReceiveEndpoint(endpointName, e => // Create a new endpoint for each consumer
                     {
-                        e.ConfigureConsumer(context, consumerType); // Configures the consumer for the endpoint
+                        e.ConfigureConsumer(context, consumerType); // Configures the consumer for the endpoint // Commenting this out as I am removing Automatic Configuration: 
                     });
                 }
                 //Automatic Configuration of Endpoints:
-                configurator.ConfigureEndpoints(context); // creates endpoints for the consumers using the default endpoint naming conventions.
+               // configurator.ConfigureEndpoints(context); // creates endpoints for the consumers using the default endpoint naming conventions.
                 
                 // Print out registered consumersfor debugging purposes
                 foreach (var consumerType in RegisteredConsumers)

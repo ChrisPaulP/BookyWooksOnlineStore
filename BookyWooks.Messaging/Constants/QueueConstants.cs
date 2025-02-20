@@ -30,6 +30,16 @@ public class QueueConstants
         // Append "_queue" to the queue name
         queueName += "-queue";
 
-        return queueName;
+        return queueName switch
+        {
+            var name when ValidQueueNames.Contains(name) => name,
+            _ => consumerType.Name
+        };
     }
+    private static readonly HashSet<string> ValidQueueNames = new()
+    {
+        CreateOrderMessageQueueName,
+        CompletePaymentCommandQueueName,
+        CheckBookStockCommandQueueName
+    };
 }

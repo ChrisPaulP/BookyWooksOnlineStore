@@ -34,12 +34,13 @@ public static class OpenTelemetryExtensions
             tracing.AddAspNetCoreInstrumentation(o =>
             {
                 // to trace only api requests
-                //o.Filter = (context) => !string.IsNullOrEmpty(context.Request.Path.Value) && context.Request.Path.Value.Contains("Api", StringComparison.InvariantCulture);
-                //o.Filter = (context) =>
-                //{
-                //    var path = context.Request.Path.Value;
-                //    return !string.IsNullOrEmpty(path) && path.Contains("Orders", StringComparison.InvariantCulture);
-                //};
+                o.Filter = (context) => !string.IsNullOrEmpty(context.Request.Path.Value) && context.Request.Path.Value.Contains("Api", StringComparison.InvariantCulture);
+                // to trace only order requests
+                o.Filter = (context) =>
+                {
+                    var path = context.Request.Path.Value;
+                    return !string.IsNullOrEmpty(path) && path.Contains("Orders", StringComparison.InvariantCulture);
+                };
                 // example: only collect telemetry about HTTP GET requests
                 // return httpContext.Request.Method.Equals("GET");
 
@@ -55,6 +56,7 @@ public static class OpenTelemetryExtensions
                     activity.SetTag("stackTrace", exception.StackTrace);
                 };
             });
+
             tracing.AddHttpClientInstrumentation(); // This enables HttpClient instrumentation for outgoing requests
 
             tracing.AddEntityFrameworkCoreInstrumentation(opt =>
@@ -69,9 +71,6 @@ public static class OpenTelemetryExtensions
                     activity.SetTag("db.name", stateDisplayName);
                 };
             });
-
-            //options.AddConsoleExporter();
-            //tracing.AddOtlpExporter();
             tracing.AddOtlpExporter(options =>
             {
                 options.Endpoint =
@@ -84,7 +83,6 @@ public static class OpenTelemetryExtensions
 
     public static void AddOpenTelemetryMetrics(this IServiceCollection services, IConfiguration configuration)
     {
-        var x = configuration.GetSection("OpenTelemetry").Get<OpenTelemetryParameters>();
         services.Configure<OpenTelemetryParameters>(configuration.GetSection("OpenTelemetry"));
         var openTelemetryParameters = configuration.GetSection("OpenTelemetry").Get<OpenTelemetryParameters>();
 

@@ -16,4 +16,13 @@ global using BookWooks.OrderApi.UseCases.Cancel;
 global using BookWooks.OrderApi.Infrastructure.Data.Extensions;
 global using Logging;
 global using Tracing;
+global using BookWooks.OrderApi.Core.OrderAggregate.Events;
+global using BookWooks.OrderApi.Infrastructure.Common.Processing;
+global using BookWooks.OrderApi.UseCases.InternalCommands;
+global using Microsoft.OpenApi.Models;
+global using System.Reflection;
+global using FluentValidation;
+global using BookWooks.OrderApi.Web.Shared;
+global using BookyWooks.SharedKernel.ResultPattern;
+global using IEndpoint = BookWooks.OrderApi.Web.Interfaces.IEndpoint;
 

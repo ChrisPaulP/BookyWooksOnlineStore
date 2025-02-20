@@ -8,7 +8,7 @@ using BookyWooks.Messaging.Messages.InitialMessage;
 
 
 namespace BookWooks.OrderApi.Core.OrderAggregate.Handlers;
-internal class OrderCreatedDomainEventHandler : INotificationHandler<Events.OrderCreatedEvent>
+internal class OrderCreatedDomainEventHandler : INotificationHandler<Events.OrderCreatedDomainEvent>
 {
   private readonly ILogger<OrderCreatedDomainEventHandler> _logger;
   private readonly IMassTransitService _massTransitService;
@@ -19,7 +19,7 @@ internal class OrderCreatedDomainEventHandler : INotificationHandler<Events.Orde
     _massTransitService = massTransitService;
   }
 
-  public async Task Handle(Events.OrderCreatedEvent domainEvent, CancellationToken cancellationToken)
+  public async Task Handle(Events.OrderCreatedDomainEvent domainEvent, CancellationToken cancellationToken)
   {
     _logger.LogInformation("Handling Order Created Domain event for {new order}", domainEvent.NewOrder.Message);
     var orderStockList = domainEvent.NewOrder.OrderItems

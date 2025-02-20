@@ -68,11 +68,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookyWooks.IdentityServer",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SagaOrchestration.Tests", "SagaOrchestration.Tests", "{83CA4CAE-DB5E-4CEA-8BBB-80D424BE48B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SagaOrchestration.IntegrationTests", "SagaOrchestration.IntegrationTests\SagaOrchestration.IntegrationTests.csproj", "{09477A0C-FA41-4C2A-8993-8A7C3EF5C530}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SagaOrchestration.IntegrationTests", "SagaOrchestration.IntegrationTests\SagaOrchestration.IntegrationTests.csproj", "{09477A0C-FA41-4C2A-8993-8A7C3EF5C530}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationTestingSetup", "IntegrationTestingSetup", "{1E9BF29B-1DDD-4C5E-AE08-1C59A57B96E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTestingSetup", "IntegrationTestingSetup\IntegrationTestingSetup.csproj", "{0F095138-CA80-4963-86A6-3C0D916C1B89}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTestingSetup", "IntegrationTestingSetup\IntegrationTestingSetup.csproj", "{0F095138-CA80-4963-86A6-3C0D916C1B89}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{877C4383-48AE-4269-9E0D-41734835C213}"
+	ProjectSection(SolutionItems) = preProject
+		ProjectNotes.txt = ProjectNotes.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

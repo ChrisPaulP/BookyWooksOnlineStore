@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using BookyWooks.SharedKernel.Guards;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BookWooks.OrderApi.Core.OrderAggregate.Handlers;
 public class OrderFulfilledSendEmailEventHandler : INotificationHandler<OrderFulfilledEvent>

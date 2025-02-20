@@ -1,39 +1,30 @@
-﻿
-using Azure;
-using BookWooks.OrderApi.UseCases.Orders.GetOrders;
+﻿using BookWooks.OrderApi.UseCases.Orders.GetOrders;
+
+using LanguageExt;
+
 using Microsoft.AspNetCore.Authorization;
 
+
 namespace BookWooks.OrderApi.Web.Orders;
+
 [Authorize]
-public class GetOrders : EndpointWithoutRequest<GetOrdersResponse>
+public class GetOrders : IEndpoint
 {
-  private readonly IMediator _mediator;
-
-  public GetOrders(IMediator mediator)
+  public void MapEndpoint(WebApplication app)
   {
-    _mediator = mediator;
+    app.MapGet("/Orders", HandleAsync);
   }
 
-  public override void Configure()
+  private static async Task<IResponse> HandleAsync(
+      IMediator mediator,
+      CancellationToken ct)
   {
-    Get("/Orders");
-  }
+    var query = new GetOrdersQuery(0, 0);
 
-  public override async Task HandleAsync(CancellationToken ct)
-  {
-    var command = new GetOrdersQuery(0, 0);
+    var result = await mediator.Send(query, ct);
 
-    var result = await _mediator.Send(command);
-    
-    var orders = result.Value.Select(o => new OrderRecord(o.Id, o.Status, o.OrderItems?.ToOrderItemRecord() ?? new List<OrderItemRecord>())).ToList();
-    if (result.Status == ResultStatus.NotFound)
-    {
-      await SendNotFoundAsync(ct);
-      Response = new GetOrdersResponse(orders, result.Errors);
-      return;
-    } 
-    Response = new GetOrdersResponse(orders);     
+    return result.Match<IResponse>(
+            Right: orders => new GetOrdersResponse(orders.Select(order => new OrderRecord(Id: order.Id, Status: order.Status))),
+            Left: error =>  new OrdersNotFoundResponse("No orders were found", StatusCodes.Status404NotFound, error));
   }
 }
-
-

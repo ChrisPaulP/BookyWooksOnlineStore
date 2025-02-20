@@ -14,6 +14,7 @@
     <!--<DocumentationFile>bin\swagger-docs.xml</DocumentationFile>-->
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\BookyWooks.SharedKernel\BookyWooks.SharedKernel.csproj" />
     <ProjectReference Include="..\..\..\Logging\Logging.csproj" />
     <ProjectReference Include="..\..\..\Tracing\Tracing.csproj" />
     <ProjectReference Include="..\BookWooks.OrderApi.Infrastructure\BookWooks.OrderApi.Infrastructure.csproj" />

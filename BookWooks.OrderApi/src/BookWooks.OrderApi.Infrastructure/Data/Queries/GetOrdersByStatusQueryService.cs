@@ -7,20 +7,18 @@ public class GetOrdersByStatusQueryService : IGetOrdersByStatusQueryService
   {
     _db = db;
   }
-  public async Task<IEnumerable<OrderDTO>> GetOrdersByStatusAsync(string status)
+  public async Task<IEnumerable<OrderWithItemsDTO>> GetOrdersByStatusAsync(string status)
   {
-   
-    var result =  await _db.Orders
-        .FromSqlRaw($"SELECT Id, Status FROM Orders")
+
+    return await _db.Orders
+        .FromSqlRaw("SELECT Id, Status FROM Orders WHERE Status = {0}", status)
         .Include(b => b.OrderItems)
-        .Select(o => new OrderDTO(
+        .Select(o => new OrderWithItemsDTO(
           o.Id,
           o.Status.Label,
-          o.OrderItems.Select(item => new OrderItemDTO(item.ProductId, item.Price, item.Quantity)).ToList()
+          o.OrderItems.Select(item => new OrderItemDTO(item.ProductId.Value, item.ProductName.Value, item.ProductDescription.Value, item.Price.Value, item.Quantity.Value)).ToList()
       ))
         .ToListAsync();
-
-    return result;
   }
 }
 

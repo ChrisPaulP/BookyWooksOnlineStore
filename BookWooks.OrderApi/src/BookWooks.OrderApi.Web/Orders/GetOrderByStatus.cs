@@ -1,39 +1,33 @@
-﻿namespace BookWooks.OrderApi.Web.Orders;
+﻿using BookWooks.OrderApi.UseCases.Errors;
+using BookyWooks.SharedKernel.ResultPattern;
+using BookyWooks.SharedKernel.Validation;
 
-public class GetOrderByStatus : Endpoint<GetOrderByStatusRequest, GetOrderByStatusResponse>
+namespace BookWooks.OrderApi.Web.Orders;
+
+public class GetOrderByStatus : IEndpoint
 {
-  private readonly IMediator _mediator;
-
-  public GetOrderByStatus(IMediator mediator)
+  public void MapEndpoint(WebApplication app)
   {
-    _mediator = mediator;
+    app.MapGet(GetOrderByStatusRequest.Route, HandleAsync)
+      .AllowAnonymous()
+      .AddEndpointFilter<ValidationFilter<CreateOrderRequest>>();
   }
 
-  public override void Configure()
-  {
-    Get(GetOrderByStatusRequest.Route);
-    AllowAnonymous();
-  }
-
-  public override async Task HandleAsync(GetOrderByStatusRequest request,
+  private static async Task<IResponse> HandleAsync(
+    GetOrderByStatusRequest request,
+    IMediator mediator,
     CancellationToken ct)
   {
-    var command = new GetOrdersByStatusQuery(null, null, request.Status);
+    var query = await mediator.Send(new GetOrdersByStatusQuery(null, null, request.Status), ct);
 
-    var result = await _mediator.Send(command);
-
-    var orders = result.Value.Select(o => new OrderRecord(o.Id, o.Status, o.OrderItems?.ToOrderItemRecord() ?? new List<OrderItemRecord>())).ToList();
-    if (result.Status == ResultStatus.NotFound)
-    {
-      await SendNotFoundAsync(ct);
-      Response = new GetOrderByStatusResponse(orders, result.Errors);
-      return;
-    }
-
-    if (result.IsSuccess)
-    {
-     
-      Response = new GetOrderByStatusResponse(orders);
-    }
+    return query.Any()
+        ? new GetOrderByStatusResponse(
+            query.Select(o => new OrderWithItemsRecord(
+                o.Id,
+                o.Status,
+                o.OrderItems?.ToOrderItemRecord() ?? []
+            )).ToList()
+        )
+        : new OrderNotFoundResponse("Order was not found", StatusCodes.Status404NotFound, new OrderNotFound());
   }
 }

@@ -1,8 +1,6 @@
-﻿using BookyWooks.SharedKernel;
-using Tracing;
+﻿namespace BookWooks.OrderApi.UseCases.Orders.Create;
 
-namespace BookWooks.OrderApi.UseCases.Contributors.Create;
-public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, DetailedResult<Guid>>
+public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Either<ValidationErrors, Guid>>
 {
   private readonly ILogger<CreateOrderCommandHandler> _logger;
   private readonly IRepository<Order> _orderRepository;
@@ -13,26 +11,19 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Det
     _orderRepository = orderRepository;
   }
 
-  public async Task<DetailedResult<Guid>> Handle(CreateOrderCommand request,
-    CancellationToken cancellationToken)
+  public async Task<Either<ValidationErrors, Guid>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
   {
-    var deliveryAddress = DeliveryAddress.Of(request.DeliveryAddress.Street, request.DeliveryAddress.City, request.DeliveryAddress.Country, request.DeliveryAddress.Postcode);
-    if (deliveryAddress == null)
-      return StandardResult.CriticalError("The order failed to create");
+    _logger.LogInformation("Handling CreateOrderCommand for CustomerId: {CustomerId}", request.CustomerId);
 
-    var paymentDetails = Payment.Of(request.PaymentDetails.CardHolderName, request.PaymentDetails.CardNumber, request.PaymentDetails.ExpiryDate, request.PaymentDetails.Cvv, request.PaymentDetails.PaymentMethod);
-    var newOrder = Order.Create(request.CustomerId, deliveryAddress, paymentDetails);
-    if (newOrder == null)
-      return StandardResult.NotFound("The order failed to create");
-    foreach (var item in request.OrderItems)
-    {
-      newOrder.AddOrderItem(item.ProductId, item.Price, item.Quantity);
-    }
-    _logger.LogInformation("----- Creating Order - Order: {@Order}", newOrder);
-    OpenTelemetryMetricConfiguration.OrderStartedEventCounter.Add(1, new KeyValuePair<string, object?>("event.name", "OrderCreatedEvent"));
-    await _orderRepository.AddAsync(newOrder);
-    await _orderRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
-    return StandardResult.Success(newOrder.Id, "Order succesfully created");
+    var orderResult = await request
+        .CreateOrder()
+        .AddOrderItems(request.OrderItems)
+        .SaveOrder(_orderRepository, cancellationToken, _logger);
+
+    return orderResult.Match<Either<ValidationErrors, Guid>>(
+        order => order.Id,
+        errors => new ValidationErrors(errors.Errors));
   }
 }
+
 

@@ -1,15 +1,12 @@
-﻿namespace BookWooks.OrderApi.Web.Orders;
+﻿using BookWooks.OrderApi.UseCases.Errors;
+using BookyWooks.SharedKernel.ResultPattern;
+using BookyWooks.SharedKernel.Validation;
 
-public class CreateOrderResponse
-{
-  public CreateOrderResponse(Guid id, Guid customerId, IEnumerable<string>? errors = null)
-  {
-    Id = id;
-    CustomerId = customerId;
-    Errors = errors ?? Enumerable.Empty<string>();
-  }
-  public Guid Id { get;}
-  public Guid CustomerId { get;}
-  public IEnumerable<string> Errors { get;}
-}
+namespace BookWooks.OrderApi.Web.Orders;
+
+public record CreateOrderResponse(Guid Id, Guid CustomerId) : IResponse;
+public record BusinessRuleViolationsResponse(string Message,int StatusCode, ValidationErrors Errors) : IResponse;
+public record BusinessRuleViolationResponse(string Message, int StatusCode, Error Error) : IResponse;
+public record ValidationProblemDetails(int StatusCode, string title, string detail, string instance, IDictionary<string, string[]> errors) : IResponse;
+
 

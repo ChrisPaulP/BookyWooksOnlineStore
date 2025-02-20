@@ -1,5 +1,10 @@
-﻿namespace BookWooks.OrderApi.Infrastructure.Data;
-public class BookyWooksOrderDbContext : DbContext , IUnitOfWork//, IBookyWooksOrderDbContext    
+﻿using BookyWooks.SharedKernel.DomainEventsDispatching;
+using BookyWooks.SharedKernel.InternalCommands;
+using BookyWooks.SharedKernel.Messages;
+using BookyWooks.SharedKernel.UnitOfWork;
+
+namespace BookWooks.OrderApi.Infrastructure.Data;
+public class BookyWooksOrderDbContext : DbContext, IInboxDbContext, IOutboxDbContext, IUnitOfWork//, IBookyWooksOrderDbContext    
 {
   private readonly IDomainEventDispatcher? _dispatcher;
   public IDbContextTransaction? CurrentTransaction { get; private set; }
@@ -17,6 +22,9 @@ public class BookyWooksOrderDbContext : DbContext , IUnitOfWork//, IBookyWooksOr
   public DbSet<OrderItem> OrderItems { get; set; }
   public DbSet<Customer> Customers { get; set; }
   public DbSet<Product> Products { get; set; }
+  public DbSet<InboxMessage> InboxMessages { get; set; }
+  public DbSet<InternalCommand> InternalCommands { get; set; }
+  public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
@@ -26,9 +34,9 @@ public class BookyWooksOrderDbContext : DbContext , IUnitOfWork//, IBookyWooksOr
     base.OnModelCreating(modelBuilder);
 
 
-    modelBuilder.AddInboxStateEntity();
-    modelBuilder.AddOutboxMessageEntity();
-    modelBuilder.AddOutboxStateEntity();
+    //modelBuilder.AddInboxStateEntity();
+    //modelBuilder.AddOutboxMessageEntity();
+    //modelBuilder.AddOutboxStateEntity();
   }
   public async Task<int> SaveEntitiesAsync(CancellationToken cancellationToken = default)
   {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using BookyWooks.SharedKernel.ResultPattern;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookWooks.OrderApi.Web.Orders;
 

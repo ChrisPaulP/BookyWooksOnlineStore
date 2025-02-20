@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BookWooks.OrderApi.Core.OrderAggregate.Entities;
-using BookWooks.OrderApi.Core.OrderAggregate.ValueObjects;
-using BookWooks.OrderApi.UseCases.Create;
-
-namespace BookWooks.OrderApi.Infrastructure.Data.Extensions;
+﻿namespace BookWooks.OrderApi.Infrastructure.Data.Extensions;
 
 public class InitialData
 {
