@@ -8,6 +8,9 @@ global using Newtonsoft.Json;
 global using Newtonsoft.Json.Converters;
 global using Newtonsoft.Json.Serialization;
 global using Microsoft.EntityFrameworkCore;
+global using System.Text;
+global using BookyWooks.SharedKernel.ResultPattern;
+global using FluentValidation;
 
 
 

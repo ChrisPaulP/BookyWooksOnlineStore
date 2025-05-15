@@ -1,29 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BookWooks.OrderApi.Core.OrderAggregate.Entities;
-public class Product : EntityBase
+﻿namespace BookWooks.OrderApi.Core.OrderAggregate.Entities;
+public record Product : EntityBase
 {
-  public Product(Guid id) : base(id) { }
-  public string Title { get; private set; } = string.Empty;
-  public string ImageUrl { get; private set; } = string.Empty;
-  public decimal Price { get; private set; }
-  
-  public static Product Create(Guid Id, string title, string imageUrl, decimal price)
+  public ProductId ProductId { get; set; }
+  public ProductName Name { get; private set; }
+  public ProductDescription Description { get; private set; }
+  public ProductPrice Price { get; private set; }
+  public ProductQuantity Quantity { get; private set; }
+  private Product()
   {
+    ProductId = ProductId.New();
+  }
+  private Product(ProductId id, ProductName name, ProductDescription description, ProductPrice price, ProductQuantity quantity)
+  {
+    ProductId = id;
+    Description = description;
+    Name = name;
+    Price = price;
+    Quantity = quantity;
+  }
 
-    ArgumentException.ThrowIfNullOrEmpty(title);
-    ArgumentOutOfRangeException.ThrowIfNegativeOrZero(price);
-    var product = new Product(Id)
+  public static Validation<ProductValidationErrors, Product> CreateProduct(string name, string description, decimal price, int quantity)
+  {
+    var maybeName =        ProductName.TryFrom(name).ToValidationMonad(errors => new ProductValidationErrors("ProductName", errors));
+    var maybeDescription = ProductDescription.TryFrom(description).ToValidationMonad(errors => new ProductValidationErrors("Product Description Error", errors));
+    var maybePrice =       ProductPrice.TryFrom(price).ToValidationMonad(errors => new ProductValidationErrors("Product Price Error", errors));
+    var maybeQuantity =    ProductQuantity.TryFrom(quantity).ToValidationMonad(errors => new ProductValidationErrors("Product Quantity Error", errors));
+
+    return (maybeName, maybeDescription, maybePrice, maybeQuantity).Apply((nameVo, descriptionVo, priceVo, quantityVo) =>
     {
-      Title = title,
-      ImageUrl = imageUrl,
-      Price = price
-    };
-
-    return product;
+      var product = new Product(ProductId.New(), nameVo, descriptionVo, priceVo, quantityVo);
+      return product;
+    });
   }
 }

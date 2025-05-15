@@ -1,11 +1,3 @@
 ﻿namespace BookWooks.OrderApi.Web.Orders;
 
-public class CancelOrderResponse
-{
-  public string Message { get; }
-
-  public CancelOrderResponse()
-  {
-    Message = "Order cancelled.";
-  }
-}
+public record CancelOrderResponse(string Message = "Order cancelled.");

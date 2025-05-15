@@ -1,4 +1,7 @@
-﻿namespace BookWooks.OrderApi.Infrastructure.Data.Repositories;
+﻿using BookyWooks.SharedKernel.Repositories;
+using BookyWooks.SharedKernel.Specification;
+
+namespace BookWooks.OrderApi.Infrastructure.Data.Repositories;
 public class ReadRepositoryDecorator<T> : RepositoryBase<T>, IReadRepository<T>
       where T : class, IAggregateRoot
 {

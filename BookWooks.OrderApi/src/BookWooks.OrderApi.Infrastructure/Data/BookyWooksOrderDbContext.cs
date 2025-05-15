@@ -1,22 +1,26 @@
 ﻿namespace BookWooks.OrderApi.Infrastructure.Data;
-public class BookyWooksOrderDbContext : DbContext , IUnitOfWork//, IBookyWooksOrderDbContext    
+public class BookyWooksOrderDbContext : DbContext, IInboxDbContext, IOutboxDbContext, IUnitOfWork//, IBookyWooksOrderDbContext
 {
   private readonly IDomainEventDispatcher? _dispatcher;
   public IDbContextTransaction? CurrentTransaction { get; private set; }
   public bool HasActiveTransaction => CurrentTransaction != null;
 
   public BookyWooksOrderDbContext(DbContextOptions<BookyWooksOrderDbContext> options,
-    IDomainEventDispatcher? dispatcher)
+    IDomainEventDispatcher? dispatcher = null)
       : base(options)
   {
     _dispatcher = dispatcher;
   }
 
 
+
   public DbSet<Order> Orders  { get; set; }
   public DbSet<OrderItem> OrderItems { get; set; }
   public DbSet<Customer> Customers { get; set; }
   public DbSet<Product> Products { get; set; }
+  public DbSet<InboxMessage> InboxMessages { get; set; }
+  public DbSet<InternalCommand> InternalCommands { get; set; }
+  public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
@@ -26,27 +30,28 @@ public class BookyWooksOrderDbContext : DbContext , IUnitOfWork//, IBookyWooksOr
     base.OnModelCreating(modelBuilder);
 
 
-    modelBuilder.AddInboxStateEntity();
-    modelBuilder.AddOutboxMessageEntity();
-    modelBuilder.AddOutboxStateEntity();
+    //modelBuilder.AddInboxStateEntity();
+    //modelBuilder.AddOutboxMessageEntity();
+    //modelBuilder.AddOutboxStateEntity();
   }
   public async Task<int> SaveEntitiesAsync(CancellationToken cancellationToken = default)
   {
-    // ignore events if no dispatcher provided
     if (_dispatcher == null)
       return await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-    // Retrieve entities with domain events
     var entitiesWithEvents = ChangeTracker.Entries<EntityBase>()
         .Where(e => e.Entity.DomainEvents.Any())
         .Select(e => e.Entity)
         .ToArray();
 
-    // Dispatch events only if there are entities with domain events
     if (entitiesWithEvents.Length > 0)
-      await _dispatcher.DispatchAndClearEvents(entitiesWithEvents).ConfigureAwait(false);
+    //await _dispatcher.DispatchAndClearEvents(entitiesWithEvents).ConfigureAwait(false);
+    {
+      var outboxMessages = await _dispatcher.DispatchAndClearEvents(entitiesWithEvents)
+                                            .ConfigureAwait(false);
+      OutboxMessages.AddRange(outboxMessages);
+    }
 
-    // Save changes to the database
     return await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
   }
 

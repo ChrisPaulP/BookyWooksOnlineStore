@@ -1,33 +1,14 @@
 ﻿namespace BookWooks.OrderApi.Web.Orders;
-
-public class CancelOrder : Endpoint<CancelOrderRequest, CancelOrderResponse>
+public class CancelOrder : IEndpoint
 {
-  private readonly IMediator _mediator;
+  public void MapEndpoint(WebApplication app) => app
+             .MapPost(CancelOrderRequest.Route, HandleAsync)
+             .AddEndpointFilter<ValidationFilter<CancelOrderRequest>>();
+  
 
-  public CancelOrder(IMediator mediator)
-  {
-    _mediator = mediator;
-  }
+  public static async Task<IResult> HandleAsync([FromBody] CancelOrderRequest request, IMediator mediator, CancellationToken ct) =>
 
-  public override void Configure()
-  {
-    Post(CancelOrderRequest.Route);
-    AllowAnonymous();
-    Summary(s =>
-    {
-      s.ExampleRequest = new CancelOrderRequest { OrderId = Guid.NewGuid() };
-    });
-  }
-
-  public override async Task HandleAsync(
-    CancelOrderRequest request,
-    CancellationToken ct)
-  {
-    var result = await _mediator.Send(new CancelOrderCommand(request.OrderId));
-
-    if (result.IsSuccess)
-    {
-      Response = new CancelOrderResponse();
-    }
-  }
+    (await mediator.Send(new CancelOrderCommand(request.OrderId)))
+    .Match((order) => Results.Ok(new CancelOrderResponse()),
+           (error) => Results.NotFound(error)); 
 }

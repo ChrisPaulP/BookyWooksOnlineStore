@@ -1,1 +1,0 @@
-2024-09-26 14:48:54.973 +01:00 [INF] Registered 7 endpoints in 16,341 milliseconds.

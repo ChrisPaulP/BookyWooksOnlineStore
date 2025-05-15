@@ -1,23 +1,13 @@
 ﻿namespace BookWooks.OrderApi.UseCases.Orders;
 public static class OrderItemExtensions
 {
-  public static IEnumerable<OrderItem> ToOrderCommandOrderItems(this List<OrderRequestOrderItem> orderRequestOrderItems)
-  {
-    foreach (var item in orderRequestOrderItems)
-    {
-      yield return item.ToOrderCommandOrderItem();
-    }
-  }
-
-  private static OrderItem ToOrderCommandOrderItem(this OrderRequestOrderItem item)
-  {
-    return new OrderItem(item.ProductId, item.Price, item.Quantity);
-  }
-  public static IEnumerable<OrderItemRecord> ToOrderItemRecord(this IEnumerable<OrderItemDTO> items)
-  {
-    return new List<OrderItemRecord>(items.Select(i => new OrderItemRecord(i.ProductId, i.Price, i.Quantity)));
-  }
-
+  public static IEnumerable<CreateOrderItemCommand> ToOrderCommandOrderItems(this List<OrderRequestOrderItem> orderRequestOrderItems) =>
+          orderRequestOrderItems.Select(item => item.ToOrderCommandOrderItem());
+  private static CreateOrderItemCommand ToOrderCommandOrderItem(this OrderRequestOrderItem item)
+  => new CreateOrderItemCommand(item.ProductId, item.ProductName, item.ProductDescription, item.Price, item.Quantity);
+  
+  public static IEnumerable<OrderItemRecord> ToOrderItemRecord(this IEnumerable<OrderItemDTO> items) =>
+    items.Select(i => new OrderItemRecord(i.ProductId, i.ProductName, i.ProductDescription, i.Price, i.Quantity));
 }
 
 //In the code above, using yield in the ToOrderCommandOrderItems method offers several benefits:

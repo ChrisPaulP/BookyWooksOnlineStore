@@ -1,4 +1,9 @@
-﻿namespace BookWooks.OrderApi.Infrastructure.Data.Repositories.Abstract;
+﻿using BookyWooks.SharedKernel.Repositories;
+using BookyWooks.SharedKernel.Specification;
+using BookyWooks.SharedKernel.UnitOfWork;
+using LanguageExt;
+
+namespace BookWooks.OrderApi.Infrastructure.Data.Repositories.Abstract;
 public abstract class RepositoryBase<T> : IRepositoryBase<T>
        where T : class, IAggregateRoot
 {
@@ -69,10 +74,10 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
   {
     return await ApplySpecification(specification).FirstOrDefaultAsync();
   }
-  public virtual void Update(T entity)
+  public virtual Task UpdateAsync(T entity)
   {
-    //_orderDbContext.Entry(entity).State = EntityState.Modified;
     _entitySet.Entry(entity).State = EntityState.Modified;
+    return Task.CompletedTask;
   }
   public virtual async Task<List<T>> ListAllAsync()
   {

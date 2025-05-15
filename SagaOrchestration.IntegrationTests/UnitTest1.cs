@@ -81,7 +81,7 @@ namespace SagaOrchestration.IntegrationTests
             outboxState = await FindAllAsync<OutboxState>();
             outboxStateInstance = await FindAllAsync<OrderStateInstance>();
 
-            var myCommand = JsonConvert.DeserializeObject<CheckBookStockCommand>(outboxMessage.Body);
+            //var myCommand = JsonConvert.DeserializeObject<CheckBookStockCommand>(outboxMessage.Body);
 
             var correlationId = createdSagaInstance?.Saga.CorrelationId ?? Guid.Empty;
 
@@ -180,10 +180,12 @@ namespace SagaOrchestration.IntegrationTests
 
             }
 
-            var sentCommand = _harness.Sent.Select<CheckBookStockCommand>().FirstOrDefault();
-            Assert.NotNull(sentCommand); // Ensure a command was sent
+            //var sentCommand = _harness.Sent.Select<CheckBookStockCommand>().FirstOrDefault();
+            var sentCommand = _harness.Sent.Select<SerializedMessageBody>().FirstOrDefault();
+            //Assert.NotNull(sentCommand); // Ensure a command was sent
 
-            var sentCorrelationId = sentCommand.Context.Message.CorrelationId;
+            var sentCorrelationId = sentCommand.Context.CorrelationId;
+            //var sentCorrelationId = sentCommand.Context.CorrelationId;
 
             Assert.Equal(correlationId, sentCorrelationId); // Ensure correlation IDs match
 

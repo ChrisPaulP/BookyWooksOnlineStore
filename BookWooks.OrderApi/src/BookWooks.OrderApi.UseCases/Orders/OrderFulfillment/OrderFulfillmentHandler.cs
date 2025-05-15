@@ -1,23 +1,21 @@
 ﻿namespace BookWooks.OrderApi.UseCases.Orders.OrderFulfillment;
-public class OrderFulfillmentHandler : ICommandHandler<OrderFulfillmentCommand, DetailedResult<Guid>>
+public class OrderFulfillmentHandler : ICommandHandler<OrderFulfillmentCommand, SetOrderStatusResult>
 {
   private readonly IRepository<Order> _repository;
+  private readonly ILogger<OrderFulfillmentHandler> _logger;
 
-  public OrderFulfillmentHandler(IRepository<Order> repository)
+  public OrderFulfillmentHandler(IRepository<Order> repository, ILogger<OrderFulfillmentHandler> logger) => (_repository, _logger) = (repository, logger);
+
+  public async Task<SetOrderStatusResult> Handle(OrderFulfillmentCommand request, CancellationToken cancellationToken)
   {
-    _repository = repository;
-  }
+    _logger.LogInformation("Setting order {orderId} to cancelled", request.Id);
 
-  public async Task<DetailedResult<Guid>> Handle(OrderFulfillmentCommand request,
-    CancellationToken cancellationToken)
-  {
-    var spec = new OrderByIdSpec(request.OrderId);
-    var entity = await _repository.FindAsync(spec);
-    if (entity == null) return StandardResult.NotFound("Project not found.");
-
-    entity.FulfillOrder();
-     _repository.Update(entity);
-
-    return StandardResult.Success();
+    var findOrder = await _repository.FindAsync(new OrderByIdSpec(request.OrderId));
+    return await findOrder
+        .ToEither(() => new OrderNotFound())
+        .Map(order => order.FulfillOrder())
+        .SaveOrder(_repository.UpdateAsync, _repository, cancellationToken)
+        .MapAsync(OrderMappingExtensions.ToOrderDTO);
   }
 }
+

@@ -1,4 +1,4 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿
 
 namespace BookWooks.OrderApi.Core.OrderAggregate.Handlers;
 public class OrderFulfilledSendEmailEventHandler : INotificationHandler<OrderFulfilledEvent>
@@ -15,9 +15,7 @@ public class OrderFulfilledSendEmailEventHandler : INotificationHandler<OrderFul
   // configure a test email server to demo this works
   // https://ardalis.com/configuring-a-local-test-email-server
   public Task Handle(OrderFulfilledEvent domainEvent, CancellationToken cancellationToken)
-  {
-    Guard.Against.Null(domainEvent, nameof(domainEvent));
-    
+  {  
     //ArgumentException.ThrowIfNullOrEmpty(domainEvent, nameof(domainEvent));
 
     return _emailSender.SendEmailAsync("test@test.com", "test@test.com", $"{domainEvent.FulfilledOrder.Message} was completed.", domainEvent.FulfilledOrder.Status.Label);

@@ -1,5 +1,5 @@
-﻿
-using Microsoft.AspNetCore.Builder;
+﻿using System.Diagnostics;
+using System.Net;
 
 namespace BookWooks.OrderApi.Infrastructure.Data.Extensions;
 public static class DatabaseExtentions
@@ -26,35 +26,91 @@ public static class DatabaseExtentions
   }
   private static async Task SeedAsync(BookyWooksOrderDbContext context)
   {
-    await SeedCustomerAsync(context);
-    await SeedProductAsync(context);
-    await SeedOrdersWithItemsAsync(context);
+    await SeedCustomers(context);
+    await SeedProducts(context);
+    await SeedOrders(context);
   }
 
-  private static async Task SeedCustomerAsync(BookyWooksOrderDbContext context)
-  {
-    if (!await context.Customers.AnyAsync())
-    {
-      await context.Customers.AddRangeAsync(InitialData.Customers);
-      await context.SaveChangesAsync();
-    }
-  }
-
-  private static async Task SeedProductAsync(BookyWooksOrderDbContext context)
+  private static async Task SeedProducts(BookyWooksOrderDbContext context)
   {
     if (!await context.Products.AnyAsync())
     {
-      await context.Products.AddRangeAsync(InitialData.Products);
+      await context.Products.AddRangeAsync(SeedData.ProductSeedData.CreateProducts());
       await context.SaveChangesAsync();
     }
   }
-
-  private static async Task SeedOrdersWithItemsAsync(BookyWooksOrderDbContext context)
+  private static async Task SeedCustomers(BookyWooksOrderDbContext context)
   {
-    if (!await context.Orders.AnyAsync())
+    if (!await context.Customers.AnyAsync())
     {
-      await context.Orders.AddRangeAsync(InitialData.OrdersWithItems);
+      var customers =  SeedData.CustomerSeedData.CreateCustomers();
+      await context.Customers.AddRangeAsync(customers);
+      //await context.Customers.AddRangeAsync(SeedData.CustomerSeedData.CreateCustomers());
       await context.SaveChangesAsync();
     }
   }
+    private static async Task SeedOrders(BookyWooksOrderDbContext context)
+    {
+        if (!await context.Orders.AnyAsync())
+        {
+      //var customerId = await context.Customers.Select(c => c.CustomerId.Value).DefaultIfEmpty(CustomerId.New().Value).FirstAsync();
+      var customerIds = await context.Customers
+      .Select(c => c.CustomerId.Value)
+      .ToListAsync();
+      var customerId = customerIds.DefaultIfEmpty(CustomerId.New().Value).FirstOrDefault();
+      var product = await context.Products.FirstOrDefaultAsync();
+            if (product != null)
+            {
+        //await context.Orders.AddRangeAsync(SeedData.OrderSeedData.CreateOrders(customerId, product));
+        //      var orders = SeedData.OrderSeedData.CreateOrders(customerId, product);
+        //      foreach (var order in orders)
+        //      {
+        //        Debug.Assert(order.OrderId.Value != default, "OrderId should not be default GUID!");
+        //        Debug.Assert(order.CustomerId.Value != default, "CustomerId should not be default GUID!");
+        //        Debug.Assert(order.DeliveryAddress != null, "DeliveryAddress should not be null!");
+        //        Debug.Assert(order.Payment != null, "Payment should not be null!");
+        //        Debug.Assert(order.Status != null, "Status should not be null!");
+        //        Debug.Assert(order.OrderPlaced.IsInitialized());
+        //        Debug.Assert(order.Message != null, "Message should not be null!");
+        //        Debug.Assert(order.OrderItems != null, "OrderItems should not be null!");
+        //        Debug.Assert(order.OrderId.Value != default, "OrderId should not be default GUID!");
+        //      }
+
+        //foreach (var order in orders)
+        //{
+        //  Console.WriteLine($"🛠 Before Save: OrderId = {order.OrderId.Value}");
+        //  Debug.Assert(order.OrderId.IsInitialized(), "❌ OrderId is uninitialized before saving!");
+        //}
+
+        //foreach (var entry in context.ChangeTracker.Entries<Order>())
+        //{
+        //  Console.WriteLine($"🔍 Tracking Order: {entry.Entity.OrderId.Value}");
+        //}
+
+        try
+        {
+          //var order = orders.First();
+
+          var testOrder = Order.CreateOrder(customerId, "123 Test St", "Testville", "Testland", "TST123", "Test User", "4111111111111111", "12/30", 1);
+          var myOrder = (Order)testOrder;
+          
+          await context.Orders.AddAsync(myOrder);
+
+          //await context.Orders.AddRangeAsync(order);
+        }
+        catch (Exception ex)
+        {
+          Console.WriteLine($"🔥 Exception: {ex.Message}");
+          Console.WriteLine($"📜 Stack Trace: {ex.StackTrace}");
+          if (ex.InnerException != null)
+          {
+            Console.WriteLine($"🔍 Inner Exception: {ex.InnerException.Message}");
+          }
+          throw;
+        }
+        await context.SaveChangesAsync();
+            }
+
+        }
+    }
 }

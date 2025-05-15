@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Win32;
-
-namespace BookWooks.OrderApi.UseCases;
+﻿namespace BookWooks.OrderApi.UseCases;
 public static class UseCasesDependencyInjection
 {
   public static IServiceCollection AddUseCasesServices(this IServiceCollection services)

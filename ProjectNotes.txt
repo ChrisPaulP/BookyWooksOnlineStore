@@ -1,0 +1,7 @@
+•	Internal Commands are suitable for tasks that require background processing, reliability, retries, decoupling, or scheduling.
+•	Standard Commands are appropriate for tasks that need immediate execution, are simple, and can be handled directly within the application's context. (This would be commands submitted via an API call.)
+
+•	Commands: Published to request actions that change the system state.
+•	Internal Commands: Published for background processing or recurring tasks within a module.
+•	Integration Events: Published to notify other bounded contexts or microservices about significant changes.
+•	Notifications: Published to inform other parts of the same bounded context about events.

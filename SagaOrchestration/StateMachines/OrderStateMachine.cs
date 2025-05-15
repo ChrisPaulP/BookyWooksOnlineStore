@@ -4,7 +4,6 @@ using BookyWooks.Messaging.Contracts.Commands;
 using BookyWooks.Messaging.Contracts.Events;
 using BookyWooks.Messaging.Messages.InitialMessage;
 using MassTransit;
-using Microsoft.Extensions.Logging;
 using SagaOrchestration.StateInstances;
 using ILogger = Serilog.ILogger;
 
@@ -61,10 +60,7 @@ public class OrderStateMachine : MassTransitStateMachine<OrderStateInstance>
                     _logger.ForContext("CorrelationId", context.Saga.CorrelationId).Information("StockReservedEvent received in OrderStateMachine: {ContextSaga} ", context.Saga); })
                 .TransitionTo(StockReserved)
                 .Send(new Uri($"queue:{QueueConstants.CompletePaymentCommandQueueName}"),
-                    context => new CompletePaymentCommand(context.Saga.CorrelationId, context.Saga.CustomerId, context.Saga.OrderTotal)
-                    {
-                        CorrelationId = context.Saga.CorrelationId
-                    })
+                    context => new CompletePaymentCommand(context.Saga.CorrelationId, context.Saga.CustomerId, context.Saga.OrderTotal))
                 .Then(context => { _logger.ForContext("CorrelationId", context.Saga.CorrelationId).Information("CompletePaymentMessage sent in OrderStateMachine: {ContextSaga} ", context.Saga); }),
             When(StockReservationFailedEvent)
                 .Then(context => { _logger.ForContext("CorrelationId", context.Saga.CorrelationId).Information("StockReservationFailedEvent received in OrderStateMachine: {ContextSaga} ", context.Saga); })

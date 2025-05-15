@@ -49,7 +49,7 @@ public class CheckBookStockCommandConsumer : IConsumer<CheckBookStockCommand>
         }
         else
         {
-            OpenTelemetryMetricConfiguration.OrderConsumedEventCounter.Add(1);
+            OpenTelemetryMetricConfiguration.IncrementEventCounter(ApplicationName.Order, Event.OrderConsumed);
             await _context.SaveChangesAsync();
             var stockConfirmedEvent = new StockConfirmedEvent(@event.Message.CorrelationId, @event.Message.orderId, stockItems);
             await _massTransitService.Publish(stockConfirmedEvent);

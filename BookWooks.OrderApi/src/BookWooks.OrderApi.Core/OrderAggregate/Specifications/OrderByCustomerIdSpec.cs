@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BookWooks.OrderApi.Core.OrderAggregate.Entities;
+using BookyWooks.SharedKernel.Specification;
 
 namespace BookWooks.OrderApi.Core.OrderAggregate.Specifications;
 public class OrderByCustomerIdSpec : BaseSpecification<Order>

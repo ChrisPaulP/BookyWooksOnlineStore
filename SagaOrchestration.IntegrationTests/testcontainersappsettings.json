@@ -1,6 +1,6 @@
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=LAPTOP3337;Database=TestContainersDb;Trusted_Connection=True;MultipleActiveResultSets=true; TrustServerCertificate=Yes;",
+    "DefaultConnection": "Server=5CG131BX19;Database=TestContainersDb;Trusted_Connection=True;MultipleActiveResultSets=true; TrustServerCertificate=Yes;",
     "SagaOrchestrationDatabase": "Server=LAPTOP3337;Database=TestContainersDb;Trusted_Connection=True;MultipleActiveResultSets=true; TrustServerCertificate=Yes;", //"Server=127.0.0.1,65089;Database=master;User Id=sa;Password=yourStrong(!)Password;TrustServerCertificate=True",
     "TestConnection": "MyTest",
     "Redis": "localhost:6379"

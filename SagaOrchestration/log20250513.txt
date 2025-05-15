@@ -1,0 +1,104 @@
+2025-05-13 13:25:00.351 +01:00 [WRN] No store type was specified for the decimal property 'OrderTotal' on entity type 'OrderStateInstance'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2025-05-13 13:25:00.478 +01:00 [WRN] No store type was specified for the decimal property 'OrderTotal' on entity type 'OrderStateInstance'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2025-05-13 13:25:47.491 +01:00 [WRN] No store type was specified for the decimal property 'OrderTotal' on entity type 'OrderStateInstance'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2025-05-13 13:25:47.826 +01:00 [WRN] No store type was specified for the decimal property 'OrderTotal' on entity type 'OrderStateInstance'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2025-05-13 13:25:48.176 +01:00 [INF] Executed DbCommand (310ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+CREATE DATABASE [BookyWooks.StateMachineDb];
+2025-05-13 13:25:48.328 +01:00 [INF] Executed DbCommand (149ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [BookyWooks.StateMachineDb] SET READ_COMMITTED_SNAPSHOT ON;
+END;
+2025-05-13 13:25:48.349 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-05-13 13:25:48.403 +01:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [__EFMigrationsHistory] (
+    [MigrationId] nvarchar(150) NOT NULL,
+    [ProductVersion] nvarchar(32) NOT NULL,
+    CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+);
+2025-05-13 13:25:48.405 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-05-13 13:25:48.417 +01:00 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-05-13 13:25:48.428 +01:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-05-13 13:25:48.440 +01:00 [INF] Applying migration '20250513122500_InitialMigration'.
+2025-05-13 13:25:48.477 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [InboxState] (
+    [Id] bigint NOT NULL IDENTITY,
+    [MessageId] uniqueidentifier NOT NULL,
+    [ConsumerId] uniqueidentifier NOT NULL,
+    [LockId] uniqueidentifier NOT NULL,
+    [RowVersion] rowversion NULL,
+    [Received] datetime2 NOT NULL,
+    [ReceiveCount] int NOT NULL,
+    [ExpirationTime] datetime2 NULL,
+    [Consumed] datetime2 NULL,
+    [Delivered] datetime2 NULL,
+    [LastSequenceNumber] bigint NULL,
+    CONSTRAINT [PK_InboxState] PRIMARY KEY ([Id]),
+    CONSTRAINT [AK_InboxState_MessageId_ConsumerId] UNIQUE ([MessageId], [ConsumerId])
+);
+2025-05-13 13:25:48.481 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [OrderStateInstance] (
+    [CorrelationId] uniqueidentifier NOT NULL,
+    [CurrentState] nvarchar(max) NOT NULL,
+    [OrderId] uniqueidentifier NOT NULL,
+    [CustomerId] uniqueidentifier NOT NULL,
+    [OrderTotal] decimal(18,2) NOT NULL,
+    [CreatedDate] datetime2 NOT NULL,
+    CONSTRAINT [PK_OrderStateInstance] PRIMARY KEY ([CorrelationId])
+);
+2025-05-13 13:25:48.483 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [OutboxMessage] (
+    [SequenceNumber] bigint NOT NULL IDENTITY,
+    [EnqueueTime] datetime2 NULL,
+    [SentTime] datetime2 NOT NULL,
+    [Headers] nvarchar(max) NULL,
+    [Properties] nvarchar(max) NULL,
+    [InboxMessageId] uniqueidentifier NULL,
+    [InboxConsumerId] uniqueidentifier NULL,
+    [OutboxId] uniqueidentifier NULL,
+    [MessageId] uniqueidentifier NOT NULL,
+    [ContentType] nvarchar(256) NOT NULL,
+    [MessageType] nvarchar(max) NOT NULL,
+    [Body] nvarchar(max) NOT NULL,
+    [ConversationId] uniqueidentifier NULL,
+    [CorrelationId] uniqueidentifier NULL,
+    [InitiatorId] uniqueidentifier NULL,
+    [RequestId] uniqueidentifier NULL,
+    [SourceAddress] nvarchar(256) NULL,
+    [DestinationAddress] nvarchar(256) NULL,
+    [ResponseAddress] nvarchar(256) NULL,
+    [FaultAddress] nvarchar(256) NULL,
+    [ExpirationTime] datetime2 NULL,
+    CONSTRAINT [PK_OutboxMessage] PRIMARY KEY ([SequenceNumber])
+);
+2025-05-13 13:25:48.550 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [OutboxState] (
+    [OutboxId] uniqueidentifier NOT NULL,
+    [LockId] uniqueidentifier NOT NULL,
+    [RowVersion] rowversion NULL,
+    [Created] datetime2 NOT NULL,
+    [Delivered] datetime2 NULL,
+    [LastSequenceNumber] bigint NULL,
+    CONSTRAINT [PK_OutboxState] PRIMARY KEY ([OutboxId])
+);
+2025-05-13 13:25:48.555 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_InboxState_Delivered] ON [InboxState] ([Delivered]);
+2025-05-13 13:25:48.556 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_OutboxMessage_EnqueueTime] ON [OutboxMessage] ([EnqueueTime]);
+2025-05-13 13:25:48.557 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_OutboxMessage_ExpirationTime] ON [OutboxMessage] ([ExpirationTime]);
+2025-05-13 13:25:48.559 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_OutboxMessage_InboxMessageId_InboxConsumerId_SequenceNumber] ON [OutboxMessage] ([InboxMessageId], [InboxConsumerId], [SequenceNumber]) WHERE [InboxMessageId] IS NOT NULL AND [InboxConsumerId] IS NOT NULL;
+2025-05-13 13:25:48.560 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_OutboxMessage_OutboxId_SequenceNumber] ON [OutboxMessage] ([OutboxId], [SequenceNumber]) WHERE [OutboxId] IS NOT NULL;
+2025-05-13 13:25:48.561 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_OutboxState_Created] ON [OutboxState] ([Created]);
+2025-05-13 13:25:48.564 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20250513122500_InitialMigration', N'8.0.8');

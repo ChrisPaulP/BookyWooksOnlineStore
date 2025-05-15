@@ -1,6 +1,4 @@
-﻿
-
-namespace BookWooks.OrderApi.Infrastructure.Caching;
+﻿namespace BookWooks.OrderApi.Infrastructure.Caching;
 public class DistributedCacheService : ICacheService
 {
   private readonly IDistributedCache _cache;

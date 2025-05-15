@@ -16,7 +16,7 @@
     <None Remove="Orders\UpdateOrderStatus\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Ardalis.Result" />
+    <PackageReference Include="LanguageExt.Core" />
     <PackageReference Include="MediatR" />
   </ItemGroup>
   <ItemGroup>

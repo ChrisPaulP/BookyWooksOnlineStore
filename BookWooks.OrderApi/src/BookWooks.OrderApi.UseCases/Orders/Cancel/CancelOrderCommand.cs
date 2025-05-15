@@ -1,4 +1,4 @@
 ﻿namespace BookWooks.OrderApi.UseCases.Cancel;
-public record CancelOrderCommand(Guid Id) : ICommand<StandardResult>;
+public record CancelOrderCommand(Guid Id) : ICommand<CancelOrderResult>;
 
 

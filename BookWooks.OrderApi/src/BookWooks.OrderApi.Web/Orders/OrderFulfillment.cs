@@ -1,48 +1,14 @@
-﻿using BookWooks.OrderApi.UseCases.Orders.OrderFulfillment;
-
-
-namespace BookWooks.OrderApi.Web.Orders;
-
-public class OrderFulfillment : Endpoint<OrderFulfillmentRequest>
+﻿namespace BookWooks.OrderApi.Web.Orders;
+public class OrderFulfillment : IEndpoint
 {
-  private readonly IMediator _mediator;
+  public void MapEndpoint(WebApplication app) => app
+             .MapPost(OrderFulfillmentRequest.Route, HandleAsync)
+             .AddEndpointFilter<ValidationFilter<OrderFulfillmentRequest>>();
 
-  public OrderFulfillment(IMediator mediator)
-  {
-    _mediator = mediator;
-  }
 
-  public override void Configure()
-  {
-    Post(OrderFulfillmentRequest.Route);
-    AllowAnonymous();
-    Summary(s =>
-    {
-      s.ExampleRequest = new OrderFulfillmentRequest
-      {
-        OrderId = Guid.NewGuid()
-      };
-    });
-  }
+  public static async Task<IResult> HandleAsync(OrderFulfillmentRequest request, IMediator mediator, CancellationToken ct) =>
 
-  public override async Task HandleAsync(
-    OrderFulfillmentRequest request,
-    CancellationToken ct)
-  {
-    var command = new OrderFulfillmentCommand(request.OrderId);
-    var result = await _mediator.Send(command);
-
-    if (result.Status == ResultStatus.NotFound)
-    {
-      await SendNotFoundAsync(ct);
-      return;
-    }
-
-    if (result.IsSuccess)
-    {
-      await SendNoContentAsync(ct);
-    }
-
-  }
-
+    (await mediator.Send(new OrderFulfillmentCommand(request.OrderId)))
+    .Match((order) => Results.Ok(new OrderFulfilledResponse()),
+           (error) => Results.NotFound(error));
 }

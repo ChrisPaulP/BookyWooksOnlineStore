@@ -7,4 +7,4 @@ using System.Threading.Tasks;
 
 namespace BookyWooks.Messaging.Contracts.Events;
 
-public record StockReservationFailedEvent(Guid CorrelationId, Guid orderId, string ErrorMessage, IEnumerable<OrderItemEventDto> stockItems) : MessageContract, CorrelatedBy<Guid>;
+public record StockReservationFailedEvent(Guid CorrelationId, Guid orderId, string ErrorMessage, IEnumerable<OrderItemEventDto> stockItems) : MessageContract(nameof(StockReservationFailedEvent)), CorrelatedBy<Guid>;

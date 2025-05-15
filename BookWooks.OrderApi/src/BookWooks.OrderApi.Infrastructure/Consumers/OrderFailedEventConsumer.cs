@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BookyWooks.Messaging.Contracts.Events;
-
-namespace BookWooks.OrderApi.Infrastructure.Consumers;
+﻿namespace BookWooks.OrderApi.Infrastructure.Consumers;
 public class OrderFailedEventConsumer : IConsumer<OrderFailedEvent>
 {
   private readonly ILogger<OrderFailedEventConsumer> _logger;

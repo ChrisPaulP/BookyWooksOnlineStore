@@ -1,4 +1,6 @@
-﻿namespace BookWooks.OrderApi.Infrastructure.Data.Repositories;
+﻿using BookyWooks.SharedKernel.Repositories;
+
+namespace BookWooks.OrderApi.Infrastructure.Data.Repositories;
 public class Repository<T> : RepositoryBase<T>, IReadRepository<T>, IRepository<T>
         where T : class, IAggregateRoot
 {

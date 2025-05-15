@@ -1,15 +1,7 @@
 ﻿namespace BookWooks.OrderApi.Web.Orders;
 
-public class CreateOrderResponse
-{
-  public CreateOrderResponse(Guid id, Guid customerId, IEnumerable<string>? errors = null)
-  {
-    Id = id;
-    CustomerId = customerId;
-    Errors = errors ?? Enumerable.Empty<string>();
-  }
-  public Guid Id { get;}
-  public Guid CustomerId { get;}
-  public IEnumerable<string> Errors { get;}
-}
+public record CreateOrderResponse(Guid Id, Guid CustomerId);
+public record BusinessRuleViolationsResponse(string Message,int StatusCode, ValidationErrors Errors);
+public record ValidationProblemDetails(int StatusCode, string title, string detail, string instance, IDictionary<string, string[]> errors);
+
 

@@ -17,8 +17,12 @@
     <Compile Remove="OrderAggregate\IOrderRepository.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="LanguageExt.Core" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="OneOf" />
+    <PackageReference Include="OneOf.SourceGenerator" />
+    <PackageReference Include="Vogen" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\BookyWooks.Messaging\BookyWooks.Messaging.csproj" />

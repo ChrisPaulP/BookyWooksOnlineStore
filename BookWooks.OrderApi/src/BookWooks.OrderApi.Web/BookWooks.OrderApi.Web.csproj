@@ -14,6 +14,7 @@
     <!--<DocumentationFile>bin\swagger-docs.xml</DocumentationFile>-->
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\BookyWooks.SharedKernel\BookyWooks.SharedKernel.csproj" />
     <ProjectReference Include="..\..\..\Logging\Logging.csproj" />
     <ProjectReference Include="..\..\..\Tracing\Tracing.csproj" />
     <ProjectReference Include="..\BookWooks.OrderApi.Infrastructure\BookWooks.OrderApi.Infrastructure.csproj" />
@@ -27,10 +28,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Ardalis.ListStartupServices" />
-    <PackageReference Include="FastEndpoints" />
-    <PackageReference Include="FastEndpoints.ApiExplorer" />
-    <PackageReference Include="FastEndpoints.Swagger" />
-    <PackageReference Include="FastEndpoints.Swagger.Swashbuckle" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
@@ -40,5 +37,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" />
   </ItemGroup>
 </Project>

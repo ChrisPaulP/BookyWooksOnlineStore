@@ -1,26 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BookWooks.OrderApi.Core.OrderAggregate.ValueObjects;
-
-namespace BookWooks.OrderApi.Core.OrderAggregate.Entities;
-public class Customer : EntityBase
+﻿namespace BookWooks.OrderApi.Core.OrderAggregate.Entities;
+public record Customer : EntityBase
 {
-  public string Name { get; private set; } = string.Empty;
-  public string Email { get; private set; } = string.Empty;
-
-  public static Customer Create(string name, string email)
+  public CustomerId CustomerId { get; set; }
+  public CustomerName Name { get; private set; } 
+  public EmailAddress Email { get; private set; }
+  // Parameterless constructor for EF Core
+  private Customer() 
   {
-    ArgumentException.ThrowIfNullOrWhiteSpace(name);
-    ArgumentException.ThrowIfNullOrWhiteSpace(email);
+    CustomerId = CustomerId.New();
+  }
+  private Customer(CustomerId id, CustomerName name, EmailAddress email)
+  {
+    CustomerId = id;
+    Name = name;
+    Email = email;
+  }
+  public static Validation<CustomerValidationErrors, Customer> CreateCustomer(string name, string email)
+  {
+    var maybeName = CustomerName.TryFrom(name).ToValidationMonad(errors => new CustomerValidationErrors("Customer Name", errors));
+    var maybeEmail = EmailAddress.TryFrom(email).ToValidationMonad(errors => new CustomerValidationErrors("Email Address errors", errors));
 
-    var customer = new Customer
+    return (maybeName, maybeEmail).Apply((nameVo, emailVo) =>
     {
-      Name = name,
-      Email = email
-    };
-    return customer;
+      return new Customer(CustomerId.New(), nameVo, emailVo);
+    });
   }
 }

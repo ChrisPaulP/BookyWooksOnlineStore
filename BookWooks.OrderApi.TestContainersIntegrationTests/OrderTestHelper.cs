@@ -2,39 +2,48 @@
 
 public static class OrderTestHelper
 {
-    public static async Task<(Customer, Product)> SetupCustomerAndProductAsync(Func<Customer, Task> addCustomer, Func<Product, Task> addProduct)
+    public static async Task<(CustomerResult, ProductResult)> SetupCustomerAndProductAsync(
+    Func<Customer, Task> addCustomer, Func<Product, Task> addProduct)
     {
         var uniqueEmail = $"customer_{Guid.NewGuid()}@example.com";
-        var customer = Customer.Create("Customer Name", uniqueEmail);
-        var product = Product.Create(Guid.NewGuid(), "Book 1", "Book URL", 9.99M);
-        await addCustomer(customer);
-        await addProduct(product);
-        return (customer, product);
+        var customerValidation = Customer.CreateCustomer("Customer Name", uniqueEmail);
+        var productValidation = Product.CreateProduct("Book", "Book 1", 9.99M, 2);
+
+        var customerResult = await customerValidation.MatchAsync(
+            async customer =>
+            {
+                await addCustomer(customer);
+                return CustomerResult.Success(customer);
+            },
+            errors => CustomerResult.Fail(errors)
+        );
+
+        var productResult = await productValidation.MatchAsync(
+            async product =>
+            {
+                await addProduct(product);
+                return ProductResult.Success(product);
+            },
+             errors => ProductResult.Fail(errors)
+        );
+        return (customerResult, productResult);
     }
 
-    public static List<OrderItem> CreateOrderItems(Guid productId)
+    public static List<CreateOrderItemCommand> CreateOrderItems(Product product)
     {
-        return new List<OrderItem>
+        return new List<CreateOrderItemCommand>
         {
-            new OrderItem(productId, 9.99M, 1),
-            new OrderItem(productId, 5.99M, 4)
+            new CreateOrderItemCommand(product!.ProductId.Value, product.Name.Value, product.Description.Value, product.Price.Value, product.Quantity.Value),
+            new CreateOrderItemCommand(product!.ProductId.Value, product.Name.Value, product.Description.Value, product.Price.Value, product.Quantity.Value)
         };
     }
 
-    public static PaymentDetails CreatePaymentDetails()
-    {
-        return new PaymentDetails("1234 5678 9012 3456", "Christopher", "12/23", "123", 1);
-    }
-
-    public static CreateOrderCommand CreateOrderCommand(Customer customer, Product product, Address address)
-    {
-        var orderItems = CreateOrderItems(product.Id);
-        var paymentDetails = CreatePaymentDetails();
-        return new CreateOrderCommand(
-            OrderItems: orderItems,
-            CustomerId: customer.Id,
-            DeliveryAddress: address,
-            PaymentDetails: paymentDetails
+    public static CreateOrderCommand CreateOrderCommand(CustomerId customerId, Product product)
+        => new CreateOrderCommand
+        (
+            customerId.Value,
+            new CreateAddressCommand("123 Main St", "Some City", "Some Country", "12345"),
+            new CreatePaymentDetailsCommand("1234567890123456", "John Doe", "12/25", 1),
+            CreateOrderItems(product)
         );
-    }
 }

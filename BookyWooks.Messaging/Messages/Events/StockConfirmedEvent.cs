@@ -3,7 +3,7 @@ using MassTransit;
 
 namespace BookyWooks.Messaging.Contracts.Events;
 
-public record StockConfirmedEvent(Guid CorrelationId, Guid orderId, IEnumerable<OrderItemEventDto> stockItems) : MessageContract, CorrelatedBy<Guid>;
+public record StockConfirmedEvent(Guid CorrelationId, Guid orderId, IEnumerable<OrderItemEventDto> stockItems) : MessageContract(nameof(StockConfirmedEvent)), CorrelatedBy<Guid>;
 
 //public record StockConfirmedEvent : IntegrationEvent, CorrelatedBy<Guid>
 //{

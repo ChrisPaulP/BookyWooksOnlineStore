@@ -1,0 +1,2065 @@
+2025-03-31 12:52:13.203 +01:00 [INF] Executed DbCommand (200ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+CREATE DATABASE [BookyWooks.OrderDb];
+2025-03-31 12:52:13.358 +01:00 [INF] Executed DbCommand (106ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [BookyWooks.OrderDb] SET READ_COMMITTED_SNAPSHOT ON;
+END;
+2025-03-31 12:52:13.405 +01:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 12:52:13.480 +01:00 [INF] Executed DbCommand (9ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [__EFMigrationsHistory] (
+    [MigrationId] nvarchar(150) NOT NULL,
+    [ProductVersion] nvarchar(32) NOT NULL,
+    CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+);
+2025-03-31 12:52:13.492 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 12:52:13.532 +01:00 [INF] Executed DbCommand (27ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 12:52:13.554 +01:00 [INF] Executed DbCommand (11ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 12:52:13.588 +01:00 [INF] No migrations were applied. The database is already up to date.
+2025-03-31 12:52:22.204 +01:00 [ERR] Failed executing DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 12:52:22.222 +01:00 [ERR] An exception occurred while iterating over the results of a query for context type 'BookWooks.OrderApi.Infrastructure.Data.BookyWooksOrderDbContext'.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid object name 'Orders'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at Microsoft.Data.SqlClient.SqlDataReader.get_MetaData()
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean isAsync, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry, String method)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at Microsoft.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Microsoft.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReader(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.InitializeReader(Enumerator enumerator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.<>c.<MoveNext>b__21_0(DbContext _, Enumerator enumerator)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.MoveNext()
+ClientConnectionId:b96027fa-27c9-4fff-8cb5-88d2650a0a3e
+Error Number:208,State:1,Class:16
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid object name 'Orders'.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at Microsoft.Data.SqlClient.SqlDataReader.get_MetaData()
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean isAsync, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry, String method)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at Microsoft.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Microsoft.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReader(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.InitializeReader(Enumerator enumerator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.<>c.<MoveNext>b__21_0(DbContext _, Enumerator enumerator)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.MoveNext()
+ClientConnectionId:b96027fa-27c9-4fff-8cb5-88d2650a0a3e
+Error Number:208,State:1,Class:16
+2025-03-31 14:55:37.314 +01:00 [INF] Executed DbCommand (196ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+CREATE DATABASE [BookyWooks.OrderDb];
+2025-03-31 14:55:37.457 +01:00 [INF] Executed DbCommand (81ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [BookyWooks.OrderDb] SET READ_COMMITTED_SNAPSHOT ON;
+END;
+2025-03-31 14:55:37.492 +01:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 14:55:37.560 +01:00 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [__EFMigrationsHistory] (
+    [MigrationId] nvarchar(150) NOT NULL,
+    [ProductVersion] nvarchar(32) NOT NULL,
+    CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+);
+2025-03-31 14:55:37.572 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 14:55:37.601 +01:00 [INF] Executed DbCommand (18ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 14:55:37.619 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 14:55:37.640 +01:00 [INF] Applying migration '20250331134149_InitialMigration'.
+2025-03-31 14:55:37.694 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+IF SCHEMA_ID(N'order') IS NULL EXEC(N'CREATE SCHEMA [order];');
+2025-03-31 14:55:37.702 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Customers] (
+    [CustomerId] uniqueidentifier NOT NULL,
+    [Name] nvarchar(100) NOT NULL,
+    [Email] nvarchar(255) NOT NULL,
+    CONSTRAINT [PK_Customers] PRIMARY KEY ([CustomerId])
+);
+2025-03-31 14:55:37.710 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [order].[InboxMessage] (
+    [Id] uniqueidentifier NOT NULL,
+    [MessageType] nvarchar(255) NOT NULL,
+    [Message] nvarchar(max) NOT NULL,
+    [OccurredOn] datetime2 NOT NULL,
+    [ProcessedDate] datetime2 NULL,
+    CONSTRAINT [PK_InboxMessage] PRIMARY KEY ([Id])
+);
+2025-03-31 14:55:37.716 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [order].[InternalCommand] (
+    [Id] uniqueidentifier NOT NULL,
+    [Type] nvarchar(255) NOT NULL,
+    [Data] nvarchar(max) NOT NULL,
+    [EnqueueDate] datetime2 NOT NULL,
+    [ProcessedDate] datetime2 NULL,
+    [Error] nvarchar(max) NOT NULL,
+    CONSTRAINT [PK_InternalCommand] PRIMARY KEY ([Id])
+);
+2025-03-31 14:55:37.722 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [order].[OutboxMessage] (
+    [Id] uniqueidentifier NOT NULL,
+    [MessageType] nvarchar(255) NOT NULL,
+    [Message] nvarchar(max) NOT NULL,
+    [OccurredOn] datetime2 NOT NULL,
+    [ProcessedDate] datetime2 NULL,
+    CONSTRAINT [PK_OutboxMessage] PRIMARY KEY ([Id])
+);
+2025-03-31 14:55:37.729 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Products] (
+    [ProductId] uniqueidentifier NOT NULL,
+    [Name] nvarchar(100) NOT NULL,
+    [Description] nvarchar(500) NOT NULL,
+    [Price] decimal(18,2) NOT NULL,
+    [Quantity] int NOT NULL,
+    CONSTRAINT [PK_Products] PRIMARY KEY ([ProductId])
+);
+2025-03-31 14:55:37.737 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Orders] (
+    [OrderId] uniqueidentifier NOT NULL,
+    [CustomerId] uniqueidentifier NOT NULL,
+    [Street] nvarchar(100) NOT NULL,
+    [City] nvarchar(50) NOT NULL,
+    [Country] nvarchar(50) NOT NULL,
+    [Postcode] nvarchar(10) NOT NULL,
+    [Payment_CardName] nvarchar(50) NOT NULL,
+    [Payment_CardNumber] nvarchar(24) NOT NULL,
+    [Payment_Expiration] nvarchar(10) NOT NULL,
+    [Payment_PaymentMethod] int NOT NULL,
+    [Status] nvarchar(max) NOT NULL,
+    [OrderPlaced] datetimeoffset NOT NULL,
+    [Message] nvarchar(max) NOT NULL,
+    [IsCancelled] bit NOT NULL,
+    CONSTRAINT [PK_Orders] PRIMARY KEY ([OrderId]),
+    CONSTRAINT [FK_Orders_Customers_CustomerId] FOREIGN KEY ([CustomerId]) REFERENCES [Customers] ([CustomerId]) ON DELETE CASCADE
+);
+2025-03-31 14:55:37.744 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [OrderItems] (
+    [OrderItemId] uniqueidentifier NOT NULL,
+    [OrderId] uniqueidentifier NOT NULL,
+    [ProductId] uniqueidentifier NOT NULL,
+    [Price] decimal(18,2) NOT NULL,
+    [Quantity] int NOT NULL,
+    [ProductName] nvarchar(max) NOT NULL,
+    [ProductDescription] nvarchar(max) NOT NULL,
+    CONSTRAINT [PK_OrderItems] PRIMARY KEY ([OrderItemId]),
+    CONSTRAINT [FK_OrderItems_Orders_OrderId] FOREIGN KEY ([OrderId]) REFERENCES [Orders] ([OrderId]) ON DELETE CASCADE,
+    CONSTRAINT [FK_OrderItems_Products_ProductId] FOREIGN KEY ([ProductId]) REFERENCES [Products] ([ProductId]) ON DELETE CASCADE
+);
+2025-03-31 14:55:37.752 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_Customers_Email] ON [Customers] ([Email]);
+2025-03-31 14:55:37.757 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_OrderItems_OrderId] ON [OrderItems] ([OrderId]);
+2025-03-31 14:55:37.763 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_OrderItems_ProductId] ON [OrderItems] ([ProductId]);
+2025-03-31 14:55:37.768 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Orders_CustomerId] ON [Orders] ([CustomerId]);
+2025-03-31 14:55:37.776 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20250331134149_InitialMigration', N'8.0.8');
+2025-03-31 14:55:38.038 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 14:55:38.053 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 14:55:38.062 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 14:55:38.105 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 14:55:38.291 +01:00 [INF] Executed DbCommand (28ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 14:55:38.312 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 14:55:38.368 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 14:55:38.384 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 14:55:38.409 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 14:55:38.427 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 14:55:38.438 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 16:29:32.592 +01:00 [INF] Executed DbCommand (25ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 16:29:32.665 +01:00 [INF] Executed DbCommand (20ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 16:29:32.674 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 16:29:32.680 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 16:29:32.698 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 16:29:32.721 +01:00 [INF] No migrations were applied. The database is already up to date.
+2025-03-31 16:29:32.898 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 16:29:32.914 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 16:29:32.963 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 16:29:33.118 +01:00 [INF] Executed DbCommand (38ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p0;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p1;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p2;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p3;
+2025-03-31 16:29:33.170 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 16:29:33.230 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 16:29:33.241 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 16:29:33.263 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 16:29:33.275 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 16:29:33.295 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 16:29:33.304 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 16:29:33.315 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 16:48:42.485 +01:00 [INF] Executed DbCommand (25ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 16:48:42.580 +01:00 [INF] Executed DbCommand (30ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 16:48:42.589 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 16:48:42.596 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 16:48:42.615 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 16:48:42.636 +01:00 [INF] No migrations were applied. The database is already up to date.
+2025-03-31 16:48:42.826 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 16:48:42.841 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 16:48:42.895 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 16:48:43.036 +01:00 [INF] Executed DbCommand (33ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p0;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p1;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p2;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p3;
+2025-03-31 16:48:43.091 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 16:48:43.163 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 16:48:43.178 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 16:48:43.206 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 16:48:43.222 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 16:48:43.246 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 16:48:43.261 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 16:48:43.278 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 16:57:19.167 +01:00 [INF] Executed DbCommand (19ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 16:57:19.247 +01:00 [INF] Executed DbCommand (22ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 16:57:19.261 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 16:57:19.267 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 16:57:19.282 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 16:57:19.302 +01:00 [INF] No migrations were applied. The database is already up to date.
+2025-03-31 16:57:19.494 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 16:57:19.509 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 16:57:19.576 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 16:57:19.723 +01:00 [INF] Executed DbCommand (28ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p0;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p1;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p2;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p3;
+2025-03-31 16:57:19.777 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 16:57:19.850 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 16:57:19.862 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 16:57:19.885 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 16:57:19.897 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 16:57:19.916 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 16:57:19.925 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 16:57:19.935 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:02:45.826 +01:00 [INF] Executed DbCommand (21ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:02:45.891 +01:00 [INF] Executed DbCommand (18ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:02:45.900 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:02:45.906 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:02:45.921 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 17:02:45.939 +01:00 [INF] No migrations were applied. The database is already up to date.
+2025-03-31 17:02:46.122 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 17:02:46.137 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:02:46.186 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 17:02:46.318 +01:00 [INF] Executed DbCommand (27ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p0;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p1;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p2;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p3;
+2025-03-31 17:02:46.384 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:02:46.457 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 17:02:46.476 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:02:46.506 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 17:02:46.520 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:02:46.543 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 17:02:46.552 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 17:02:46.563 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:06:34.659 +01:00 [INF] Executed DbCommand (26ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:06:34.769 +01:00 [INF] Executed DbCommand (34ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:06:34.785 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:06:34.793 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:06:34.812 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 17:06:34.837 +01:00 [INF] No migrations were applied. The database is already up to date.
+2025-03-31 17:06:35.084 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 17:06:35.097 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:06:35.163 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 17:06:35.336 +01:00 [INF] Executed DbCommand (32ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p0;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p1;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p2;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p3;
+2025-03-31 17:06:35.388 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:06:35.458 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 17:06:35.469 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:06:35.493 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 17:06:35.506 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:06:35.528 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 17:06:35.541 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 17:06:35.552 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:07:47.021 +01:00 [INF] Executed DbCommand (33ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:07:47.105 +01:00 [INF] Executed DbCommand (21ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:07:47.117 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:07:47.128 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:07:47.147 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 17:07:47.168 +01:00 [INF] No migrations were applied. The database is already up to date.
+2025-03-31 17:07:47.366 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 17:07:47.382 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:07:47.461 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 17:07:47.614 +01:00 [INF] Executed DbCommand (30ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p0;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p1;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p2;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p3;
+2025-03-31 17:07:47.680 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:07:47.746 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 17:07:47.759 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:07:47.792 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 17:07:47.810 +01:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:07:47.833 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 17:07:47.850 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 17:07:47.871 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:10:17.982 +01:00 [INF] Executed DbCommand (24ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:10:18.068 +01:00 [INF] Executed DbCommand (26ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:10:18.078 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:10:18.086 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:10:18.103 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 17:10:18.124 +01:00 [INF] No migrations were applied. The database is already up to date.
+2025-03-31 17:10:18.332 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 17:10:18.349 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:10:18.407 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 17:10:18.565 +01:00 [INF] Executed DbCommand (39ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p0;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p1;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p2;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p3;
+2025-03-31 17:10:18.631 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:10:18.704 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 17:10:18.723 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:10:18.766 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 17:10:18.783 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:10:18.810 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 17:10:18.826 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 17:10:18.842 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:11:15.452 +01:00 [INF] Executed DbCommand (20ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:11:15.527 +01:00 [INF] Executed DbCommand (22ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:11:15.548 +01:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:11:15.559 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:11:15.578 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 17:11:15.600 +01:00 [INF] No migrations were applied. The database is already up to date.
+2025-03-31 17:11:15.812 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 17:11:15.828 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:11:15.894 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 17:11:16.041 +01:00 [INF] Executed DbCommand (21ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p0;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p1;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p2;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p3;
+2025-03-31 17:11:16.096 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:11:16.188 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 17:11:16.199 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:11:16.233 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 17:11:16.250 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:11:16.289 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 17:11:16.305 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 17:11:16.321 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:17:43.129 +01:00 [INF] Executed DbCommand (25ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:17:43.219 +01:00 [INF] Executed DbCommand (27ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:17:43.236 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:17:43.247 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:17:43.270 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 17:17:43.297 +01:00 [INF] No migrations were applied. The database is already up to date.
+2025-03-31 17:17:43.521 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 17:17:43.540 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:17:43.610 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 17:17:43.837 +01:00 [INF] Executed DbCommand (48ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p0;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p1;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p2;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p3;
+2025-03-31 17:17:43.916 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:17:44.011 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 17:17:44.038 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:17:44.083 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 17:17:44.111 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:17:44.159 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 17:17:44.176 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 17:17:44.198 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:18:58.153 +01:00 [INF] Executed DbCommand (25ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:18:58.234 +01:00 [INF] Executed DbCommand (24ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:18:58.245 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:18:58.251 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:18:58.265 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 17:18:58.282 +01:00 [INF] No migrations were applied. The database is already up to date.
+2025-03-31 17:18:58.481 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 17:18:58.495 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:18:58.547 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 17:18:58.723 +01:00 [INF] Executed DbCommand (30ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p0;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p1;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p2;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p3;
+2025-03-31 17:18:58.796 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:18:58.895 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 17:18:58.912 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:18:58.942 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 17:18:58.955 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:18:58.980 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 17:18:58.993 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 17:18:59.005 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:24:25.773 +01:00 [INF] Executed DbCommand (41ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:24:25.894 +01:00 [INF] Executed DbCommand (33ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:24:25.907 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:24:25.918 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:24:25.943 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 17:24:25.972 +01:00 [INF] No migrations were applied. The database is already up to date.
+2025-03-31 17:24:26.308 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 17:24:26.330 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:24:26.413 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 17:24:26.636 +01:00 [INF] Executed DbCommand (42ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p0;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p1;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p2;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p3;
+2025-03-31 17:24:26.726 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:24:26.864 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 17:24:26.888 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:24:26.942 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 17:24:26.969 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:24:27.009 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 17:24:27.033 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 17:24:27.057 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:25:26.851 +01:00 [INF] Executed DbCommand (33ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:25:26.968 +01:00 [INF] Executed DbCommand (32ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:25:26.986 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:25:26.999 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:25:27.025 +01:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 17:25:27.063 +01:00 [INF] No migrations were applied. The database is already up to date.
+2025-03-31 17:25:27.389 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 17:25:27.408 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:25:27.522 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 17:25:27.784 +01:00 [INF] Executed DbCommand (46ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p0;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p1;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p2;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p3;
+2025-03-31 17:25:27.885 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:25:28.007 +01:00 [INF] Executed DbCommand (9ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 17:25:28.031 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:25:28.069 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 17:25:28.088 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:25:28.125 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 17:25:28.148 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 17:25:28.164 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:30:54.488 +01:00 [INF] Executed DbCommand (37ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:30:54.606 +01:00 [INF] Executed DbCommand (29ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:30:54.630 +01:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:30:54.641 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:30:54.674 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 17:30:54.715 +01:00 [INF] Applying migration '20250331162857_InitialMigration'.
+2025-03-31 17:30:54.817 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+IF SCHEMA_ID(N'order') IS NULL EXEC(N'CREATE SCHEMA [order];');
+2025-03-31 17:30:54.849 +01:00 [ERR] Failed executing DbCommand (20ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Customers] (
+    [CustomerId] uniqueidentifier NOT NULL,
+    [Name] nvarchar(100) NOT NULL,
+    [Email] nvarchar(255) NOT NULL,
+    CONSTRAINT [PK_Customers] PRIMARY KEY ([CustomerId])
+);
+2025-03-31 17:31:50.640 +01:00 [INF] Executed DbCommand (32ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 17:31:50.756 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:31:50.859 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 17:31:51.138 +01:00 [INF] Executed DbCommand (60ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p0;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p1;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p2;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p3;
+2025-03-31 17:31:51.225 +01:00 [INF] Executed DbCommand (14ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:31:51.250 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:31:51.264 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:31:51.279 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:31:51.304 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 17:31:51.338 +01:00 [INF] Applying migration '20250331162857_InitialMigration'.
+2025-03-31 17:31:51.452 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+IF SCHEMA_ID(N'order') IS NULL EXEC(N'CREATE SCHEMA [order];');
+2025-03-31 17:31:51.471 +01:00 [ERR] Failed executing DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Customers] (
+    [CustomerId] uniqueidentifier NOT NULL,
+    [Name] nvarchar(100) NOT NULL,
+    [Email] nvarchar(255) NOT NULL,
+    CONSTRAINT [PK_Customers] PRIMARY KEY ([CustomerId])
+);
+2025-03-31 17:32:57.582 +01:00 [INF] Executed DbCommand (221ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+CREATE DATABASE [BookyWooks.OrderDb];
+2025-03-31 17:32:57.723 +01:00 [INF] Executed DbCommand (76ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [BookyWooks.OrderDb] SET READ_COMMITTED_SNAPSHOT ON;
+END;
+2025-03-31 17:32:57.762 +01:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:32:57.832 +01:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [__EFMigrationsHistory] (
+    [MigrationId] nvarchar(150) NOT NULL,
+    [ProductVersion] nvarchar(32) NOT NULL,
+    CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+);
+2025-03-31 17:32:57.840 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:32:57.872 +01:00 [INF] Executed DbCommand (22ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:32:57.899 +01:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 17:32:57.933 +01:00 [INF] Applying migration '20250331162857_InitialMigration'.
+2025-03-31 17:32:58.002 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+IF SCHEMA_ID(N'order') IS NULL EXEC(N'CREATE SCHEMA [order];');
+2025-03-31 17:32:58.011 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Customers] (
+    [CustomerId] uniqueidentifier NOT NULL,
+    [Name] nvarchar(100) NOT NULL,
+    [Email] nvarchar(255) NOT NULL,
+    CONSTRAINT [PK_Customers] PRIMARY KEY ([CustomerId])
+);
+2025-03-31 17:32:58.021 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [order].[InboxMessage] (
+    [Id] uniqueidentifier NOT NULL,
+    [MessageType] nvarchar(255) NOT NULL,
+    [Message] nvarchar(max) NOT NULL,
+    [OccurredOn] datetime2 NOT NULL,
+    [ProcessedDate] datetime2 NULL,
+    CONSTRAINT [PK_InboxMessage] PRIMARY KEY ([Id])
+);
+2025-03-31 17:32:58.029 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [order].[InternalCommand] (
+    [Id] uniqueidentifier NOT NULL,
+    [Type] nvarchar(255) NOT NULL,
+    [Data] nvarchar(max) NOT NULL,
+    [EnqueueDate] datetime2 NOT NULL,
+    [ProcessedDate] datetime2 NULL,
+    [Error] nvarchar(max) NOT NULL,
+    CONSTRAINT [PK_InternalCommand] PRIMARY KEY ([Id])
+);
+2025-03-31 17:32:58.038 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [order].[OutboxMessage] (
+    [Id] uniqueidentifier NOT NULL,
+    [MessageType] nvarchar(255) NOT NULL,
+    [Message] nvarchar(max) NOT NULL,
+    [OccurredOn] datetime2 NOT NULL,
+    [ProcessedDate] datetime2 NULL,
+    CONSTRAINT [PK_OutboxMessage] PRIMARY KEY ([Id])
+);
+2025-03-31 17:32:58.047 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Products] (
+    [ProductId] uniqueidentifier NOT NULL,
+    [Name] nvarchar(100) NOT NULL,
+    [Description] nvarchar(500) NOT NULL,
+    [Price] decimal(18,2) NOT NULL,
+    [Quantity] int NOT NULL,
+    CONSTRAINT [PK_Products] PRIMARY KEY ([ProductId])
+);
+2025-03-31 17:32:58.059 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Orders] (
+    [OrderId] uniqueidentifier NOT NULL,
+    [CustomerId] uniqueidentifier NOT NULL,
+    [Street] nvarchar(100) NOT NULL,
+    [City] nvarchar(50) NOT NULL,
+    [Country] nvarchar(50) NOT NULL,
+    [Postcode] nvarchar(10) NOT NULL,
+    [Payment_CardName] nvarchar(50) NOT NULL,
+    [Payment_CardNumber] nvarchar(24) NOT NULL,
+    [Payment_Expiration] nvarchar(10) NOT NULL,
+    [Payment_PaymentMethod] int NOT NULL,
+    [Status] nvarchar(max) NOT NULL,
+    [OrderPlaced] datetimeoffset NOT NULL,
+    [Message] nvarchar(max) NOT NULL,
+    [IsCancelled] bit NOT NULL,
+    CONSTRAINT [PK_Orders] PRIMARY KEY ([OrderId]),
+    CONSTRAINT [FK_Orders_Customers_CustomerId] FOREIGN KEY ([CustomerId]) REFERENCES [Customers] ([CustomerId]) ON DELETE CASCADE
+);
+2025-03-31 17:32:58.070 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [OrderItems] (
+    [OrderItemId] uniqueidentifier NOT NULL,
+    [OrderId] uniqueidentifier NOT NULL,
+    [ProductId] uniqueidentifier NOT NULL,
+    [Price] decimal(18,2) NOT NULL,
+    [Quantity] int NOT NULL,
+    [ProductName] nvarchar(max) NOT NULL,
+    [ProductDescription] nvarchar(max) NOT NULL,
+    CONSTRAINT [PK_OrderItems] PRIMARY KEY ([OrderItemId]),
+    CONSTRAINT [FK_OrderItems_Orders_OrderId] FOREIGN KEY ([OrderId]) REFERENCES [Orders] ([OrderId]) ON DELETE CASCADE,
+    CONSTRAINT [FK_OrderItems_Products_ProductId] FOREIGN KEY ([ProductId]) REFERENCES [Products] ([ProductId]) ON DELETE CASCADE
+);
+2025-03-31 17:32:58.079 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_Customers_Email] ON [Customers] ([Email]);
+2025-03-31 17:32:58.087 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_OrderItems_OrderId] ON [OrderItems] ([OrderId]);
+2025-03-31 17:32:58.095 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_OrderItems_ProductId] ON [OrderItems] ([ProductId]);
+2025-03-31 17:32:58.102 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Orders_CustomerId] ON [Orders] ([CustomerId]);
+2025-03-31 17:32:58.111 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20250331162857_InitialMigration', N'8.0.8');
+2025-03-31 17:32:58.353 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 17:32:58.369 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:32:58.380 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 17:32:58.432 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:32:58.637 +01:00 [INF] Executed DbCommand (27ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 17:32:58.668 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:32:58.731 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 17:32:58.746 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:32:58.772 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 17:32:58.792 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 17:32:58.807 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:34:40.281 +01:00 [INF] Executed DbCommand (30ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:34:40.369 +01:00 [INF] Executed DbCommand (24ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:34:40.381 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:34:40.390 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:34:40.410 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 17:34:40.434 +01:00 [INF] No migrations were applied. The database is already up to date.
+2025-03-31 17:34:40.642 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 17:34:40.657 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:34:40.721 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 17:34:40.909 +01:00 [INF] Executed DbCommand (37ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p0;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p1;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p2;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p3;
+2025-03-31 17:34:40.981 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:34:41.105 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 17:34:41.135 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:34:41.177 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 17:34:41.200 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:34:41.237 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 17:34:41.257 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 17:34:41.275 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:42:01.523 +01:00 [INF] Executed DbCommand (54ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:42:01.673 +01:00 [INF] Executed DbCommand (42ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:42:01.695 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:42:01.730 +01:00 [INF] Executed DbCommand (16ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:42:01.814 +01:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 17:42:01.863 +01:00 [INF] No migrations were applied. The database is already up to date.
+2025-03-31 17:42:02.356 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 17:42:02.383 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:42:02.508 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 17:42:02.834 +01:00 [INF] Executed DbCommand (100ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p0;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p1;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p2;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p3;
+2025-03-31 17:42:02.947 +01:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:42:03.153 +01:00 [INF] Executed DbCommand (5ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 17:42:03.177 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:42:03.262 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 17:42:03.295 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:42:03.344 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 17:42:03.365 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 17:42:03.395 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:44:58.350 +01:00 [INF] Executed DbCommand (31ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:44:58.465 +01:00 [INF] Executed DbCommand (28ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:44:58.476 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 17:44:58.485 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 17:44:58.511 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 17:44:58.538 +01:00 [INF] No migrations were applied. The database is already up to date.
+2025-03-31 17:44:58.863 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 17:44:58.882 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 17:44:59.004 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 17:44:59.268 +01:00 [INF] Executed DbCommand (42ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p0;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p1;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p2;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p3;
+2025-03-31 17:44:59.356 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:44:59.482 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 17:44:59.506 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:44:59.577 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 17:44:59.596 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 17:44:59.638 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 17:44:59.660 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 17:44:59.683 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 20:36:35.969 +01:00 [INF] Executed DbCommand (23ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 20:36:36.059 +01:00 [INF] Executed DbCommand (24ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 20:36:36.070 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 20:36:36.076 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 20:36:36.092 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 20:36:36.111 +01:00 [INF] No migrations were applied. The database is already up to date.
+2025-03-31 20:36:36.303 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 20:36:36.318 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 20:36:36.376 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 20:36:36.559 +01:00 [INF] Executed DbCommand (29ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p0;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p1;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p2;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p3;
+2025-03-31 20:36:36.610 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 20:36:36.695 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 20:36:36.709 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 20:36:36.737 +01:00 [INF] Executed DbCommand (5ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 20:36:36.749 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 20:36:36.772 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 20:36:36.782 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 20:36:36.792 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 20:39:32.894 +01:00 [INF] Executed DbCommand (203ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+CREATE DATABASE [BookyWooks.OrderDb];
+2025-03-31 20:39:33.003 +01:00 [INF] Executed DbCommand (61ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [BookyWooks.OrderDb] SET READ_COMMITTED_SNAPSHOT ON;
+END;
+2025-03-31 20:39:33.036 +01:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 20:39:33.087 +01:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [__EFMigrationsHistory] (
+    [MigrationId] nvarchar(150) NOT NULL,
+    [ProductVersion] nvarchar(32) NOT NULL,
+    CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+);
+2025-03-31 20:39:33.097 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 20:39:33.120 +01:00 [INF] Executed DbCommand (14ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 20:39:33.134 +01:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 20:39:33.155 +01:00 [INF] Applying migration '20250331193831_InitialMigration'.
+2025-03-31 20:39:33.198 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+IF SCHEMA_ID(N'order') IS NULL EXEC(N'CREATE SCHEMA [order];');
+2025-03-31 20:39:33.208 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Customers] (
+    [CustomerId] uniqueidentifier NOT NULL,
+    [Name] nvarchar(100) NOT NULL,
+    [Email] nvarchar(255) NOT NULL,
+    CONSTRAINT [PK_Customers] PRIMARY KEY ([CustomerId])
+);
+2025-03-31 20:39:33.214 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [order].[InboxMessage] (
+    [Id] uniqueidentifier NOT NULL,
+    [MessageType] nvarchar(255) NOT NULL,
+    [Message] nvarchar(max) NOT NULL,
+    [OccurredOn] datetime2 NOT NULL,
+    [ProcessedDate] datetime2 NULL,
+    CONSTRAINT [PK_InboxMessage] PRIMARY KEY ([Id])
+);
+2025-03-31 20:39:33.221 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [order].[InternalCommand] (
+    [Id] uniqueidentifier NOT NULL,
+    [Type] nvarchar(255) NOT NULL,
+    [Data] nvarchar(max) NOT NULL,
+    [EnqueueDate] datetime2 NOT NULL,
+    [ProcessedDate] datetime2 NULL,
+    [Error] nvarchar(max) NOT NULL,
+    CONSTRAINT [PK_InternalCommand] PRIMARY KEY ([Id])
+);
+2025-03-31 20:39:33.227 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [order].[OutboxMessage] (
+    [Id] uniqueidentifier NOT NULL,
+    [MessageType] nvarchar(255) NOT NULL,
+    [Message] nvarchar(max) NOT NULL,
+    [OccurredOn] datetime2 NOT NULL,
+    [ProcessedDate] datetime2 NULL,
+    CONSTRAINT [PK_OutboxMessage] PRIMARY KEY ([Id])
+);
+2025-03-31 20:39:33.233 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Products] (
+    [ProductId] uniqueidentifier NOT NULL,
+    [Name] nvarchar(100) NOT NULL,
+    [Description] nvarchar(500) NOT NULL,
+    [Price] decimal(18,2) NOT NULL,
+    [Quantity] int NOT NULL,
+    CONSTRAINT [PK_Products] PRIMARY KEY ([ProductId])
+);
+2025-03-31 20:39:33.240 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Orders] (
+    [OrderId] uniqueidentifier NOT NULL,
+    [CustomerId] uniqueidentifier NOT NULL,
+    [Street] nvarchar(100) NOT NULL,
+    [City] nvarchar(50) NOT NULL,
+    [Country] nvarchar(50) NOT NULL,
+    [Postcode] nvarchar(10) NOT NULL,
+    [Payment_CardName] nvarchar(50) NOT NULL,
+    [Payment_CardNumber] nvarchar(24) NOT NULL,
+    [Payment_Expiration] nvarchar(10) NOT NULL,
+    [Payment_PaymentMethod] int NOT NULL,
+    [Status] nvarchar(max) NOT NULL,
+    [OrderPlaced] datetimeoffset NOT NULL,
+    [Message] nvarchar(max) NOT NULL,
+    [IsCancelled] bit NOT NULL,
+    CONSTRAINT [PK_Orders] PRIMARY KEY ([OrderId]),
+    CONSTRAINT [FK_Orders_Customers_CustomerId] FOREIGN KEY ([CustomerId]) REFERENCES [Customers] ([CustomerId]) ON DELETE CASCADE
+);
+2025-03-31 20:39:33.246 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [OrderItems] (
+    [OrderItemId] uniqueidentifier NOT NULL,
+    [OrderId] uniqueidentifier NOT NULL,
+    [ProductId] uniqueidentifier NOT NULL,
+    [Price] decimal(18,2) NOT NULL,
+    [Quantity] int NOT NULL,
+    [ProductName] nvarchar(max) NOT NULL,
+    [ProductDescription] nvarchar(max) NOT NULL,
+    CONSTRAINT [PK_OrderItems] PRIMARY KEY ([OrderItemId]),
+    CONSTRAINT [FK_OrderItems_Orders_OrderId] FOREIGN KEY ([OrderId]) REFERENCES [Orders] ([OrderId]) ON DELETE CASCADE,
+    CONSTRAINT [FK_OrderItems_Products_ProductId] FOREIGN KEY ([ProductId]) REFERENCES [Products] ([ProductId]) ON DELETE CASCADE
+);
+2025-03-31 20:39:33.251 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_Customers_Email] ON [Customers] ([Email]);
+2025-03-31 20:39:33.258 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_OrderItems_OrderId] ON [OrderItems] ([OrderId]);
+2025-03-31 20:39:33.265 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_OrderItems_ProductId] ON [OrderItems] ([ProductId]);
+2025-03-31 20:39:33.270 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Orders_CustomerId] ON [Orders] ([CustomerId]);
+2025-03-31 20:39:33.277 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20250331193831_InitialMigration', N'8.0.8');
+2025-03-31 20:39:33.453 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 20:39:33.467 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 20:39:33.476 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 20:39:33.517 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 20:39:33.702 +01:00 [INF] Executed DbCommand (20ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 20:39:33.722 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 20:39:33.772 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 20:39:33.787 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 20:39:33.813 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 20:39:33.826 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 20:39:33.836 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 20:40:47.878 +01:00 [INF] Executed DbCommand (26ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 20:40:47.961 +01:00 [INF] Executed DbCommand (24ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 20:40:47.972 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 20:40:47.985 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 20:40:48.016 +01:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 20:40:48.057 +01:00 [INF] No migrations were applied. The database is already up to date.
+2025-03-31 20:40:48.366 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 20:40:48.384 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 20:40:48.445 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 20:40:48.700 +01:00 [INF] Executed DbCommand (56ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p0;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p1;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p2;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p3;
+2025-03-31 20:40:48.793 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 20:40:48.894 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 20:40:48.923 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 20:40:48.964 +01:00 [INF] Executed DbCommand (5ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 20:40:48.983 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 20:40:49.020 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 20:40:49.037 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 20:40:49.054 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 20:43:34.504 +01:00 [INF] Executed DbCommand (25ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 20:43:34.591 +01:00 [INF] Executed DbCommand (23ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 20:43:34.603 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 20:43:34.611 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 20:43:34.630 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 20:43:34.654 +01:00 [INF] No migrations were applied. The database is already up to date.
+2025-03-31 20:43:34.857 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 20:43:34.873 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 20:43:34.936 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 20:43:35.073 +01:00 [INF] Executed DbCommand (35ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p0;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p1;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p2;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p3;
+2025-03-31 20:43:35.148 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 20:43:35.213 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 20:43:35.226 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 20:43:35.249 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 20:43:35.265 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 20:43:35.291 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 20:43:35.311 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 20:43:35.331 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 20:44:56.988 +01:00 [INF] Executed DbCommand (22ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 20:44:57.072 +01:00 [INF] Executed DbCommand (22ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 20:44:57.082 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-03-31 20:44:57.089 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-03-31 20:44:57.110 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-03-31 20:44:57.138 +01:00 [INF] No migrations were applied. The database is already up to date.
+2025-03-31 20:44:57.401 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [o].[OrderId], [o].[CustomerId], [o].[IsCancelled], [o].[Message], [o].[OrderPlaced], [o].[Status], [o].[City], [o].[Country], [o].[Postcode], [o].[Street], [o].[Payment_CardName], [o].[Payment_CardNumber], [o].[Payment_Expiration], [o].[Payment_PaymentMethod]
+FROM [Orders] AS [o]
+2025-03-31 20:44:57.418 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
+2025-03-31 20:44:57.484 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId], [c].[Email], [c].[Name]
+FROM [Customers] AS [c]
+2025-03-31 20:44:57.639 +01:00 [INF] Executed DbCommand (45ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Guid), @p3='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p0;
+DELETE FROM [Customers]
+OUTPUT 1
+WHERE [CustomerId] = @p1;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p2;
+DELETE FROM [Products]
+OUTPUT 1
+WHERE [ProductId] = @p3;
+2025-03-31 20:44:57.695 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 20:44:57.770 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 255), @p2='?' (Size = 100), @p3='?' (DbType = Guid), @p4='?' (Size = 255), @p5='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Customers] ([CustomerId], [Email], [Name])
+VALUES (@p0, @p1, @p2),
+(@p3, @p4, @p5);
+2025-03-31 20:44:57.783 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Products] AS [p]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 20:44:57.813 +01:00 [INF] Executed DbCommand (3ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 500), @p2='?' (Size = 100), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32), @p5='?' (DbType = Guid), @p6='?' (Size = 500), @p7='?' (Size = 100), @p8='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p9='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Products] ([ProductId], [Description], [Name], [Price], [Quantity])
+VALUES (@p0, @p1, @p2, @p3, @p4),
+(@p5, @p6, @p7, @p8, @p9);
+2025-03-31 20:44:57.825 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Orders] AS [o]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2025-03-31 20:44:57.850 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CustomerId]
+FROM [Customers] AS [c]
+2025-03-31 20:44:57.861 +01:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2025-03-31 20:44:57.872 +01:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[Description], [p].[Name], [p].[Price], [p].[Quantity]
+FROM [Products] AS [p]
