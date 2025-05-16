@@ -8,13 +8,13 @@ using FluentValidation;
 namespace BookWooks.OrderApi.UseCases.Orders.Create;
 public class CreateOrderValidator : AbstractValidator<CreateOrderCommand>
 {
-  public CreateOrderValidator()
-  {
-    RuleFor(x => x.Name)
-        .NotEmpty()
-        .MaximumLength(BrandName.MaxLength);
+  //public CreateOrderValidator()
+  //{
+  //  RuleFor(x => x.Name)
+  //      .NotEmpty()
+  //      .MaximumLength(BrandName.MaxLength);
 
-    RuleFor(x => x.Description)
-        .MaximumLength(BrandDescription.MaxLength);
-  }
+  //  RuleFor(x => x.Description)
+  //      .MaximumLength(BrandDescription.MaxLength);
+  //}
 }

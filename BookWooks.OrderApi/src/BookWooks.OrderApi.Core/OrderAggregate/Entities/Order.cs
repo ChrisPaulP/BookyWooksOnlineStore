@@ -1,4 +1,5 @@
 ﻿using BookyWooks.Messaging.Messages.InitialMessage;
+using BookyWooks.SharedKernel;
 
 namespace BookWooks.OrderApi.Core.OrderAggregate.Entities;
 

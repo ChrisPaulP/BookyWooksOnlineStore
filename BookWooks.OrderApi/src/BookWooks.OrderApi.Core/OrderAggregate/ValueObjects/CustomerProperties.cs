@@ -20,19 +20,6 @@ public sealed partial record CustomerId
   {
     return From(Guid.NewGuid());
   }
-
-  //public bool Equals(CustomerId other) // ⚠ No "override" needed in record struct!
-  //{
-  //  Console.WriteLine($"🔍 Comparing OrderId: {Value} with {other.Value}");
-
-  //  if (!IsInitialized() || !other.IsInitialized())
-  //  {
-  //    Console.WriteLine("❌ One of the OrderId instances is not initialized!");
-  //    return false;
-  //  }
-
-  //  return Value.Equals(other.Value);
-  //}
 }
 
   [ValueObject<string>(conversions: Conversions.EfCoreValueConverter)]
