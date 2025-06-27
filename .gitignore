@@ -14,6 +14,15 @@
 appsettings.*.json
 appsettings.json
 secrets.json
+/BookWooks.OrderApi/src/BookWooks.OrderApi.Web/appsettings.json
+/OcelotGateway/appsettings.json
+/OcelotGateway/appsettings.Development.json
+/SagaOrchestration.IntegrationTests/testcontainersappsettings.json
+/SagaOrchestration/appsettings.json
+/BookWooks.OrderApi.TestContainersIntegrationTests/testcontainersappsettings.json
+/BookyWooks.Catalogue.Api/appsettings.json
+/BookyWooks.Catalogue.Api/appsettings.Development.json
+/BookyWooks.IdentityServer/appsettings.json
 .env
 
 # User-specific files (MonoDevelop/Xamarin Studio)
