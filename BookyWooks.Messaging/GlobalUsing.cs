@@ -1,0 +1,13 @@
+﻿global using BookyWooks.Messaging.Constants;
+global using BookyWooks.Messaging.RabbitMq;
+global using MassTransit;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Options;
+global using System.Reflection;
+global using Microsoft.Extensions.Logging;
+global using BookyWooks.SharedKernel.Messages;
+global using BookyWooks.SharedKernel.Serialization;
+global using Newtonsoft.Json;
+global using BookyWooks.Messaging.Contracts;

@@ -1,32 +1,21 @@
-﻿using BookyWooks.Messaging.Constants;
-using BookyWooks.Messaging.RabbitMq;
-using MassTransit;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using System.Reflection;
-namespace BookyWooks.Messaging.MassTransit;
+﻿namespace BookyWooks.Messaging.MassTransit;
 
 public static class Extentions
 {
     private static List<string> ReceiveEndpointNames { get; } = new List<string>();
     public static IReadOnlyList<Type> RegisteredConsumers { get; private set; } = new List<Type>();
-    public static IServiceCollection AddMessageBroker<TDbContext>
- (this IServiceCollection services, IConfiguration configuration, Assembly? assembly, bool useSqlServer)
- where TDbContext : DbContext
+    public static IServiceCollection AddMessageBroker<TDbContext>(this IServiceCollection services, IConfiguration configuration, Assembly? assembly, bool useSqlServer) where TDbContext : DbContext
     {
-        services.Configure<RabbitMQConfiguration>(configuration.GetSection("RabbitMQConfiguration:Config"));
+        services.Configure<RabbitMQConfiguration>(configuration.GetSection(ConfigurationConstants.RabbitMqConfigSection));
         services.AddSingleton(sp => sp.GetRequiredService<IOptions<RabbitMQConfiguration>>().Value);
 
         services.AddMassTransit(config =>
         {
             config.AddEntityFrameworkOutbox<TDbContext>(o =>
             {
-                //o.QueryDelay = TimeSpan.FromSeconds(1);
                 o.DuplicateDetectionWindow = TimeSpan.FromSeconds(30);
-                if (useSqlServer) o.UseSqlServer(); //.UseBusOutbox();
-                else o.UsePostgres(); //.UseBusOutbox(); 
+                if (useSqlServer) o.UseSqlServer(); 
+                else o.UsePostgres();  
             });
 
             config.SetKebabCaseEndpointNameFormatter();
@@ -57,11 +46,10 @@ public static class Extentions
                     ReceiveEndpointNames.Add(endpointName); // Store the endpoint name
                     configurator.ReceiveEndpoint(endpointName, e => // Create a new endpoint for each consumer
                     {
-                        e.ConfigureConsumer(context, consumerType); // Configures the consumer for the endpoint // Commenting this out as I am removing Automatic Configuration: 
+                        e.ConfigureConsumer(context, consumerType);  
                     });
                 }
-                //Automatic Configuration of Endpoints:
-               // configurator.ConfigureEndpoints(context); // creates endpoints for the consumers using the default endpoint naming conventions.
+
                 
                 // Print out registered consumersfor debugging purposes
                 foreach (var consumerType in RegisteredConsumers)
