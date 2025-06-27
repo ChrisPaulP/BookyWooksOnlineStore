@@ -1,18 +1,26 @@
-﻿namespace BookWooks.OrderApi.Infrastructure.Common.Processing.Outbox;
+﻿using BookyWooks.Messaging.Constants;
+using BookyWooks.Messaging.Contracts;
+using BookyWooks.Messaging.Messages.InitialMessage;
+using Google.Protobuf.WellKnownTypes;
+
+namespace BookWooks.OrderApi.Infrastructure.Common.Processing.Outbox;
 internal class ProcessOutboxCommandHandler : ICommandHandler<ProcessOutboxCommand>
 {
   private readonly IMediator _mediator;
   private readonly BookyWooksOrderDbContext _dbContext;
   private readonly IDomainEventMapper _domainNotificationsMapper;
+  private readonly IMassTransitService _massTransitService;
 
   public ProcessOutboxCommandHandler(
       IMediator mediator,
       BookyWooksOrderDbContext dbContext,
-      IDomainEventMapper domainNotificationsMapper)
+      IDomainEventMapper domainNotificationsMapper,
+      IMassTransitService massTransitService)
   {
     _mediator = mediator;
     _dbContext = dbContext;
     _domainNotificationsMapper = domainNotificationsMapper;
+    _massTransitService = massTransitService;
   }
 
   public async Task Handle(ProcessOutboxCommand command, CancellationToken cancellationToken)
@@ -27,25 +35,48 @@ internal class ProcessOutboxCommandHandler : ICommandHandler<ProcessOutboxComman
       foreach (var message in messages)
       {
         var type = _domainNotificationsMapper.GetType(message.MessageType);
-        var @event = JsonConvert.DeserializeObject(message.Message, type) as DomainEventBase;
-        if (@event != null)
+
+        var @event = JsonConvert.DeserializeObject(message.Message, type) as  MessageContract;
+        if(@event != null)
         {
           using (LogContext.Push(new OutboxMessageContextEnricher(@event)))
           {
-            await _mediator.Publish(@event, cancellationToken);
-            var updatedMessage = message with { ProcessedDate = DateTime.UtcNow };
+            try
+            {
+              await _massTransitService.Send((dynamic)@event, QueueConstants.CreateOrderMessageQueueName);
+              var updatedMessage = message with { ProcessedDate = DateTime.UtcNow };
+
+              // Detach the old tracked entity (optional but safest if EF is already tracking `message`)
+              _dbContext.Entry(message).State = EntityState.Detached;
+
+              // Now attach and mark the new version as modified
+              _dbContext.OutboxMessages.Update(updatedMessage);
+            }
+            catch (Exception ex)
+            {
+              Console.WriteLine(ex);
+              throw;
+            }
           }
-        }
+       }
+        
       }
       await _dbContext.SaveChangesAsync(cancellationToken);
     }
   }
 
+
+
   private class OutboxMessageContextEnricher : ILogEventEnricher
   {
-    private readonly DomainEventBase _notification;
+    //private readonly DomainEventBase _notification;
+    private readonly MessageContract _notification;
 
-    public OutboxMessageContextEnricher(DomainEventBase notification)
+    //public OutboxMessageContextEnricher(DomainEventBase notification)
+    //{
+    //  _notification = notification;
+    //}
+    public OutboxMessageContextEnricher(MessageContract notification)
     {
       _notification = notification;
     }

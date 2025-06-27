@@ -41,6 +41,5 @@
       RuleFor(x => x.CardHolderNumber).CreditCard();
       RuleFor(x => x.ExpiryDate).Matches(@"^(0[1-9]|1[0-2])\/?([0-9]{4}|[0-9]{2})$");
       RuleFor(x => x.Cvv).NotEmpty().Length(3, 4);
-      RuleFor(x => x.PaymentMethod).IsInEnum();
     }
   }

@@ -7,7 +7,8 @@ public enum ErrorType
   DeliveryAddress,
   Payment,
   OrderItem,
-  OrderId
+  OrderId,
+  Order
 }
 
 

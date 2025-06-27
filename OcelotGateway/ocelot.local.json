@@ -10,7 +10,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 57679
+          "Port": 5005
         }
       ],
       "UpstreamPathTemplate": "/services/OrderService/{path}",

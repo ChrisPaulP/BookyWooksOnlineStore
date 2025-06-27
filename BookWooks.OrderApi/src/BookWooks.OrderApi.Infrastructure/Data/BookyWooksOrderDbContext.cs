@@ -34,26 +34,25 @@ public class BookyWooksOrderDbContext : DbContext, IInboxDbContext, IOutboxDbCon
     //modelBuilder.AddOutboxMessageEntity();
     //modelBuilder.AddOutboxStateEntity();
   }
-  public async Task<int> SaveEntitiesAsync(CancellationToken cancellationToken = default)
-  {
-    if (_dispatcher == null)
-      return await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-    var entitiesWithEvents = ChangeTracker.Entries<EntityBase>()
-        .Where(e => e.Entity.DomainEvents.Any())
-        .Select(e => e.Entity)
-        .ToArray();
-
-    if (entitiesWithEvents.Length > 0)
-    //await _dispatcher.DispatchAndClearEvents(entitiesWithEvents).ConfigureAwait(false);
+    public async Task<int> SaveEntitiesAsync(CancellationToken cancellationToken = default)
     {
-      var outboxMessages = await _dispatcher.DispatchAndClearEvents(entitiesWithEvents)
-                                            .ConfigureAwait(false);
-      OutboxMessages.AddRange(outboxMessages);
-    }
+        if (_dispatcher == null)
+            return await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-    return await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-  }
+        var entitiesWithEvents = ChangeTracker.Entries<EntityBase>()
+            .Where(e => e.Entity.DomainEvents.Any())
+            .Select(e => e.Entity)
+            .ToArray();
+
+        if (entitiesWithEvents.Length > 0)
+        {
+            var outboxMessages = await _dispatcher.DispatchAndClearEvents(entitiesWithEvents)
+                                        .ConfigureAwait(false);
+            OutboxMessages.AddRange(outboxMessages);
+        }
+
+        return await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+    }
 
   public override int SaveChanges()
   {

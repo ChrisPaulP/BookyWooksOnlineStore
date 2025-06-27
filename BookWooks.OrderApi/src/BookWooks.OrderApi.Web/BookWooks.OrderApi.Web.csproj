@@ -14,6 +14,12 @@
     <!--<DocumentationFile>bin\swagger-docs.xml</DocumentationFile>-->
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Orders\BookRecommendation.BookRecommendationRequest.cs" />
+    <Compile Remove="Orders\BookRecommendation.BookRecommendationResponse.cs" />
+    <Compile Remove="Orders\BookRecommendation.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BookWooks.MCPServer\BookWooks.MCPServer.csproj" />
     <ProjectReference Include="..\..\..\BookyWooks.SharedKernel\BookyWooks.SharedKernel.csproj" />
     <ProjectReference Include="..\..\..\Logging\Logging.csproj" />
     <ProjectReference Include="..\..\..\Tracing\Tracing.csproj" />
@@ -28,10 +34,11 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Ardalis.ListStartupServices" />
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
     <PackageReference Include="SonarAnalyzer.CSharp">
       <PrivateAssets>all</PrivateAssets>

@@ -17,8 +17,8 @@ public record Customer : EntityBase
   }
   public static Validation<CustomerValidationErrors, Customer> CreateCustomer(string name, string email)
   {
-    var maybeName = CustomerName.TryFrom(name).ToValidationMonad(errors => new CustomerValidationErrors("Customer Name", errors));
-    var maybeEmail = EmailAddress.TryFrom(email).ToValidationMonad(errors => new CustomerValidationErrors("Email Address errors", errors));
+    var maybeName = CustomerName.TryFrom(name).ToValidationMonad(errors => new CustomerValidationErrors(ValidationMessages.CustomerName, errors));
+    var maybeEmail = EmailAddress.TryFrom(email).ToValidationMonad(errors => new CustomerValidationErrors(ValidationMessages.EmailAddressErrors, errors));
 
     return (maybeName, maybeEmail).Apply((nameVo, emailVo) =>
     {

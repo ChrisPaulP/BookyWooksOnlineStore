@@ -21,14 +21,15 @@ public record Product : EntityBase
 
   public static Validation<ProductValidationErrors, Product> CreateProduct(string name, string description, decimal price, int quantity)
   {
-    var maybeName =        ProductName.TryFrom(name).ToValidationMonad(errors => new ProductValidationErrors("ProductName", errors));
-    var maybeDescription = ProductDescription.TryFrom(description).ToValidationMonad(errors => new ProductValidationErrors("Product Description Error", errors));
-    var maybePrice =       ProductPrice.TryFrom(price).ToValidationMonad(errors => new ProductValidationErrors("Product Price Error", errors));
-    var maybeQuantity =    ProductQuantity.TryFrom(quantity).ToValidationMonad(errors => new ProductValidationErrors("Product Quantity Error", errors));
+    var productId =             ProductId.New();
+    var nameValidation =        ProductName.TryFrom(name).ToValidationMonad(errors => new ProductValidationErrors(ValidationMessages.CardName, errors));
+    var descriptionValidation = ProductDescription.TryFrom(description).ToValidationMonad(errors => new ProductValidationErrors(ValidationMessages.ProductDescription, errors));
+    var priceValidation =       ProductPrice.TryFrom(price).ToValidationMonad(errors => new ProductValidationErrors(ValidationMessages.ProductPrice, errors));
+    var quantityValidation =    ProductQuantity.TryFrom(quantity).ToValidationMonad(errors => new ProductValidationErrors(ValidationMessages.ProductQuantity, errors));
 
-    return (maybeName, maybeDescription, maybePrice, maybeQuantity).Apply((nameVo, descriptionVo, priceVo, quantityVo) =>
+    return (nameValidation, descriptionValidation, priceValidation, quantityValidation).Apply((createdName, createdDescription, createdPrice, createdQuantity) =>
     {
-      var product = new Product(ProductId.New(), nameVo, descriptionVo, priceVo, quantityVo);
+      var product = new Product(productId, createdName, createdDescription, createdPrice, createdQuantity);
       return product;
     });
   }

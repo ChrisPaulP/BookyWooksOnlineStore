@@ -4,5 +4,12 @@
 indent_style = space
 
 # Xml files
+
+# IDE0320: Make anonymous function static
+csharp_prefer_static_anonymous_function = true
+
+# IDE0058: Expression value is never used
+csharp_style_unused_value_expression_statement_preference = unused_local_variable
+
 [*.xml]
 indent_size = 2

@@ -5,7 +5,7 @@ using LanguageExt;
 
 namespace BookWooks.OrderApi.Infrastructure.Data.Repositories.Abstract;
 public abstract class RepositoryBase<T> : IRepositoryBase<T>
-       where T : class, IAggregateRoot
+       where T : class//, IAggregateRoot
 {
   private readonly BookyWooksOrderDbContext _orderDbContext;
   private readonly DbSet<T> _entitySet;

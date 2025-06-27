@@ -4,7 +4,7 @@ using BookyWooks.SharedKernel.Specification;
 namespace BookWooks.OrderApi.Core.OrderAggregate.Specifications;
 public class OrderByCustomerSpec : BaseSpecification<Order>
 {
-  public OrderByCustomerSpec(Guid customerId)
+  public OrderByCustomerSpec(CustomerId customerId)
        : base(x => x.CustomerId == customerId)
   {
     AddInclude(x => x.OrderItems);

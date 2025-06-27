@@ -1,15 +1,27 @@
-﻿
+﻿using BookWooks.OrderApi.Infrastructure.Common.Processing.InternalCommands;
+using BookWooks.OrderApi.Infrastructure.Options;
+using BookWooks.OrderApi.Infrastructure.Quartz;
+using BookWooks.OrderApi.UseCases.Orders.AiServices;
+using BookWooks.OrderApi.UseCases.Products;
 
 namespace BookWooks.OrderApi.Infrastructure;
 public static class InfrastructureDependencyInjection
 {
-    public static IServiceCollection AddInfrastructureServices
-          (this IServiceCollection services, IConfiguration configuration, bool isDevelopment, BiDirectionalDictionary<string, Type> domainEventsMap, BiDirectionalDictionary<string, Type> internalCommandMap)
-    {
-        services.AddScoped<IMassTransitService, OrderMassTransitService>();
-        services.AddScoped<ICacheService, DistributedCacheService>();
-        services.AddScoped<ISerializerService, NewtonSoftService>();
-        services.AddMessageBroker<BookyWooksOrderDbContext>(configuration, Assembly.GetExecutingAssembly(), true);
+  public static IServiceCollection AddInfrastructureServices(
+      this IServiceCollection services,
+      IConfiguration configuration,
+      bool isDevelopment,
+      BiDirectionalDictionary<string, Type>? domainEventsMap = null,
+      BiDirectionalDictionary<string, Type>? internalCommandMap = null)
+  {
+        domainEventsMap ??= new BiDirectionalDictionary<string, Type>();
+        internalCommandMap ??= new BiDirectionalDictionary<string, Type>();
+        
+        
+        RegisterMassTransit(services);
+        
+        RegisterSerializer(services);
+        RegisterMessageBroker(services, configuration);
         RegisterDbContext(services, configuration);
         RegisterOutboxContext(services);
         RegisterDomainEventsWrapper(services, domainEventsMap);
@@ -19,11 +31,66 @@ public static class InfrastructureDependencyInjection
         RegisterInboxContext(services);
         RegisterEfRepositories(services);
         RegisterMediatR(services);
-        RegisterRedisCache(services, configuration);
+        RegisterDistributedCacheService(services);
+        RegisterRedisDistributedCache(services, configuration);
         RegisterEnvironmentSpecificDependencies(services, isDevelopment);
+        RegisterAIOptions(services);
+        services.AddScoped<IOrderAiService<ProductDto>, OrderAiService>();
+        //services.AddHostedService<QuartzHostedService>();
+
+        services.AddQuartz(q =>
+        {
+            // MicrosoftDependencyInjectionJobFactory is now the default, so this line is no longer needed:
+            // q.UseMicrosoftDependencyInjectionJobFactory();
+
+            // Register jobs and triggers here
+            q.ScheduleJob<ProcessOutboxJob>(trigger => trigger
+                .WithSimpleSchedule(x => x.WithInterval(TimeSpan.FromSeconds(10)).RepeatForever())
+                .StartNow()
+            );
+            q.ScheduleJob<ProcessInternalCommandJob>(trigger => trigger
+                .WithSimpleSchedule(x => x.WithInterval(TimeSpan.FromSeconds(10)).RepeatForever())
+                .StartNow()
+            );
+        });
+    // Use the correct extension method for adding the Quartz hosted service
+
+    // With this corrected line:
+    services.AddQuartzHostedService(options =>
+    {
+      options.WaitForJobsToComplete = true; // Optional: Configure Quartz server options as needed
+    });
 
     return services;
     }
+
+  private static void RegisterMassTransit(IServiceCollection services)
+  {
+    services.AddScoped<IMassTransitService, OrderMassTransitService>();
+  }
+
+  private static void RegisterDistributedCacheService(IServiceCollection services)
+  {
+    services.AddScoped<ICacheService, DistributedCacheService>();
+  }
+
+  private static void RegisterSerializer(IServiceCollection services)
+  {
+    services.AddScoped<ISerializerService, NewtonSoftService>();
+  }
+
+  private static void RegisterMessageBroker(IServiceCollection services, IConfiguration configuration)
+  {
+    services.AddMessageBroker<BookyWooksOrderDbContext>(configuration, Assembly.GetExecutingAssembly(), true);
+  }
+
+  private static void RegisterAIOptions(IServiceCollection services)
+  {
+    services.AddOptions<OpenAIOptions>()
+            .BindConfiguration(OpenAIOptions.Key)
+            .ValidateDataAnnotations()  
+            .ValidateOnStart();
+  }
 
   private static void RegisterDomainEventsDispatcherNotificationHandlerDecorator(IServiceCollection services)
   {
@@ -122,9 +189,11 @@ public static class InfrastructureDependencyInjection
     services.AddScoped<IMediator, Mediator>();
     services.AddScoped<IDomainEventDispatcher, MediatRDomainEventDispatcher<Guid>>();
     services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+    var assembly = typeof(ProcessInternalCommand).Assembly;
+    services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
   }
 
-  private static void RegisterRedisCache(IServiceCollection services, IConfiguration configuration)
+  private static void RegisterRedisDistributedCache(IServiceCollection services, IConfiguration configuration)
   {
         var redisConnectionString = configuration.GetValue<string>("ConnectionStrings:Redis");
         var redisConfiguration = new RedisCacheOptions
@@ -169,7 +238,7 @@ public static class InfrastructureDependencyInjection
     }
     private static void CheckDomainEventMappings(BiDirectionalDictionary<string, Type> domainNotificationsMap)
     {
-        var domainEvents = Assemblies.Application
+        var domainEvents = Assemblies.UseCasesAssembly
             .GetTypes()
             .Where(type => typeof(DomainEventBase).IsAssignableFrom(type) && !type.IsAbstract)
             .ToList();
@@ -187,7 +256,7 @@ public static class InfrastructureDependencyInjection
 
     private static void CheckInternalCommandMappings(BiDirectionalDictionary<string, Type> internalCommandMap)
     {
-        var internalCommands = Assemblies.Application
+        var internalCommands = Assemblies.UseCasesAssembly
             .GetTypes()
             .Where(x => x.BaseType != null &&
                         (
@@ -205,5 +274,22 @@ public static class InfrastructureDependencyInjection
             throw new ApplicationException($"Internal Commands {string.Join(",", notMappedInternalCommands.Select(x => x.FullName))} not mapped");
         }
     }
+  public static IServiceCollection AddInfrastructureServicesForMCPServer(
+    this IServiceCollection services,
+    IConfiguration configuration,
+    bool isDevelopment)
+  {
+    RegisterDbContext(services, configuration);
+    RegisterEfRepositories(services);
+    RegisterSerializer(services);
+
+    RegisterDistributedCacheService(services);
+    RegisterRedisDistributedCache(services, configuration);
+
+
+
+    //builder.Services.AddScoped<IReadRepository<Product>, ReadRepositoryDecorator<Product>>();
+    return services;
+  }
 }
 

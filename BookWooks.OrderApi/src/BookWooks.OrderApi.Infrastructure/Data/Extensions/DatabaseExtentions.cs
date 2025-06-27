@@ -22,6 +22,9 @@ public static class DatabaseExtentions
     context.Orders.RemoveRange(context.Orders);
     context.Products.RemoveRange(context.Products);
     context.Customers.RemoveRange(context.Customers);
+    context.InboxMessages.RemoveRange(context.InboxMessages);
+    context.InternalCommands.RemoveRange(context.InternalCommands);
+    context.OutboxMessages.RemoveRange(context.OutboxMessages);
     await context.SaveChangesAsync();
   }
   private static async Task SeedAsync(BookyWooksOrderDbContext context)

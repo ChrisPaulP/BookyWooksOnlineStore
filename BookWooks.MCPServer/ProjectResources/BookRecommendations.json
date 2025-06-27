@@ -1,0 +1,15 @@
+﻿{
+  "name": "BookRecommendations",
+  "description": "Provides a book recommendation based on the user's genre preference.",
+  "template_format": "handlebars",
+  "template": "{ \"BookTitle\": \"{{BookRecommendationTool-GetBookRecommendation genre}}\", \"Genre\": \"{{genre}}\" }",
+  "input_variables": [
+    {
+      "name": "genre",
+      "description": "The genre from which you would like a book recommendation.",
+      "is_required": true
+    }
+  ]
+}
+
+

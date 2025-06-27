@@ -110,6 +110,17 @@ services:
     networks:
       - booky_wooks_network
 
+  bookwooks.mcpserver:
+    image: ${DOCKER_REGISTRY-}bookwooksmcpserver
+    build:
+      context: .
+      dockerfile: BookWooks.MCPServer/Dockerfile
+    networks:
+      - booky_wooks_network
+
+ 
+
+
 volumes:
   booky_wooks_postgres_data:
   elasticsearch-logs:

@@ -2,7 +2,7 @@
 using BookyWooks.SharedKernel.UnitOfWork;
 
 namespace BookyWooks.SharedKernel.Repositories;
-public interface IRepositoryBase<T> : IReadRepositoryBase<T> where T : class, IAggregateRoot
+public interface IRepositoryBase<T> : IReadRepositoryBase<T> where T : class//, IAggregateRoot
 {
     IUnitOfWork UnitOfWork { get; }
 

@@ -1,17 +1,19 @@
 ﻿namespace BookWooks.OrderApi.UseCases.Orders;
 public static class FunctionalExtensions
 {
-  public static ValidationErrors MapValidationErrors<T>(Seq<T> failures)
+  public static Errors.ValidationErrors MapValidationErrors<T>(Seq<T> failures)
     where T : OrderValidationErrors
   {
     return failures.MapValidationErrorDetails(
         f => f.Match(
+            orderErrors => ErrorType.Order,
             customerErrors => ErrorType.Customer,
             deliveryAddressErrors => ErrorType.DeliveryAddress,
             paymentErrors => ErrorType.Payment,
             orderItemErrors => ErrorType.OrderItem,
             orderIdErrors => ErrorType.OrderId),
         f => f.Match(
+            orderErrors => orderErrors.Errors.Select(e => ValidationError.Create(e.errorMessage)),
             customerErrors => customerErrors.Errors.Select(e => ValidationError.Create(e.errorMessage)),
             deliveryAddressErrors => deliveryAddressErrors.Errors.Select(e => ValidationError.Create(e.errorMessage)),
             paymentErrors => paymentErrors.Errors.Select(e => ValidationError.Create(e.errorMessage)),
@@ -20,12 +22,12 @@ public static class FunctionalExtensions
     );
   }
 
-  public static ValidationErrors MapValidationErrorDetails<T>(
+  public static Errors.ValidationErrors MapValidationErrorDetails<T>(
       this Seq<T> failures,
       Func<T, ErrorType> getErrorType,
       Func<T, IEnumerable<ValidationError>> getErrors)
   {
-    return new ValidationErrors(
+    return new Errors.ValidationErrors(
         failures
             .GroupBy(getErrorType)
             .ToDictionary(
@@ -50,7 +52,7 @@ public static class FunctionalExtensions
         ? Right<TLeft, IEnumerable<TRight>>(source)
         : Left<TLeft, IEnumerable<TRight>>(leftValueFactory());
   }
-  public static Either<ValidationErrors, Order> CreateOrder(this CreateOrderCommand request)
+  public static Either<Errors.ValidationErrors, Order> CreateOrder(this CreateOrderCommand request)
   {
     var deliveryAddress = request.DeliveryAddress;
     var paymentDetails = request.PaymentDetails;
@@ -68,8 +70,8 @@ public static class FunctionalExtensions
         .MapLeft(MapValidationErrors);
   }
 
-  public static Either<ValidationErrors, Order> AddOrderItems(
-      this Either<ValidationErrors, Order> eitherOrder,
+  public static Either<Errors.ValidationErrors, Order> AddOrderItems(
+      this Either<Errors.ValidationErrors, Order> eitherOrder,
       IEnumerable<CreateOrderItemCommand> orderItems) =>
       eitherOrder
           .Bind(order =>
@@ -82,22 +84,6 @@ public static class FunctionalExtensions
                   .ToEither()
                   .MapLeft(MapValidationErrors)
           );
-
-  public static async Task<Either<ValidationErrors, Order>> SaveOrder(
-        this Either<ValidationErrors, Order> eitherOrder,
-        IRepository<Order> orderRepository,
-        CancellationToken cancellationToken,
-        ILogger logger)
-    {
-        return await eitherOrder.BindAsync(async order =>
-        {
-            logger.LogInformation("Saving order...");
-            await orderRepository.AddAsync(order);
-            await orderRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
-            logger.LogInformation("Order saved successfully with Id: {OrderId}", order.OrderId);
-            return Right<ValidationErrors, Order>(order);
-        });
-    }
   public static async Task<Either<TLeft, Order>> SaveOrder<TLeft>(
     this Either<TLeft, Order> either,
     Func<Order, Task> saveAction,

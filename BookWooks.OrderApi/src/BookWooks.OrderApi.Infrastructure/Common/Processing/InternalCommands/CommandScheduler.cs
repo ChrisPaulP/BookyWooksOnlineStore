@@ -17,7 +17,8 @@ internal class CommandScheduler : ICommandScheduler
     {
       Id = command.Id,
       EnqueueDate = DateTime.UtcNow,
-      Type = command.GetType().FullName ?? string.Empty, 
+      //Type = command.GetType().FullName ?? string.Empty, 
+      Type = command.GetType().AssemblyQualifiedName ?? string.Empty,
       Data = JsonConvert.SerializeObject(command, new JsonSerializerSettings
       {
         ContractResolver = new AllPropertiesContractResolver()
@@ -34,7 +35,8 @@ internal class CommandScheduler : ICommandScheduler
     {
       Id = command.Id,
       EnqueueDate = DateTime.UtcNow,
-      Type = command.GetType().FullName ?? string.Empty, 
+      //Type = command.GetType().FullName ?? string.Empty, 
+      Type = command.GetType().AssemblyQualifiedName ?? string.Empty,
       Data = JsonConvert.SerializeObject(command, new JsonSerializerSettings
       {
         ContractResolver = new AllPropertiesContractResolver()

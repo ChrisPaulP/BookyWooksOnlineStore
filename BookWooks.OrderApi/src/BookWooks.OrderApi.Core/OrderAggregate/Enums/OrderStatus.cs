@@ -2,6 +2,7 @@
 
 public abstract class OrderStatus
 {
+  public static readonly OrderStatus NewOrderCreated = new NewOrderStatus();
   public static readonly OrderStatus Pending = new PendingStatus();
   public static readonly OrderStatus Approved = new ApprovedStatus();
   public static readonly OrderStatus Cancelled = new CancelledStatus();
@@ -12,6 +13,10 @@ public abstract class OrderStatus
 
   public abstract string Label { get; }
 
+  private class NewOrderStatus : OrderStatus
+  {
+    public override string Label => "New Order Created";
+  }
   private class PendingStatus : OrderStatus
   {
     public override string Label => "Pending";
@@ -51,6 +56,7 @@ public abstract class OrderStatus
   {
     return label switch
     {
+      "New Order Created" => NewOrderCreated,
       "Pending" => Pending,
       "Approved" => Approved,
       "Cancelled" => Cancelled,

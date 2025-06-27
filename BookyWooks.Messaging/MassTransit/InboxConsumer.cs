@@ -50,9 +50,14 @@ public abstract class InboxConsumer<TMessage, TDbContext> : IConsumer<TMessage>
             await dbContext.Database.BeginTransactionAsync(System.Data.IsolationLevel.ReadCommitted);
 
 
+        //var inboxMessage = await dbContext.InboxMessages
+        //.FromSqlRaw("SELECT * FROM InboxMessages WITH (UPDLOCK, READPAST) WHERE Id = {0} AND MessageType = {1}", messageId, _consumerId)
+        //.FirstOrDefaultAsync();
+
         var inboxMessage = await dbContext.InboxMessages
-        .FromSqlRaw("SELECT * FROM InboxMessages WITH (UPDLOCK, READPAST) WHERE Id = {0} AND MessageType = {1}", messageId, _consumerId)
-        .FirstOrDefaultAsync();
+    .Where(x => x.Id == messageId && x.MessageType == _consumerId)
+    .FirstOrDefaultAsync();
+
 
         if (inboxMessage == null)
         {

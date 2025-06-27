@@ -8,6 +8,7 @@ global using Microsoft.Extensions.DependencyInjection;
 global using BookWooks.OrderApi.Core.OrderAggregate.Entities;
 global using BookWooks.OrderApi.Core.OrderAggregate.Specifications;
 global using BookWooks.OrderApi.Core.OrderAggregate.DomainValidation;
+global using BookWooks.OrderApi.Core.OrderAggregate.ValueObjects;
 
 // Use Cases
 global using BookWooks.OrderApi.UseCases.Cancel;

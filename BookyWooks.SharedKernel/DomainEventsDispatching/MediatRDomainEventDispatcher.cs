@@ -27,16 +27,24 @@ public class MediatRDomainEventDispatcher<T> : IDomainEventDispatcher
         {
             await _mediator.Publish(domainEvent).ConfigureAwait(false);
 
-            var outboxMessage = new OutboxMessage(
-                domainEvent.Id,
-                domainEvent.GetType().Name,
-                JsonConvert.SerializeObject(domainEvent, new JsonSerializerSettings
-                {
-                    ContractResolver = new AllPropertiesContractResolver()
-                }),
-                domainEvent.DateOccurred);
+            //if (domainEvent is IConvertToOutBoxMessage convertToOutBoxMessage)
+            //{
+            //    var outboxMessage = new OutboxMessage(
+            //    domainEvent.Id,
+            //    domainEvent.GetType().Name,
+            //    JsonConvert.SerializeObject(domainEvent, new JsonSerializerSettings
+            //    {
+            //        ContractResolver = new AllPropertiesContractResolver()
+            //    }),
+            //    domainEvent.DateOccurred);
 
-            outboxMessages.Add(outboxMessage);
+            //    outboxMessages.Add(outboxMessage);
+            //}
+            if (domainEvent is IConvert convert)
+            {
+                var outboxMessage = convert.ToOutboxMessage();
+                outboxMessages.Add(outboxMessage);
+            }
         }
 
         return outboxMessages;

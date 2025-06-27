@@ -8,12 +8,14 @@ global using System.Reflection;
 global using Microsoft.OpenApi.Models;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.Extensions.DependencyInjection.Extensions;
 
 // Third-Party Libraries
 global using Ardalis.ListStartupServices;
 global using Serilog;
 global using MediatR;
 global using FluentValidation;
+
 
 // Core
 global using BookWooks.OrderApi.Core;
@@ -22,7 +24,6 @@ global using BookWooks.OrderApi.Core.OrderAggregate.Events;
 // Infrastructure
 global using BookWooks.OrderApi.Infrastructure;
 global using BookWooks.OrderApi.Infrastructure.Data.Extensions;
-global using BookWooks.OrderApi.Infrastructure.Common.Processing;
 
 // Use Cases
 global using BookWooks.OrderApi.UseCases;

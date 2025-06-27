@@ -7,7 +7,7 @@ public static class Extensions
       => validation.IsSuccess switch
       {
         true => validation.ValueObject,
-        false => onError(validation.Error.Data?.Keys.Cast<BusinessRuleError>().ToList() ?? [])
+        false => onError(validation.Error.Data?.Values.OfType<BusinessRuleError>().ToList() ?? [])
       };
 
   public static Either<TError, T> ToEither<TError, T>(
@@ -16,6 +16,6 @@ public static class Extensions
   {
     return validation.IsSuccess
         ? Prelude.Right<TError, T>(validation.ValueObject)
-        : Prelude.Left<TError, T>(onError(validation.Error.Data?.Keys.Cast<string>().ToList() ?? new List<string>()));
+        : Prelude.Left<TError, T>(onError(validation.Error.Data?.Values.OfType<string>().ToList() ?? []));
   }
 }

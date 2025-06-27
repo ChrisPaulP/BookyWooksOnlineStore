@@ -18,42 +18,20 @@ public record DeliveryAddress
   public static Validation<OrderValidationErrors, DeliveryAddress> TryCreate(
        string street, string city, string country, string postcode)
   {
-    var maybeStreet =
-        Street.TryFrom(street)
-            .ToValidationMonad<OrderValidationErrors, Street>(error => new DeliveryAddressErrors(street, error));
-    var maybeCity =
-        City.TryFrom(city)
-            .ToValidationMonad<OrderValidationErrors, City>(error => new DeliveryAddressErrors(city, error));
-    var maybeCountry =
-        Country.TryFrom(country)
-            .ToValidationMonad<OrderValidationErrors, Country>(error => new DeliveryAddressErrors(country, error));
-    var maybePostCode =
-        PostCode.TryFrom(postcode)
-            .ToValidationMonad<OrderValidationErrors, PostCode>(error => new DeliveryAddressErrors(postcode, error));
+    var streetValidation = Street.TryFrom(street).ToValidationMonad<OrderValidationErrors, Street>(error => new DeliveryAddressErrors(street, error));
+    var cityValidation = City.TryFrom(city).ToValidationMonad<OrderValidationErrors, City>(error => new DeliveryAddressErrors(city, error));
+    var countryValidation = Country.TryFrom(country).ToValidationMonad<OrderValidationErrors, Country>(error => new DeliveryAddressErrors(country, error));
+    var postCodeValidation = PostCode.TryFrom(postcode).ToValidationMonad<OrderValidationErrors, PostCode>(error => new DeliveryAddressErrors(postcode, error));
 
-    return (maybeStreet, maybeCity, maybeCountry, maybePostCode)
-        .Apply((streetVo, cityVo, countryVo, postCodeVo) => new DeliveryAddress(streetVo, cityVo, countryVo, postCodeVo));
+    return (streetValidation, cityValidation, countryValidation, postCodeValidation)
+        .Apply((createdStreet, createdCity, createdCountry, createdPostCode) => new DeliveryAddress(createdStreet, createdCity, createdCountry, createdPostCode));
   }
 }
 
 [ValueObject<string>(conversions: Conversions.EfCoreValueConverter)]
 public partial record struct Street
 {
-  private static Validation Validate(string input)
-  {
-    var result = Validation.Invalid("Street does not meet requirements");
-
-    if (string.IsNullOrWhiteSpace(input)) result.WithData(BusinessRuleError.Create("Street is required"), string.Empty);
-
-    if (input.Length > 100) result.WithData(BusinessRuleError.Create("Street must be less than 100 characters"), string.Empty);
-
-    if (input.Length < 3) result.WithData(BusinessRuleError.Create("Street must be greater than 3 characters"), string.Empty);
-
-    var regex = ValidStreetRegex();
-    if (!regex.IsMatch(input)) result.WithData(BusinessRuleError.Create("Street must contain only letters, numbers, spaces, hyphens, and apostrophes"), string.Empty);
-
-    return result.Data is { Count: > 0 } ? result : Validation.Ok;
-  }
+  private static Validation Validate(string input) =>ValueObjectValidation.Validate(input,ValidationMessages.Street,minLength: 3,maxLength: 100,customRule: s => ValidStreetRegex().IsMatch(s), customRuleError: ValidationMessages.StreetInvalid);
 
   [GeneratedRegex(@"[a-zA-Z\-\.\'\s]*")]
   private static partial Regex ValidStreetRegex();
@@ -62,47 +40,27 @@ public partial record struct Street
 [ValueObject<string>(conversions: Conversions.EfCoreValueConverter)]
 public partial record struct City
 {
-  private static Validation Validate(string input)
-  {
-    var result = Validation.Invalid("City does not meet requirements");
-    if (string.IsNullOrWhiteSpace(input)) result.WithData(BusinessRuleError.Create("City is required"), string.Empty);
-
-    if (input.Length > 50) result.WithData(BusinessRuleError.Create("City must be less than 50 characters"), string.Empty);
-
-    return result.Data is { Count: > 0 } ? result : Validation.Ok;
-  }
+  private static Validation Validate(string input) => ValueObjectValidation.Validate(input,ValidationMessages.City,minLength: 1, maxLength: 50
+      );
 }
 
 [ValueObject<string>(conversions: Conversions.EfCoreValueConverter)]
 public partial record struct Country
 {
-  private static Validation Validate(string input)
-  {
-    var result = Validation.Invalid("Country does not meet requirements");
-    if (string.IsNullOrWhiteSpace(input)) result.WithData(BusinessRuleError.Create("Country is required"), string.Empty);
-
-    if (input.Length > 50) result.WithData(BusinessRuleError.Create("Country must be less than 50 characters"), string.Empty);
-
-    return result.Data is { Count: > 0 } ? result : Validation.Ok;
-  }
+  private static Validation Validate(string input) => ValueObjectValidation.Validate(input,ValidationMessages.Country,minLength: 1,maxLength: 50
+      );
 }
 
 [ValueObject<string>(conversions: Conversions.EfCoreValueConverter)]
 public partial record struct PostCode
 {
-  private static Validation Validate(string input)
-  {
-    var result = Validation.Invalid("Post Code does not meet requirements");
-    if (string.IsNullOrWhiteSpace(input)) result.WithData(BusinessRuleError.Create("PostCode is required"), string.Empty);
-
-    if (input.Length > 10) result.WithData(BusinessRuleError.Create("PostCode must be less than 10 characters"), string.Empty);
-
-    var regex = ValidPostCodeRegex();
-    if (!regex.IsMatch(input)) result.WithData(BusinessRuleError.Create("PostCode must be alphanumeric and can include spaces"), string.Empty);
-
-    return result.Data is { Count: > 0 } ? result : Validation.Ok;
-  }
+  private static Validation Validate(string input) =>ValueObjectValidation.Validate(input,ValidationMessages.PostCode, minLength: 1, maxLength: 10,customRule: s => ValidPostCodeRegex().IsMatch(s),customRuleError: ValidationMessages.PostCodeInvalid);
 
   [GeneratedRegex(@"[a-zA-Z\-\.\'\s]*")]
   private static partial Regex ValidPostCodeRegex();
 }
+
+
+
+
+

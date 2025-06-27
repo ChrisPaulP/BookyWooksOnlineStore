@@ -1,0 +1,15 @@
+﻿{
+  "name": "ReserveStock",
+  "description": "Reserves stock for a book title.",
+  "template_format": "handlebars",
+  "template": "{{ReservationTool-ReserveStock bookTitle}}.",
+  "input_variables": [
+    {
+      "name": "bookTitle",
+      "description": "I will reserve a book for you.",
+      "is_required": true
+    }
+  ]
+}
+
+

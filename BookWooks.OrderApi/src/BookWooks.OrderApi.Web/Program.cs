@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.OpenApi.Models; // Add this using directive at the top of the file
+﻿
+using BookyWooks.Messaging.Messages.InitialMessage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,23 +12,24 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
     options.MinimumSameSitePolicy = SameSiteMode.None;
 });
 
-#pragma warning disable S125 // Sections of code should not be commented out
-                            //AddSwagger();
-AddShowAllServicesSupport();
-#pragma warning restore S125 // Sections of code should not be commented out
 
+AddShowAllServicesSupport();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderRequestValidator>();
 builder.Services.AddInfrastructureServices(builder.Configuration, builder.Environment.IsDevelopment(), InitializeDomainEventsMap(), InitializeInternalCommandMap());
 builder.Services.AddUseCasesServices();
 builder.Services.AddCoreServices();
+
 builder.Services.AddOpenTelemetryTracing(builder.Configuration);
 builder.Services.AddOpenTelemetryMetrics(builder.Configuration);
 RegisterEndpointsFromAssemblyContaining<IEndpoint>(builder.Services);
+builder.Services.AddEndpointsApiExplorer();
+AddSwagger();
 AddAuthentication();
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-OrderCompositionRoot.SetServiceProvider(app.Services);
+
 
 if (app.Environment.IsDevelopment())
 {
@@ -63,27 +64,26 @@ void AddAuthentication()
           options.Audience = "resource_order";
       });
 }
-//void AddSwagger()
-#pragma warning disable S125 // Sections of code should not be commented out
-                            //{
-                            //    builder.Services.AddSwaggerGen(swg =>
-                            //    {
-                            //        swg.SwaggerDoc("v1", new OpenApiInfo { Title = "Order Microservice", Version = "v1" });
-                            //        swg.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-                            //        {
-                            //            Name = "Authorization",
-                            //            Type = SecuritySchemeType.ApiKey,
-                            //            Scheme = "Bearer",
-                            //            BearerFormat = "JWT",
-                            //            In = ParameterLocation.Header,
-                            //            Description = "Hi Chris Enter 'Bearer' [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
-                            //        });
-                            //        swg.AddSecurityRequirement(new OpenApiSecurityRequirement { { new OpenApiSecurityScheme { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" } }, Array.Empty<string>() } });
-                            //        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                            //        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                            //        swg.IncludeXmlComments(xmlPath);
-                            //    });
-                            //}
+void AddSwagger()
+{
+  builder.Services.AddSwaggerGen(swg =>
+  {
+    swg.SwaggerDoc("v1", new OpenApiInfo { Title = "Order Microservice", Version = "v1" });
+    swg.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+      Name = "Authorization",
+      Type = SecuritySchemeType.ApiKey,
+      Scheme = "Bearer",
+      BearerFormat = "JWT",
+      In = ParameterLocation.Header,
+      Description = "Hi Chris Enter 'Bearer' [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
+    });
+    swg.AddSecurityRequirement(new OpenApiSecurityRequirement { { new OpenApiSecurityScheme { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" } }, Array.Empty<string>() } });
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    swg.IncludeXmlComments(xmlPath);
+  });
+}
 void RegisterEndpointsFromAssemblyContaining<T>( IServiceCollection services)
 {
   var assembly = typeof(T).Assembly;
@@ -122,7 +122,8 @@ BiDirectionalDictionary<string, Type> InitializeDomainEventsMap()
 {
     var map = new BiDirectionalDictionary<string, Type>();
     map.Add("OrderCreatedEvent", typeof(OrderCreatedDomainEvent));
-    return map;
+    map.Add("OrderCreatedMessage", typeof(OrderCreatedMessage));
+  return map;
 }
 
 BiDirectionalDictionary<string, Type> InitializeInternalCommandMap()

@@ -7,7 +7,7 @@ using static MassTransit.ValidationResultExtensions;
 
 namespace BookyWooks.SharedKernel.ResultPattern;
 
-public static class ResultExtensions
+public static class ResultExtensions2
 {
 
     public static TResult Match<T, TResult>(

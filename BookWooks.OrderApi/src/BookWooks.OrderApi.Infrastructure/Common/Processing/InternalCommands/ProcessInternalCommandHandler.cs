@@ -2,10 +2,12 @@
 internal class ProcessInternalCommandHandler : ICommandHandler<ProcessInternalCommand>
 {
   private readonly BookyWooksOrderDbContext _dbContext;
+  private readonly IMediator _mediator;
 
-  public ProcessInternalCommandHandler(BookyWooksOrderDbContext dbContext)
+  public ProcessInternalCommandHandler(BookyWooksOrderDbContext dbContext, IMediator mediator)
   {
     _dbContext = dbContext;
+    _mediator = mediator;
   }
 
   public async Task Handle(ProcessInternalCommand command, CancellationToken cancellationToken)
@@ -14,15 +16,18 @@ internal class ProcessInternalCommandHandler : ICommandHandler<ProcessInternalCo
         .Where(c => c.ProcessedDate == null)
         .OrderBy(c => c.EnqueueDate)
         .ToListAsync(cancellationToken);
+    
+    if (commands.Count == 0)
+      return;
 
     var policy = Policy
         .Handle<Exception>()
-        .WaitAndRetryAsync(new[]
-        {
+        .WaitAndRetryAsync(
+        [
                     TimeSpan.FromSeconds(1),
                     TimeSpan.FromSeconds(2),
                     TimeSpan.FromSeconds(3)
-        });
+        ]);
 
     foreach (var internalCommand in commands)
     {
@@ -43,10 +48,10 @@ internal class ProcessInternalCommandHandler : ICommandHandler<ProcessInternalCo
   {
     Type? type = Type.GetType(internalCommand.Type) ?? throw new InvalidOperationException($"Type '{internalCommand.Type}' could not be found.");
 
-    dynamic commandToProcess = JsonConvert.DeserializeObject(internalCommand.Data, type)
+    var commandToProcess = JsonConvert.DeserializeObject(internalCommand.Data, type)
                                ?? throw new InvalidOperationException($"Deserialization of command data failed for type '{internalCommand.Type}'.");
 
-    await CommandsExecutor.Execute(commandToProcess);
+    await _mediator.Send(commandToProcess);
   }
 }
 

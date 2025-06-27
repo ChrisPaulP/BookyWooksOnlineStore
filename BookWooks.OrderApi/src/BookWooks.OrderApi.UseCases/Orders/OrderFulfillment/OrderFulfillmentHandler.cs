@@ -1,4 +1,6 @@
-﻿namespace BookWooks.OrderApi.UseCases.Orders.OrderFulfillment;
+﻿using BookWooks.OrderApi.Core.OrderAggregate.ValueObjects;
+
+namespace BookWooks.OrderApi.UseCases.Orders.OrderFulfillment;
 public class OrderFulfillmentHandler : ICommandHandler<OrderFulfillmentCommand, SetOrderStatusResult>
 {
   private readonly IRepository<Order> _repository;
@@ -10,7 +12,7 @@ public class OrderFulfillmentHandler : ICommandHandler<OrderFulfillmentCommand, 
   {
     _logger.LogInformation("Setting order {orderId} to cancelled", request.Id);
 
-    var findOrder = await _repository.FindAsync(new OrderByIdSpec(request.OrderId));
+    var findOrder = await _repository.FindAsync(new OrderByIdSpec(OrderId.From(request.OrderId)));
     return await findOrder
         .ToEither(() => new OrderNotFound())
         .Map(order => order.FulfillOrder())

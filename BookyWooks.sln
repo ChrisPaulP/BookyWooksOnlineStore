@@ -75,6 +75,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		ProjectNotes.txt = ProjectNotes.txt
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookWooks.MCPServer", "BookWooks.MCPServer\BookWooks.MCPServer.csproj", "{35F576C7-10C0-46C7-9AD4-004B34CB9CF7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +155,10 @@ Global
 		{0F095138-CA80-4963-86A6-3C0D916C1B89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F095138-CA80-4963-86A6-3C0D916C1B89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F095138-CA80-4963-86A6-3C0D916C1B89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35F576C7-10C0-46C7-9AD4-004B34CB9CF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35F576C7-10C0-46C7-9AD4-004B34CB9CF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35F576C7-10C0-46C7-9AD4-004B34CB9CF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35F576C7-10C0-46C7-9AD4-004B34CB9CF7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -182,6 +188,7 @@ Global
 		{09477A0C-FA41-4C2A-8993-8A7C3EF5C530} = {83CA4CAE-DB5E-4CEA-8BBB-80D424BE48B7}
 		{1E9BF29B-1DDD-4C5E-AE08-1C59A57B96E0} = {C6070EED-0BA4-4181-8EAF-35C5136B701A}
 		{0F095138-CA80-4963-86A6-3C0D916C1B89} = {1E9BF29B-1DDD-4C5E-AE08-1C59A57B96E0}
+		{35F576C7-10C0-46C7-9AD4-004B34CB9CF7} = {89BEE009-401A-421A-AAAB-9DA970D1BD25}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C62E4639-BD4C-47C3-873D-B083250A5897}

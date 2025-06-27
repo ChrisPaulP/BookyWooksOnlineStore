@@ -9,7 +9,7 @@ using BookyWooks.SharedKernel.Specification;
 namespace BookWooks.OrderApi.Core.OrderAggregate.Specifications;
 public class OrderByCustomerIdSpec : BaseSpecification<Order>
 {
-  public OrderByCustomerIdSpec(Guid customerId)
+  public OrderByCustomerIdSpec(CustomerId customerId)
        : base(x => x.CustomerId == customerId)
   {
     AddInclude(x => x.OrderItems);

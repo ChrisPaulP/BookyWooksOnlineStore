@@ -8,7 +8,7 @@ public class ListOrdersForCustomerHandler : IQueryHandler<ListOrdersForCustomerQ
 
     public async Task<OrdersResult> Handle(ListOrdersForCustomerQuery request, CancellationToken cancellationToken) =>
          
-    (await _readRepository.FindAllAsync(new OrderByCustomerIdSpec(request.CustomerId)))
+    (await _readRepository.FindAllAsync(new OrderByCustomerIdSpec(CustomerId.From(request.CustomerId))))
                           .ToEither(() => new OrderNotFound())
                           .Map(orders => orders.Map(OrderMappingExtensions.ToOrderDTO));
 }
