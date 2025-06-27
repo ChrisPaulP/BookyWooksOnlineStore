@@ -58,7 +58,7 @@ public static class McpServerDependencyInjection
     private static void RegisterEmbeddingGenerator(IServiceCollection services)
     {
 
-        services.AddOpenAIEmbeddingGenerator("text-embedding-3-small", "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");
+        services.AddOpenAIEmbeddingGenerator("", "");
     }
 
     private static void RegisterTools(IServiceCollection services)
