@@ -1,4 +1,4 @@
-﻿namespace BookWooks.OrderApi.Infrastructure.Caching;
+﻿namespace bookwooks.orderapi.infrastructure.caching;
 public class DistributedCacheService : ICacheService
 {
   private readonly IDistributedCache _cache;
@@ -8,136 +8,126 @@ public class DistributedCacheService : ICacheService
   public DistributedCacheService(IDistributedCache cache, ISerializerService serializer, ILogger<DistributedCacheService> logger) =>
       (_cache, _serializer, _logger) = (cache, serializer, logger);
 
-  public T? Get<T>(string key) =>
-      Get(key) is { } data
-          ? Deserialize<T>(data)
-          : default;
-
-  private byte[]? Get(string key)
+  public T? Get<T>(string key)
   {
-    ArgumentNullException.ThrowIfNull(key);
-
-    try
+    return TryExecute(() =>
     {
-      return _cache.Get(key);
-    }
-    catch
-    {
-      return null;
-    }
+      var data = _cache.Get(key);
+      return data is not null ? Deserialize<T>(data) : default;
+    }, "Get", key);
   }
 
-  public async Task<T?> GetAsync<T>(string key, CancellationToken token = default) =>
-      await GetAsync(key, token) is { } data
-          ? Deserialize<T>(data)
-          : default;
-
-  private async Task<byte[]?> GetAsync(string key, CancellationToken token = default)
+  public Task<T?> GetAsync<T>(string key, CancellationToken token = default)
   {
-    try
+     return TryExecuteAsync(async () =>
     {
-      return await _cache.GetAsync(key, token);
-    }
-    catch
-    {
-      return null;
-    }
+        var data = await _cache.GetAsync(key, token);
+        return data is not null ? Deserialize<T>(data) : default;
+    }, "GetAsync", key);
   }
 
-  public void Refresh(string key)
+  public void Set<T>(string key, T value, TimeSpan? slidingExpiration = null)
   {
-    try
+    TryExecute(() =>
     {
-      _cache.Refresh(key);
-    }
-    catch
-    {
-    }
+      var data = Serialize(value);
+      _cache.Set(key, data, GetOptions(slidingExpiration));
+      _logger.LogDebug("Added to Cache: {Key}", key);
+    }, "Set", key);
   }
 
-  public async Task RefreshAsync(string key, CancellationToken token = default)
+  public Task SetAsync<T>(string key, T value, TimeSpan? slidingExpiration = null, CancellationToken token = default)
   {
-    try
+    return TryExecuteAsync(async () =>
     {
-      await _cache.RefreshAsync(key, token);
-      _logger.LogDebug(string.Format("Cache Refreshed : {0}", key));
-    }
-    catch
-    {
-    }
+      var data = Serialize(value);
+      await _cache.SetAsync(key, data, GetOptions(slidingExpiration), token);
+      _logger.LogDebug("Added to Cache: {Key}", key);
+    }, "SetAsync", key);
   }
 
   public void Remove(string key)
   {
-    try
-    {
-      _cache.Remove(key);
-    }
-    catch
-    {
-    }
+    TryExecute(() => _cache.Remove(key), "Remove", key);
   }
 
-  public async Task RemoveAsync(string key, CancellationToken token = default)
+  public Task RemoveAsync(string key, CancellationToken token = default)
   {
-    try
-    {
-      await _cache.RemoveAsync(key, token);
-    }
-    catch
-    {
-    }
+    return TryExecuteAsync(() => _cache.RemoveAsync(key, token), "RemoveAsync", key);
   }
 
-  public void Set<T>(string key, T value, TimeSpan? slidingExpiration = null) =>
-      Set(key, Serialize(value), slidingExpiration);
-
-  private void Set(string key, byte[] value, TimeSpan? slidingExpiration = null)
+  public void Refresh(string key)
   {
-    try
-    {
-      _cache.Set(key, value, GetOptions(slidingExpiration));
-      _logger.LogDebug($"Added to Cache : {key}");
-    }
-    catch
-    {
-    }
+    TryExecute(() => _cache.Refresh(key), "Refresh", key);
   }
 
-  public Task SetAsync<T>(string key, T value, TimeSpan? slidingExpiration = null, CancellationToken cancellationToken = default) =>
-      SetAsync(key, Serialize(value), slidingExpiration, cancellationToken);
-
-  private async Task SetAsync(string key, byte[] value, TimeSpan? slidingExpiration = null, CancellationToken token = default)
+  public Task RefreshAsync(string key, CancellationToken token = default)
   {
-    try
+    return TryExecuteAsync(async () =>
     {
-      await _cache.SetAsync(key, value, GetOptions(slidingExpiration), token);
-      _logger.LogDebug($"Added to Cache : {key}");
-    }
-    catch
-    {
-    }
+      await _cache.RefreshAsync(key, token);
+      _logger.LogDebug("Cache Refreshed: {Key}", key);
+    }, "RefreshAsync", key);
   }
+
+  private static DistributedCacheEntryOptions GetOptions(TimeSpan? slidingExpiration) =>
+      new DistributedCacheEntryOptions
+      {
+        SlidingExpiration = slidingExpiration ?? TimeSpan.FromMinutes(10)
+      };
 
   private byte[] Serialize<T>(T item) =>
       Encoding.Default.GetBytes(_serializer.Serialize(item));
 
-  private T Deserialize<T>(byte[] cachedData) =>
-      _serializer.Deserialize<T>(Encoding.Default.GetString(cachedData));
+  private T Deserialize<T>(byte[] data) =>
+      _serializer.Deserialize<T>(Encoding.Default.GetString(data));
 
-  private static DistributedCacheEntryOptions GetOptions(TimeSpan? slidingExpiration)
+  private void TryExecute(Action action, string operation, string key)
   {
-    var options = new DistributedCacheEntryOptions();
-    if (slidingExpiration.HasValue)
+    try
     {
-      options.SetSlidingExpiration(slidingExpiration.Value);
+      action();
     }
-    else
+    catch (Exception ex)
     {
-      // TODO: add to appsettings?
-      options.SetSlidingExpiration(TimeSpan.FromMinutes(10)); // Default expiration time of 10 minutes.
+      _logger.LogWarning(ex, "Cache {Operation} failed for key: {Key}", operation, key);
     }
+  }
 
-    return options;
+  private T? TryExecute<T>(Func<T?> func, string operation, string key)
+  {
+    try
+    {
+      return func();
+    }
+    catch (Exception ex)
+    {
+      _logger.LogWarning(ex, "Cache {Operation} failed for key: {Key}", operation, key);
+      return default;
+    }
+  }
+
+  private async Task TryExecuteAsync(Func<Task> func, string operation, string key)
+  {
+    try
+    {
+      await func();
+    }
+    catch (Exception ex)
+    {
+      _logger.LogWarning(ex, "Async cache {Operation} failed for key: {Key}", operation, key);
+    }
+  }
+  private async Task<T?> TryExecuteAsync<T>(Func<Task<T?>> func, string operation, string key)
+  {
+    try
+    {
+      return await func();
+    }
+    catch (Exception ex)
+    {
+      _logger.LogWarning(ex, "Async cache {Operation} failed for key: {Key}", operation, key);
+      return default;
+    }
   }
 }

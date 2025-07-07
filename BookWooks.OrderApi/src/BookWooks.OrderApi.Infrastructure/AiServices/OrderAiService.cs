@@ -1,17 +1,4 @@
-﻿using BookWooks.OrderApi.Infrastructure.AIClients;
-using BookWooks.OrderApi.Infrastructure.Options;
-using BookWooks.OrderApi.UseCases.Orders.AiServices;
-using BookWooks.OrderApi.UseCases.Products;
-using Microsoft.Extensions.Options;
-using Microsoft.SemanticKernel.ChatCompletion;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
-using Microsoft.SemanticKernel;
-using ModelContextProtocol.Client;
-using System.Text.Json;
-using JsonSerializer = System.Text.Json.JsonSerializer;
-using BookWooks.OrderApi.Infrastructure.AiServices;
-using ModelContextProtocol.Protocol;
-#pragma warning disable SKEXP0001 
+﻿#pragma warning disable SKEXP0001 
 
 internal class OrderAiService : BaseClient, IOrderAiService<ProductDto>
 {

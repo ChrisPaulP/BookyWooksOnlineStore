@@ -1,30 +1,13 @@
 ﻿
-using BookyWooks.Messaging.Constants;
-using BookyWooks.Messaging.Contracts.Commands;
-using BookyWooks.Messaging.Contracts.Events;
-using BookyWooks.Messaging.Messages.InitialMessage;
-using MassTransit;
-using SagaOrchestration.StateInstances;
-using ILogger = Serilog.ILogger;
-
 namespace SagaOrchestration.StateMachines;
 
 public class OrderStateMachine : MassTransitStateMachine<OrderStateInstance>
 {
     private readonly ILogger _logger;
-
-    // Commands
-
-
-
-
-    // Events
     public Event<OrderCreatedMessage> OrderCreatedEvent { get; set; }
     public Event<StockConfirmedEvent> StockConfirmedEvent { get; set; }
     public Event<StockReservationFailedEvent> StockReservationFailedEvent { get; set; }
-    
 
-    // States
     public State StockCheck { get; set; }
     public State StockReserved { get; set; }
     public State StockReservationFailed { get; set; }

@@ -1,13 +1,8 @@
-﻿using BookyWooks.SharedKernel.Messages;
-using BookyWooks.SharedKernel.Serialization;
-
-namespace BookyWooks.SharedKernel.DomainEventsDispatching;
+﻿namespace BookyWooks.SharedKernel.DomainEventsDispatching;
 
 public class MediatRDomainEventDispatcher<T> : IDomainEventDispatcher
 {
     private readonly IMediator _mediator;
-
-
     public MediatRDomainEventDispatcher(IMediator mediator)
     {
         _mediator = mediator;
@@ -40,7 +35,7 @@ public class MediatRDomainEventDispatcher<T> : IDomainEventDispatcher
 
             //    outboxMessages.Add(outboxMessage);
             //}
-            if (domainEvent is IConvert convert)
+            if (domainEvent is IConvertToOutBoxMessage convert)
             {
                 var outboxMessage = convert.ToOutboxMessage();
                 outboxMessages.Add(outboxMessage);

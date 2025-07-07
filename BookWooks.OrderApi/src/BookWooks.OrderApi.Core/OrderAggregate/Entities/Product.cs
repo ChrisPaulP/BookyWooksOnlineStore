@@ -19,17 +19,17 @@ public record Product : EntityBase
     Quantity = quantity;
   }
 
-  public static Validation<ProductValidationErrors, Product> CreateProduct(string name, string description, decimal price, int quantity)
+  public static Validation<ProductValidationErrors, Product> CreateProduct(Guid productId, string name, string description, decimal price, int quantity)
   {
-    var productId =             ProductId.New();
+    var productIdValidation =   ProductId.TryFrom(productId).ToValidationMonad(errors => new ProductValidationErrors(ValidationMessages.ProductId, errors));
     var nameValidation =        ProductName.TryFrom(name).ToValidationMonad(errors => new ProductValidationErrors(ValidationMessages.CardName, errors));
     var descriptionValidation = ProductDescription.TryFrom(description).ToValidationMonad(errors => new ProductValidationErrors(ValidationMessages.ProductDescription, errors));
     var priceValidation =       ProductPrice.TryFrom(price).ToValidationMonad(errors => new ProductValidationErrors(ValidationMessages.ProductPrice, errors));
     var quantityValidation =    ProductQuantity.TryFrom(quantity).ToValidationMonad(errors => new ProductValidationErrors(ValidationMessages.ProductQuantity, errors));
 
-    return (nameValidation, descriptionValidation, priceValidation, quantityValidation).Apply((createdName, createdDescription, createdPrice, createdQuantity) =>
+    return (productIdValidation, nameValidation, descriptionValidation, priceValidation, quantityValidation).Apply((createdProductId, createdName, createdDescription, createdPrice, createdQuantity) =>
     {
-      var product = new Product(productId, createdName, createdDescription, createdPrice, createdQuantity);
+      var product = new Product(createdProductId, createdName, createdDescription, createdPrice, createdQuantity);
       return product;
     });
   }

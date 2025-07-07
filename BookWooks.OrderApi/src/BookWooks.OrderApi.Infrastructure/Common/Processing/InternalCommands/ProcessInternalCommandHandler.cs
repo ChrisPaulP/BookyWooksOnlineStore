@@ -39,8 +39,12 @@ internal class ProcessInternalCommandHandler : ICommandHandler<ProcessInternalCo
         internalCommand.Error = result.FinalException.ToString();
         _dbContext.InternalCommands.Update(internalCommand);
       }
+      else if (result.Outcome == OutcomeType.Successful)
+      {
+        internalCommand.ProcessedDate = DateTime.UtcNow;
+        _dbContext.InternalCommands.Update(internalCommand);
+      }
     }
-
     await _dbContext.SaveChangesAsync(cancellationToken);
   }
 

@@ -68,7 +68,17 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
 
   public virtual async Task<List<T>> FindAllAsync(ISpecification<T> specification)
   {
-    return  await ApplySpecification(specification).ToListAsync();
+    try
+    {
+      return await ApplySpecification(specification).AsNoTracking().ToListAsync();
+      //return await ApplySpecification(specification).ToListAsync();
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine(ex);
+      throw;
+    }
+
   }
   public virtual async Task<T?> FindAsync(ISpecification<T> specification)
   {
@@ -76,7 +86,8 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T>
   }
   public virtual Task UpdateAsync(T entity)
   {
-    _entitySet.Entry(entity).State = EntityState.Modified;
+    _entitySet.Attach(entity);
+    _orderDbContext.Entry(entity).State = EntityState.Modified;
     return Task.CompletedTask;
   }
   public virtual async Task<List<T>> ListAllAsync()

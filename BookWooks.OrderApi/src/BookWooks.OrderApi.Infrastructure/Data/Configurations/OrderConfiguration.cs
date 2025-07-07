@@ -1,29 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-
-public class OrderConfiguration : IEntityTypeConfiguration<Order>
+﻿public class OrderConfiguration : IEntityTypeConfiguration<Order>
 {
   public void Configure(EntityTypeBuilder<Order> builder)
   {
     builder.HasKey(o => o.OrderId);
-
-
-    builder.Property(o => o.OrderId)
-        .HasConversion(new OrderId.EfCoreValueConverter())  // ✅ Explicitly tell EF how to store OrderId
-        .IsRequired()
-        .ValueGeneratedNever();  // ✅ Ensure EF Core does NOT auto-generate OrderId
-
-    //builder.Property(o => o.OrderId)
-    //        .HasConversion(
-    //            id => id.Value, // Store as Guid
-    //            value => OrderId.From(value)) // Retrieve as OrderId
-    //        .ValueGeneratedNever(); // Prevent EF from generating OrderId
-
-
-    // Map immutable properties using constructor binding
+    builder.Property(o => o.OrderId).HasConversion(new OrderId.EfCoreValueConverter())  .IsRequired().ValueGeneratedNever(); 
     builder.Property(o => o.Message).HasConversion(new Message.EfCoreValueConverter()).IsRequired();
     builder.Property(o => o.IsCancelled).HasConversion(new IsCancelled.EfCoreValueConverter());
     builder.Property(o => o.OrderPlaced).HasConversion(new OrderPlaced.EfCoreValueConverter());
-
+    builder.Property(o => o.Status).HasConversion(s => s.Label,s => OrderStatus.FromLabel(s)).IsRequired();
+    builder.HasMany<OrderItem>(Order.OrderItemsFieldName).WithOne().HasForeignKey("OrderId");
+    builder.Ignore(o => o.OrderItems);
+    builder.HasOne<Customer>().WithMany().HasForeignKey(o => o.CustomerId).IsRequired();
     builder.OwnsOne(o => o.DeliveryAddress, da =>
     {
       da.Property(d => d.Street)
@@ -50,21 +37,6 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
           .HasMaxLength(10)
           .HasColumnName("Postcode");
     });
-
-    builder.HasOne<Customer>()
-            .WithMany()
-            .HasForeignKey(o => o.CustomerId)
-            .IsRequired();
-
-    builder.Property(o => o.Status)
-        .HasConversion(
-            s => s.Label,
-            s => OrderStatus.FromLabel(s))
-        .IsRequired();
-
-    builder.HasMany(o => o.OrderItems)
-        .WithOne()
-        .HasForeignKey(oi => oi.OrderId);
 
     builder.OwnsOne(o => o.Payment, p =>
     {

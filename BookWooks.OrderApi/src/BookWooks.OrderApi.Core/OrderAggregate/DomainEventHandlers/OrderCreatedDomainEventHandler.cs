@@ -14,7 +14,7 @@ internal class OrderCreatedDomainEventHandler : INotificationHandler<OrderCreate
     {
         _logger.LogInformation("Handling Order Created Domain event for {new order}", domainEvent.NewOrder.Message);
 
-    var orderStockList = domainEvent.NewOrder.OrderItems.Select(orderItem => new OrderItemEventDto(orderItem.OrderId.Value, orderItem.Quantity.Value));
+    var orderStockList = domainEvent.NewOrder.OrderItems.Select(orderItem => new OrderItemEventDto(orderItem.ProductId.Value, orderItem.Quantity.Value));
     var orderCreatedMessage = new OrderCreatedMessage(domainEvent.NewOrder.OrderId.Value, domainEvent.NewOrder.CustomerId.Value, domainEvent.NewOrder.OrderTotal, orderStockList);
 
     return Task.CompletedTask;

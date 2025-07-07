@@ -7,7 +7,7 @@ public static class OrderTestHelper
     {
         var uniqueEmail = $"customer_{Guid.NewGuid()}@example.com";
         var customerValidation = Customer.CreateCustomer("Customer Name", uniqueEmail);
-        var productValidation = Product.CreateProduct("Book", "Book 1", 9.99M, 2);
+        var productValidation = Product.CreateProduct(Guid.NewGuid(),"Book", "Book 1", 9.99M, 2);
 
         var customerResult = await customerValidation.MatchAsync(
             async customer =>

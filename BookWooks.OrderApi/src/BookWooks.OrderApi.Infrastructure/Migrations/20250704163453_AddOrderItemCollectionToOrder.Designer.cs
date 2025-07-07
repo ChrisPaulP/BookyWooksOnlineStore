@@ -4,6 +4,7 @@ using BookWooks.OrderApi.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookWooks.OrderApi.Infrastructure.Migrations
 {
     [DbContext(typeof(BookyWooksOrderDbContext))]
-    partial class BookyWooksOrderDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250704163453_AddOrderItemCollectionToOrder")]
+    partial class AddOrderItemCollectionToOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -14,4 +14,10 @@ global using Validation = Vogen.Validation;
 global using BookWooks.OrderApi.Core.OrderAggregate.Entities;
 global using System.Text.RegularExpressions;
 global using BookWooks.OrderApi.Core.OrderAggregate.BusinessRuleErrors;
+global using BookyWooks.Messaging.Contracts.Events;
+global using BookyWooks.Messaging.Messages.InitialMessage;
+global using BookyWooks.SharedKernel.Messages;
+global using Newtonsoft.Json;
+global using BookyWooks.SharedKernel.DomainEventsDispatching;
+global using BookyWooks.SharedKernel.Specification;
 

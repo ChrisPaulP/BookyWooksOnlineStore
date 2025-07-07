@@ -1,8 +1,4 @@
-﻿using Microsoft.SemanticKernel.ChatCompletion;
-using Microsoft.SemanticKernel;
-using ModelContextProtocol.Protocol;
-
-#pragma warning disable SKEXP0001
+﻿#pragma warning disable SKEXP0001
 
 namespace BookWooks.OrderApi.Infrastructure.AiServices;
 

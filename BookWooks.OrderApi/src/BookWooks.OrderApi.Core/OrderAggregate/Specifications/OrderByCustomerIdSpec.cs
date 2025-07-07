@@ -12,7 +12,7 @@ public class OrderByCustomerIdSpec : BaseSpecification<Order>
   public OrderByCustomerIdSpec(CustomerId customerId)
        : base(x => x.CustomerId == customerId)
   {
-    AddInclude(x => x.OrderItems);
+    AddInclude(Order.OrderItemsFieldName);
     EnableCache(nameof(OrderByCustomerIdSpec), customerId, TimeSpan.FromMinutes(10));
   }
 }

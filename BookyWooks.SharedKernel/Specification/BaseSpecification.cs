@@ -1,10 +1,4 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Buffers.Text;
-using System.Linq.Expressions;
-using System.Runtime.Intrinsics.X86;
-using System;
-
-namespace BookyWooks.SharedKernel.Specification;
+﻿namespace BookyWooks.SharedKernel.Specification;
 public abstract class BaseSpecification<T> : ISpecification<T>
 {
     protected BaseSpecification(Expression<Func<T, bool>> criteria)
@@ -59,7 +53,6 @@ public abstract class BaseSpecification<T> : ISpecification<T>
     {
         GroupBy = groupByExpression;
     }
-
 
     protected virtual void EnableCache(string specificationName, params object[] args)
     {

@@ -1,7 +1,4 @@
-﻿
-
-
-namespace BookWooks.OrderApi.Infrastructure.Common.Processing;
+﻿namespace BookWooks.OrderApi.Infrastructure.Common.Processing;
 internal class CommandScheduler : ICommandScheduler
 {
   private readonly BookyWooksOrderDbContext _dbContext;

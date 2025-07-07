@@ -1,7 +1,5 @@
 ﻿using BookyWooks.Messaging.Constants;
 using BookyWooks.Messaging.Contracts;
-using BookyWooks.Messaging.Messages.InitialMessage;
-using Google.Protobuf.WellKnownTypes;
 
 namespace BookWooks.OrderApi.Infrastructure.Common.Processing.Outbox;
 internal class ProcessOutboxCommandHandler : ICommandHandler<ProcessOutboxCommand>

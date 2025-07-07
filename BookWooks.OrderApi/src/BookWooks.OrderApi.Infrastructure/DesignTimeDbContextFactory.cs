@@ -1,7 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore.Design;
-
-namespace BookWooks.OrderApi.Infrastructure;
+﻿namespace BookWooks.OrderApi.Infrastructure;
 
 public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<BookyWooksOrderDbContext>
 {

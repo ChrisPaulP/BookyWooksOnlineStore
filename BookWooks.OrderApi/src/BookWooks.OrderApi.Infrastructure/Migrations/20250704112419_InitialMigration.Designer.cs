@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookWooks.OrderApi.Infrastructure.Migrations
 {
     [DbContext(typeof(BookyWooksOrderDbContext))]
-    [Migration("20250409155007_InitialMigration")]
+    [Migration("20250704112419_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -306,7 +306,7 @@ namespace BookWooks.OrderApi.Infrastructure.Migrations
             modelBuilder.Entity("BookWooks.OrderApi.Core.OrderAggregate.Entities.OrderItem", b =>
                 {
                     b.HasOne("BookWooks.OrderApi.Core.OrderAggregate.Entities.Order", null)
-                        .WithMany("OrderItems")
+                        .WithMany("_orderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -320,7 +320,7 @@ namespace BookWooks.OrderApi.Infrastructure.Migrations
 
             modelBuilder.Entity("BookWooks.OrderApi.Core.OrderAggregate.Entities.Order", b =>
                 {
-                    b.Navigation("OrderItems");
+                    b.Navigation("_orderItems");
                 });
 #pragma warning restore 612, 618
         }

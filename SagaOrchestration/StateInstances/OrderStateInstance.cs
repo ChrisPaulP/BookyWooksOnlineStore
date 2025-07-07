@@ -1,11 +1,4 @@
-﻿using MassTransit;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SagaOrchestration.StateInstances;
+﻿namespace SagaOrchestration.StateInstances;
 
 public class OrderStateInstance : SagaStateMachineInstance
 {

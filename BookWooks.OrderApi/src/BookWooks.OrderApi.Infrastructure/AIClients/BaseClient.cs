@@ -1,38 +1,15 @@
-﻿using Azure.Core.Pipeline;
-using Microsoft.SemanticKernel;
-using ModelContextProtocol.Client;
-namespace BookWooks.OrderApi.Infrastructure.AIClients;
+﻿namespace BookWooks.OrderApi.Infrastructure.AIClients;
 public class BaseClient
 {
-  //protected static Task<IMcpClient> CreateMcpClientAsync(Kernel? kernel = null)
-  //{
-  //  // Create and return the MCP client
-  //  return McpClientFactory.CreateAsync(
-  //      clientTransport: new StdioClientTransport(new StdioClientTransportOptions
-  //      {
-  //        Name = "BookWooks.MCPServer",
-  //        Command = GetMCPServerPath(), // Path to the MCPServer executable
-
-  //      }),
-  //      clientOptions: null
-  //   );
-  //}
   protected static Task<IMcpClient> CreateMcpClientAsync(Kernel? kernel = null)
   {
     // Use the Docker Compose service name and port
     var mcpServerHost = Environment.GetEnvironmentVariable("MCPSERVER__HOST") ?? "bookwooks.mcpserver";
     var mcpServerPort = Environment.GetEnvironmentVariable("MCPSERVER__PORT") ?? "8181";
-    //var mcpServerUrl = $"http://{mcpServerHost}:{mcpServerPort}";
-    var mcpServerUrl = "http://bookwooks.mcpserver:8181/";
+    var mcpServerUrl = $"http://{mcpServerHost}:{mcpServerPort}";
 
     return McpClientFactory.CreateAsync(
-                new SseClientTransport(
-                    new SseClientTransportOptions
-                    {
-                      Endpoint = new Uri(mcpServerUrl)
-                    }
-                )
-            );
+    new SseClientTransport(new SseClientTransportOptions { Endpoint = new Uri(mcpServerUrl) }));
   }
   protected static Kernel CreateKernelWithChatCompletionService(string openAIApiKey, string chatModelId)
   {

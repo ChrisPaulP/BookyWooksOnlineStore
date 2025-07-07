@@ -1,10 +1,4 @@
-﻿
-using MassTransit;
-using MassTransit.EntityFrameworkCoreIntegration;
-using Microsoft.EntityFrameworkCore;
-using SagaOrchestration.StateMap;
-
-namespace SagaOrchestration.Data;
+﻿namespace SagaOrchestration.Data;
 
 public class StateMachineDbContext : SagaDbContext
 {

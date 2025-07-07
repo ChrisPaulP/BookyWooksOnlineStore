@@ -10,7 +10,6 @@ public record Order : EntityBase, IAggregateRoot
         DeliveryAddress = default!;
         Payment = default!;
         Status = default!;
-        OrderItems = ImmutableList<OrderItem>.Empty;
     }
     public OrderId OrderId { get; private set; } 
     public CustomerId CustomerId { get; private set; }
@@ -20,9 +19,11 @@ public record Order : EntityBase, IAggregateRoot
     public OrderPlaced OrderPlaced { get; private set; }
     public Message Message { get; private set; }
     public IsCancelled IsCancelled { get; private set; }
-    public ImmutableList<OrderItem> OrderItems { get; private set; } 
+    // Backing field for EF Core
+    private readonly List<OrderItem> _orderItems = new();
+    public ImmutableList<OrderItem> OrderItems => _orderItems.ToImmutableList();
 
-    private Order(OrderId orderId, CustomerId customerId, DeliveryAddress deliveryAddress, Payment payment,OrderStatus status, OrderPlaced orderPlaced, Message message, IsCancelled isCancelled, ImmutableList<OrderItem> orderItems)
+  private Order(OrderId orderId, CustomerId customerId, DeliveryAddress deliveryAddress, Payment payment,OrderStatus status, OrderPlaced orderPlaced, Message message, IsCancelled isCancelled, ImmutableList<OrderItem> orderItems)
     {
         OrderId = orderId;
         CustomerId = customerId;
@@ -32,7 +33,7 @@ public record Order : EntityBase, IAggregateRoot
         OrderPlaced = orderPlaced;
         Message = message;
         IsCancelled = isCancelled;
-        OrderItems = orderItems;
+        _orderItems = orderItems.ToList();
     }
 
     public static Validation<OrderValidationErrors, Order> CreateOrder(Guid customerId, string street, string city, string country, string postcode, string cardHolderName, string cardNumber, string expiration, int paymentMethod)
@@ -77,11 +78,11 @@ public record Order : EntityBase, IAggregateRoot
     }
 
     public Order UpdateMessage(string newMessage) => this with { Message = Message.From(newMessage) };
-
     public Validation<OrderValidationErrors, Order> AddOrderItem(Guid orderId, Guid productId, decimal price, string productName, string productDescription, int quantity = 1)
     {
-        return OrderItem.AddOrderItem(orderId, productId, price, quantity, productName, productDescription)
-            .Map(orderItem => this with { OrderItems = OrderItems.Add(orderItem) })
-            .MapFail(orderItemErrors => new OrderValidationErrors(orderItemErrors));
+      return OrderItem.AddOrderItem(orderId, productId, price, quantity, productName, productDescription)
+          .Map(orderItem =>{_orderItems.Add(orderItem);return this;})
+          .MapFail(orderItemErrors => new OrderValidationErrors(orderItemErrors));
     }
+  public static readonly string OrderItemsFieldName = "_orderItems";
 }

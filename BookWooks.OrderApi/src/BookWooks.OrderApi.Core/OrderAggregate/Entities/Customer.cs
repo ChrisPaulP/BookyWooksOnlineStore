@@ -15,14 +15,15 @@ public record Customer : EntityBase
     Name = name;
     Email = email;
   }
-  public static Validation<CustomerValidationErrors, Customer> CreateCustomer(string name, string email)
+  public static Validation<CustomerValidationErrors, Customer> CreateCustomer(Guid customerId, string name, string email)
   {
-    var maybeName = CustomerName.TryFrom(name).ToValidationMonad(errors => new CustomerValidationErrors(ValidationMessages.CustomerName, errors));
-    var maybeEmail = EmailAddress.TryFrom(email).ToValidationMonad(errors => new CustomerValidationErrors(ValidationMessages.EmailAddressErrors, errors));
+    var customerIdValidation = CustomerId.TryFrom(customerId).ToValidationMonad(errors => new CustomerValidationErrors(ValidationMessages.CustomerId, errors));
+    var nameValidation = CustomerName.TryFrom(name).ToValidationMonad(errors => new CustomerValidationErrors(ValidationMessages.CustomerName, errors));
+    var emailValidation = EmailAddress.TryFrom(email).ToValidationMonad(errors => new CustomerValidationErrors(ValidationMessages.EmailAddressErrors, errors));
 
-    return (maybeName, maybeEmail).Apply((nameVo, emailVo) =>
+    return (customerIdValidation, nameValidation, emailValidation).Apply((createdCustomerId, createdName, createdEmail) =>
     {
-      return new Customer(CustomerId.New(), nameVo, emailVo);
+      return new Customer(createdCustomerId, createdName, createdEmail);
     });
   }
 }

@@ -38,7 +38,7 @@ public class ReadRepositoryDecorator<T> : RepositoryBase<T>, IReadRepository<T>
 
     var result = await _cacheService.GetOrSetAsync(
         cacheKey,
-        () => base.ApplySpecification(specification).ToListAsync());
+        () => ApplySpecification(specification).AsNoTracking().ToListAsync());
 
 
     return result ?? new List<T>();
@@ -51,7 +51,7 @@ public class ReadRepositoryDecorator<T> : RepositoryBase<T>, IReadRepository<T>
 
     var result = _cacheService.GetOrSetAsync(
         cacheKey,
-        () => base.ApplySpecification(specification).FirstOrDefaultAsync());
+        () => ApplySpecification(specification).FirstOrDefaultAsync());
 
     return result;
   }

@@ -1,6 +1,6 @@
 ﻿namespace BookyWooks.SharedKernel.Messages;
 
-public interface IConvert
+public interface IConvertToOutBoxMessage
 {
     OutboxMessage ToOutboxMessage();
 }

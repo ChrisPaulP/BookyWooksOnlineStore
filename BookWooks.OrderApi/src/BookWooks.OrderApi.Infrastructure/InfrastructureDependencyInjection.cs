@@ -1,10 +1,4 @@
-﻿using BookWooks.OrderApi.Infrastructure.Common.Processing.InternalCommands;
-using BookWooks.OrderApi.Infrastructure.Options;
-using BookWooks.OrderApi.Infrastructure.Quartz;
-using BookWooks.OrderApi.UseCases.Orders.AiServices;
-using BookWooks.OrderApi.UseCases.Products;
-
-namespace BookWooks.OrderApi.Infrastructure;
+﻿namespace BookWooks.OrderApi.Infrastructure;
 public static class InfrastructureDependencyInjection
 {
   public static IServiceCollection AddInfrastructureServices(
@@ -16,10 +10,8 @@ public static class InfrastructureDependencyInjection
   {
         domainEventsMap ??= new BiDirectionalDictionary<string, Type>();
         internalCommandMap ??= new BiDirectionalDictionary<string, Type>();
-        
-        
-        RegisterMassTransit(services);
-        
+                
+        RegisterMassTransit(services);      
         RegisterSerializer(services);
         RegisterMessageBroker(services, configuration);
         RegisterDbContext(services, configuration);
@@ -35,34 +27,36 @@ public static class InfrastructureDependencyInjection
         RegisterRedisDistributedCache(services, configuration);
         RegisterEnvironmentSpecificDependencies(services, isDevelopment);
         RegisterAIOptions(services);
-        services.AddScoped<IOrderAiService<ProductDto>, OrderAiService>();
-        //services.AddHostedService<QuartzHostedService>();
-
-        services.AddQuartz(q =>
-        {
-            // MicrosoftDependencyInjectionJobFactory is now the default, so this line is no longer needed:
-            // q.UseMicrosoftDependencyInjectionJobFactory();
-
-            // Register jobs and triggers here
-            q.ScheduleJob<ProcessOutboxJob>(trigger => trigger
-                .WithSimpleSchedule(x => x.WithInterval(TimeSpan.FromSeconds(10)).RepeatForever())
-                .StartNow()
-            );
-            q.ScheduleJob<ProcessInternalCommandJob>(trigger => trigger
-                .WithSimpleSchedule(x => x.WithInterval(TimeSpan.FromSeconds(10)).RepeatForever())
-                .StartNow()
-            );
-        });
-    // Use the correct extension method for adding the Quartz hosted service
-
-    // With this corrected line:
-    services.AddQuartzHostedService(options =>
-    {
-      options.WaitForJobsToComplete = true; // Optional: Configure Quartz server options as needed
-    });
-
+        RegisterQuartz(services);
+        RegisterAIService(services);
+   
     return services;
     }
+
+  private static void RegisterAIService(IServiceCollection services)
+  {
+    services.AddScoped<IOrderAiService<ProductDto>, OrderAiService>();
+  }
+
+  private static void RegisterQuartz(IServiceCollection services)
+  {
+    services.AddQuartz(q =>
+    {
+      q.ScheduleJob<ProcessOutboxJob>(trigger => trigger
+          .WithSimpleSchedule(x => x.WithInterval(TimeSpan.FromSeconds(10)).RepeatForever())
+          .StartNow()
+      );
+      q.ScheduleJob<ProcessInternalCommandJob>(trigger => trigger
+          .WithSimpleSchedule(x => x.WithInterval(TimeSpan.FromSeconds(10)).RepeatForever())
+          .StartNow()
+      );
+    });
+
+    services.AddQuartzHostedService(options =>
+    {
+      options.WaitForJobsToComplete = true;
+    });
+  }
 
   private static void RegisterMassTransit(IServiceCollection services)
   {
@@ -112,45 +106,6 @@ public static class InfrastructureDependencyInjection
     services.AddDbContext<BookyWooksOrderDbContext>(options =>
         options.UseSqlServer(connectionString));
     services.AddScoped<DbContext, BookyWooksOrderDbContext>();
-
-    // Quick Note. The commented out code above can be used, however I prefer the below way as its more readable and clear.
-    //services.AddScoped<BookyWooksOrderDbContext>(provider =>
-    //{
-    //  var connectionString = configuration.GetConnectionString("OrderDatabase");
-
-    //  var optionsBuilder = new DbContextOptionsBuilder<BookyWooksOrderDbContext>();
-    //  optionsBuilder.UseSqlServer(connectionString);
-
-    //  var options = optionsBuilder.Options;
-    //  var dispatcher = provider.GetRequiredService<IDomainEventDispatcher>();
-    //  return new BookyWooksOrderDbContext(options, dispatcher);
-    //});
-
-
-    //services.AddDbContext<BookyWooksOrderDbContext>((provider, options) =>
-    //{
-    //  var configuration = provider.GetRequiredService<IConfiguration>();
-    //  var connectionString = configuration.GetConnectionString("OrderDatabase");
-
-    //  options.UseSqlServer(connectionString);
-    //});
-
-    // You don't need to manually resolve DbContextOptions<T>
-    //services.AddScoped<BookyWooksOrderDbContext>(provider =>
-    //{
-    //  var dispatcher = provider.GetService<IDomainEventDispatcher>();
-
-    //  if (dispatcher == null)
-    //  {
-    //    Console.WriteLine("Warning: IDomainEventDispatcher is not registered.");
-    //  }
-
-    //  return new BookyWooksOrderDbContext(
-    //      provider.GetRequiredService<DbContextOptions<BookyWooksOrderDbContext>>(),
-    //      dispatcher);
-    //});
-
-    services.AddScoped<IBookyWooksOrderDbContextFactory, BookyWooksOrderDbContextFactory>();
   }
   private static void RegisterOutboxContext(IServiceCollection services)
   {
@@ -227,8 +182,6 @@ public static class InfrastructureDependencyInjection
     services.AddScoped<IEmailSender, FakeEmailSender>();
     //services.AddScoped<IGetOrdersByStatusQueryService, FakeGetOrdersByStatusQueryService>();
     services.AddScoped<IGetOrdersByStatusQueryService, GetOrdersByStatusQueryService>();
-    // Uncomment and adapt if needed
-    // services.AddScoped<IListContributorsQueryService, FakeListContributorsQueryService>();
   }
 
     private static void RegisterProductionOnlyDependencies(IServiceCollection services)
@@ -282,13 +235,8 @@ public static class InfrastructureDependencyInjection
     RegisterDbContext(services, configuration);
     RegisterEfRepositories(services);
     RegisterSerializer(services);
-
     RegisterDistributedCacheService(services);
     RegisterRedisDistributedCache(services, configuration);
-
-
-
-    //builder.Services.AddScoped<IReadRepository<Product>, ReadRepositoryDecorator<Product>>();
     return services;
   }
 }

@@ -68,6 +68,4 @@ internal class SerilogLogProvider : ILogProvider
   {
     throw new NotImplementedException();
   }
-
-
 }

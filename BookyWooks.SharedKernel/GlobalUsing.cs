@@ -11,6 +11,7 @@ global using Microsoft.EntityFrameworkCore;
 global using System.Text;
 global using BookyWooks.SharedKernel.ResultPattern;
 global using FluentValidation;
+global using BookyWooks.SharedKernel.Messages;
 
 
 
