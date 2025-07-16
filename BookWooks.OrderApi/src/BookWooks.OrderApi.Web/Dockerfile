@@ -27,7 +27,7 @@ RUN dotnet build "./BookWooks.OrderApi.Web.csproj" -c $BUILD_CONFIGURATION -o /a
 
 # Integration Test Stage
 FROM build as integrationtest
-WORKDIR "/src/BookyWooks.OrderApi.IntegrationTests"
+WORKDIR "/src/BookWooks.OrderApi.TestContainersIntegrationTests"
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
