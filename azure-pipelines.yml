@@ -25,7 +25,9 @@ jobs:
     inputs:
       dockerComposeFile: "docker-compose-integration-tests.yml"
       dockerComposeCommand: "up --abort-on-container-exit" 
+      projectName: "bookywooks_onlinestore"
     env:
+      COMPOSE_PROJECT_NAME: 'bookywooks_onlinestore'
       CONTAINER_NAME: 'bookywooks_orderapi_integrationtests'  
 
   - task: DotNetCoreCLI@2
