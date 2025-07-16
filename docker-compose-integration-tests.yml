@@ -1,5 +1,3 @@
-version: '3.4'
-
 services:
   # Service for running integration tests
   bookywooks_orderapi_integrationtests:
