@@ -8,5 +8,5 @@ public class GetOrders : IEndpoint
     private static async Task<IResult> HandleAsync(IMediator mediator) =>(
                 await mediator.Send(new GetOrdersQuery(0, 0))).Match(
                 orders => Results.Ok(new GetOrdersResponse(orders.Select(order => new OrderRecord(Id: order.Id, Status: order.Status)))),
-                ordersNotFound => Results.NotFound(new OrdersNotFoundResponse("No orders were found", ordersNotFound)));    
+                ordersNotFound => ToHttpResult.Map(ordersNotFound));    
 }

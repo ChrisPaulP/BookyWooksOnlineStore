@@ -1,4 +1,4 @@
-﻿using BookWooks.OrderApi.Core.OrderAggregate.ValueObjects;
+﻿using OrderErrors = BookWooks.OrderApi.UseCases.Errors.OrderErrors;
 
 namespace BookWooks.OrderApi.UseCases.Orders.OrderFulfillment;
 public class OrderFulfillmentHandler : ICommandHandler<OrderFulfillmentCommand, SetOrderStatusResult>
@@ -14,7 +14,7 @@ public class OrderFulfillmentHandler : ICommandHandler<OrderFulfillmentCommand, 
 
     var findOrder = await _repository.FindAsync(new OrderByIdSpec(OrderId.From(request.OrderId)));
     return await findOrder
-        .ToEither(() => new OrderNotFound())
+        .ToEither<OrderErrors, Order>(() => new OrderNotFound())
         .Map(order => order.FulfillOrder())
         .SaveOrder(_repository.UpdateAsync, _repository, cancellationToken)
         .MapAsync(OrderMappingExtensions.ToOrderDTO);

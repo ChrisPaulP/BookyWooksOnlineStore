@@ -1,4 +1,6 @@
-﻿namespace BookWooks.OrderApi.UseCases.Orders.GetOrders;
+﻿using OrderErrors = BookWooks.OrderApi.UseCases.Errors.OrderErrors;
+
+namespace BookWooks.OrderApi.UseCases.Orders.GetOrders;
 
 public class GetOrdersHandler : IQueryHandler<GetOrdersQuery, OrdersResult>
 {
@@ -10,6 +12,6 @@ public class GetOrdersHandler : IQueryHandler<GetOrdersQuery, OrdersResult>
 
       (await _repository
             .ListAllAsync())
-            .ToEither(() => new OrderNotFound())
+            .ToEither<OrderErrors, Order>(() => new OrderNotFound())
             .Map(orders => orders.Select(OrderMappingExtensions.ToOrderDTO));
 }

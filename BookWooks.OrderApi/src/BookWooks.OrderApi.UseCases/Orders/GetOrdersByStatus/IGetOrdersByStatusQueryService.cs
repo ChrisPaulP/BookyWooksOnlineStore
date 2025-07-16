@@ -1,5 +1,7 @@
-﻿namespace BookWooks.OrderApi.UseCases.Orders.List;
+﻿using OrderErrors = BookWooks.OrderApi.UseCases.Errors.OrderErrors;
+
+namespace BookWooks.OrderApi.UseCases.Orders.List;
 public interface IGetOrdersByStatusQueryService
 {
-   Task<Either<OrderNotFound, IEnumerable<OrderWithItemsDTO>>> GetOrdersByStatusAsync(string status);
+   Task<Either<OrderErrors, IEnumerable<OrderWithItemsDTO>>> GetOrdersByStatusAsync(string status);
 }

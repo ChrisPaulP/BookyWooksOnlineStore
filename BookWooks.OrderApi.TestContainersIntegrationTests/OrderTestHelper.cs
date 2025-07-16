@@ -5,8 +5,8 @@ public static class OrderTestHelper
     public static async Task<(CustomerResult, ProductResult)> SetupCustomerAndProductAsync(
     Func<Customer, Task> addCustomer, Func<Product, Task> addProduct)
     {
-        var uniqueEmail = $"customer_{Guid.NewGuid()}@example.com";
-        var customerValidation = Customer.CreateCustomer("Customer Name", uniqueEmail);
+        var uniqueEmail = $"customer_{Guid.NewGuid()}@gmail.com";
+        var customerValidation = Customer.CreateCustomer(Guid.NewGuid(),"Customer Name", uniqueEmail);
         var productValidation = Product.CreateProduct(Guid.NewGuid(),"Book", "Book 1", 9.99M, 2);
 
         var customerResult = await customerValidation.MatchAsync(

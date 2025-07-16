@@ -1,5 +1,4 @@
-﻿namespace BookWooks.OrderApi.Core.OrderAggregate.Specifications;
-public class OrderByStatusSpec : BaseSpecification<Order>
+﻿public class OrderByStatusSpec : BaseSpecification<Order>
 {
   public OrderByStatusSpec(string status): base(x => x.Status.Label == status)
   {

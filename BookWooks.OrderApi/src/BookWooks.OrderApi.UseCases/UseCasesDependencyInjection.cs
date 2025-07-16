@@ -3,8 +3,8 @@ public static class UseCasesDependencyInjection
 {
   public static IServiceCollection AddUseCasesServices(this IServiceCollection services)
   {
-    var assembly = typeof(CreateOrderCommand).Assembly;
-    services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
+    //var assembly = typeof(CreateOrderCommand).Assembly;
+    //services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
 
     return services;
   }

@@ -20,7 +20,14 @@ public record Customer : EntityBase
     var customerIdValidation = CustomerId.TryFrom(customerId).ToValidationMonad(errors => new CustomerValidationErrors(ValidationMessages.CustomerId, errors));
     var nameValidation = CustomerName.TryFrom(name).ToValidationMonad(errors => new CustomerValidationErrors(ValidationMessages.CustomerName, errors));
     var emailValidation = EmailAddress.TryFrom(email).ToValidationMonad(errors => new CustomerValidationErrors(ValidationMessages.EmailAddressErrors, errors));
-
+    if (emailValidation.IsFail)
+    {
+      var customerValidationErrors = emailValidation.FailToList();
+      foreach (var error in customerValidationErrors)
+      {
+        Console.WriteLine(error); // Or use error.ToString() if you want the full object
+      }
+    }
     return (customerIdValidation, nameValidation, emailValidation).Apply((createdCustomerId, createdName, createdEmail) =>
     {
       return new Customer(createdCustomerId, createdName, createdEmail);

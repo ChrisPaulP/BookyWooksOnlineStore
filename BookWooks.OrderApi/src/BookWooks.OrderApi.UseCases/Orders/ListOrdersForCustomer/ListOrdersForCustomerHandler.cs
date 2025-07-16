@@ -1,4 +1,5 @@
-﻿namespace BookWooks.OrderApi.UseCases.Orders.ListOrdersForCustomer;
+﻿using OrderErrors = BookWooks.OrderApi.UseCases.Errors.OrderErrors;
+namespace BookWooks.OrderApi.UseCases.Orders.ListOrdersForCustomer;
 public class ListOrdersForCustomerHandler : IQueryHandler<ListOrdersForCustomerQuery, OrdersResult>
 {
   private readonly IReadRepository<Order> _readRepository;
@@ -9,6 +10,6 @@ public class ListOrdersForCustomerHandler : IQueryHandler<ListOrdersForCustomerQ
     public async Task<OrdersResult> Handle(ListOrdersForCustomerQuery request, CancellationToken cancellationToken) =>
          
     (await _readRepository.FindAllAsync(new OrderByCustomerIdSpec(CustomerId.From(request.CustomerId))))
-                          .ToEither(() => new OrderNotFound())
+                          .ToEither<OrderErrors, Order>(() => new OrderNotFound())
                           .Map(orders => orders.Map(OrderMappingExtensions.ToOrderDTO));
 }

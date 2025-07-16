@@ -12,6 +12,7 @@ global using System.Text;
 global using BookyWooks.SharedKernel.ResultPattern;
 global using FluentValidation;
 global using BookyWooks.SharedKernel.Messages;
+global using BookyWooks.SharedKernel.UnitOfWork;
 
 
 

@@ -4,5 +4,9 @@
 indent_style = space
 
 # Xml files
+
+# IDE0022: Use block body for method
+csharp_style_expression_bodied_methods = false
+
 [*.xml]
 indent_size = 2

@@ -7,7 +7,7 @@ public static class Extensions
       => validation.IsSuccess switch
       {
         true => validation.ValueObject,
-        false => onError(validation.Error.Data?.Values.OfType<BusinessRuleError>().ToList() ?? [])
+        false => onError(validation.Error.Data?.Keys.OfType<BusinessRuleError>().ToList() ?? [])
       };
 
   public static Either<TError, T> ToEither<TError, T>(

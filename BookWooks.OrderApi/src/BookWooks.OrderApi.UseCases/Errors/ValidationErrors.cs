@@ -1,6 +1,9 @@
-﻿namespace BookWooks.OrderApi.UseCases.Errors;
+﻿using OneOf;
+using static BookWooks.OrderApi.UseCases.Errors.DatabaseErrors;
 
-public record ValidationErrors(IReadOnlyDictionary<ErrorType, IReadOnlyList<ValidationError>> Errors);
+namespace BookWooks.OrderApi.UseCases.Errors;
+
+public record ValidationErrors(IReadOnlyDictionary<ErrorType, IReadOnlyList<ValidationError>> Errors) : IError;
 public enum ErrorType
 {
   Customer,

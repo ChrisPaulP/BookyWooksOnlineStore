@@ -1,5 +1,5 @@
 ﻿namespace BookWooks.OrderApi.Core.OrderAggregate.Entities;
-public record Product : EntityBase
+public record Product : EntityBase, IAggregateRoot
 {
   public ProductId ProductId { get; set; }
   public ProductName Name { get; private set; }

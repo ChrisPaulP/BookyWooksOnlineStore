@@ -13,5 +13,5 @@ public class GetOrderByStatus : IEndpoint
         await mediator.Send(new GetOrdersByStatusQuery(null, null, request.Status), ct))
         .Match(
          orders => Results.Ok(new GetOrderByStatusResponse(orders.Select(o => new OrderWithItemsRecord(o.Id,o.Status,o.OrderItems?.ToOrderItemRecord() ?? [])).ToList())),
-         ordersNotFound => Results.NotFound(new OrdersNotFoundResponse("Order was not found", ordersNotFound)));   
+         orderNotFound => ToHttpResult.Map(orderNotFound));   
 }

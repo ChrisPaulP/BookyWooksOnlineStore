@@ -1,12 +1,10 @@
-﻿namespace BookWooks.OrderApi.Infrastructure;
+﻿using BookWooks.OrderApi.Infrastructure.Common.Behaviour;
+using BookWooks.OrderApi.UseCases.Create;
+
+namespace BookWooks.OrderApi.Infrastructure;
 public static class InfrastructureDependencyInjection
 {
-  public static IServiceCollection AddInfrastructureServices(
-      this IServiceCollection services,
-      IConfiguration configuration,
-      bool isDevelopment,
-      BiDirectionalDictionary<string, Type>? domainEventsMap = null,
-      BiDirectionalDictionary<string, Type>? internalCommandMap = null)
+  public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,IConfiguration configuration,bool isDevelopment,BiDirectionalDictionary<string, Type>? domainEventsMap = null,BiDirectionalDictionary<string, Type>? internalCommandMap = null)
   {
         domainEventsMap ??= new BiDirectionalDictionary<string, Type>();
         internalCommandMap ??= new BiDirectionalDictionary<string, Type>();
@@ -144,8 +142,13 @@ public static class InfrastructureDependencyInjection
     services.AddScoped<IMediator, Mediator>();
     services.AddScoped<IDomainEventDispatcher, MediatRDomainEventDispatcher<Guid>>();
     services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-    var assembly = typeof(ProcessInternalCommand).Assembly;
-    services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
+    services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ErrorHandlingBehavior<,>));
+    var assemblies = new[]
+   {
+        typeof(ProcessInternalCommand).Assembly,
+        typeof(CreateOrderCommand).Assembly
+    };
+    services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
   }
 
   private static void RegisterRedisDistributedCache(IServiceCollection services, IConfiguration configuration)
@@ -227,10 +230,7 @@ public static class InfrastructureDependencyInjection
             throw new ApplicationException($"Internal Commands {string.Join(",", notMappedInternalCommands.Select(x => x.FullName))} not mapped");
         }
     }
-  public static IServiceCollection AddInfrastructureServicesForMCPServer(
-    this IServiceCollection services,
-    IConfiguration configuration,
-    bool isDevelopment)
+  public static IServiceCollection AddInfrastructureServicesForMCPServer(this IServiceCollection services,IConfiguration configuration,bool isDevelopment)
   {
     RegisterDbContext(services, configuration);
     RegisterEfRepositories(services);

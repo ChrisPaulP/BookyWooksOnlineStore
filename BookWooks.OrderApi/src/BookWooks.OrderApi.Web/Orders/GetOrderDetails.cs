@@ -1,4 +1,6 @@
-﻿namespace BookWooks.OrderApi.Web.Orders;
+﻿using BookyWooks.SharedKernel.Validation;
+
+namespace BookWooks.OrderApi.Web.Orders;
 
 public class GetOrderDetails : IEndpoint
 {
@@ -11,5 +13,5 @@ public class GetOrderDetails : IEndpoint
              await mediator.Send(new GetOrderDetailsQuery(request.OrderId)))
             .Match(
              order => Results.Ok(new GetOrderDetailsResponse(order.Id,order.Status,new List<OrderItemRecord>())),
-             orderNotFound => Results.NotFound(new OrdersNotFoundResponse("No orders were found", orderNotFound)));  
+             orderError => ToHttpResult.Map(orderError));
 }

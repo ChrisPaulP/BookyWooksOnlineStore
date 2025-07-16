@@ -18,6 +18,7 @@ global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.EntityFrameworkCore.Design;
+global using Microsoft.Data.SqlClient;
 
 // Third-party libraries
 global using MassTransit;
@@ -44,6 +45,7 @@ global using BookyWooks.SharedKernel.DomainEventMapper;
 global using BookyWooks.SharedKernel.Repositories;
 global using BookyWooks.SharedKernel.UnitOfWork;
 global using BookyWooks.SharedKernel.Specification;
+global using BookyWooks.SharedKernel.Validation;
 
 // Project: BookyWooks.Messaging
 global using BookyWooks.Messaging.MassTransit;
@@ -66,6 +68,7 @@ global using BookWooks.OrderApi.UseCases.Orders.List;
 global using BookWooks.OrderApi.UseCases.Orders.AiServices;
 global using BookWooks.OrderApi.UseCases.Products;
 global using BookWooks.OrderApi.UseCases.InternalCommands;
+global using BookWooks.OrderApi.UseCases.Errors;
 
 // Project: BookWooks.OrderApi.Infrastructure
 global using BookWooks.OrderApi.Infrastructure.Data.Repositories.Abstract;
@@ -89,5 +92,6 @@ global using ModelContextProtocol.Protocol;
 // Aliases
 global using JsonSerializer = System.Text.Json.JsonSerializer;
 global using bookwooks.orderapi.infrastructure.caching;
+
 
 

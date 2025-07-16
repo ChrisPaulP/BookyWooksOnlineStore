@@ -1,4 +1,6 @@
-﻿namespace BookWooks.OrderApi.UseCases.Contributors.Create;
+﻿using OrderErrors = BookWooks.OrderApi.UseCases.Errors.OrderErrors;
+
+namespace BookWooks.OrderApi.UseCases.Contributors.Create;
 public class CancelOrderHandler : ICommandHandler<CancelOrderCommand, CancelOrderResult>
 {
   private readonly IRepository<Order> _repository;
@@ -12,7 +14,7 @@ public class CancelOrderHandler : ICommandHandler<CancelOrderCommand, CancelOrde
       var findOrder = await _repository.GetByIdAsync(request.Id);
     
       return await findOrder
-          .ToEither(() => new OrderNotFound())
+          .ToEither<OrderErrors, Order>(() => new OrderNotFound())
           .Map(order => order.CancelOrder())
           .SaveOrder(_repository.UpdateAsync, _repository, cancellationToken)
           .MapAsync(OrderMappingExtensions.ToOrderCancelledDTO);
