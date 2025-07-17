@@ -14,7 +14,7 @@ variables:
      !**/*IntegrationTests*.csproj
      !**/BookWooks.OrderApi.FunctionalTests.csproj
      !**/BookyWooks.OrderApi.IntegrationTests.csproj
-     **/*TestContainersIntegrationTests*.csproj
+     !**/*TestContainersIntegrationTests*.csproj
   # system.debug: 'true' # Enable debug logging
 
 jobs:
@@ -22,15 +22,15 @@ jobs:
   displayName: Build and Test
 
   steps:
-  # - task: DockerCompose@0
-  #   displayName: "Run a Docker Compose command"
-  #   inputs:
-  #     dockerComposeFile: "docker-compose-integration-tests.yml"
-  #     dockerComposeCommand: "up --abort-on-container-exit" 
-  #     projectName: "bookywooks_onlinestore"
-  #   env:
-  #     COMPOSE_PROJECT_NAME: 'bookywooks_onlinestore'
-  #     CONTAINER_NAME: 'bookywooks_orderapi_integrationtests'  
+  - task: DockerCompose@0
+    displayName: "Run a Docker Compose command"
+    inputs:
+      dockerComposeFile: "docker-compose-integration-tests.yml"
+      dockerComposeCommand: "up --abort-on-container-exit" 
+      projectName: "bookywooks_onlinestore"
+    env:
+      COMPOSE_PROJECT_NAME: 'bookywooks_onlinestore'
+      CONTAINER_NAME: 'bookywooks_orderapi_integrationtests'  
 
   - task: DotNetCoreCLI@2
     displayName: Restore Nuget Packages 
