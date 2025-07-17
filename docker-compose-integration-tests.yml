@@ -1,7 +1,6 @@
 services:
   # Service for running integration tests
   bookywooks_orderapi_integrationtests:
-    image: ${DOCKER_REGISTRY-}bookywooksorderapiintegrationtests
     build:
       context: .
       dockerfile: BookWooks.OrderApi/src/BookWooks.OrderApi.Web/Dockerfile
