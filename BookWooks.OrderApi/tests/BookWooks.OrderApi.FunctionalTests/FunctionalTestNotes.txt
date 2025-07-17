@@ -1,2 +1,0 @@
-﻿Functional tests ensure that each function works correctly.
-Eg Ensuring DeleteOrder and correct http response message is sent.
