@@ -12,6 +12,8 @@ variables:
      # !**/*IntegrationTests*.csproj
      !**/*FunctionalTests*.csproj
      !**/*IntegrationTests*.csproj
+     !**/BookWooks.OrderApi.FunctionalTests.csproj
+     !**/BookyWooks.OrderApi.IntegrationTests.csproj
      **/*TestContainersIntegrationTests*.csproj
   # system.debug: 'true' # Enable debug logging
 
