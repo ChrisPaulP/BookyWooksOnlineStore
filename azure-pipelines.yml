@@ -49,12 +49,12 @@ jobs:
   - script: docker --version
     displayName: 'Print Docker Version'
 
-  # - task: DotNetCoreCLI@2
-  #   displayName: Run Tests
-  #   inputs:
-  #     command: test
-  #     projects: $(BuildParameters.TestProjects) 
-  #     arguments: --configuration $(buildConfiguration) --no-build
+  - task: DotNetCoreCLI@2
+    displayName: Run Tests
+    inputs:
+      command: test
+      projects: $(BuildParameters.TestProjects) 
+      arguments: --configuration $(buildConfiguration) --no-build
 
   - task: DotNetCoreCLI@2
     displayName: Publish
