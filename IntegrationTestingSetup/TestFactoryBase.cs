@@ -38,7 +38,7 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
     {
         builder.ConfigureAppConfiguration(configurationBuilder =>
         {
-            Configuration = new ConfigurationBuilder().AddJsonFile("testcontainersappsettings.json")
+            Configuration = new ConfigurationBuilder().AddJsonFile("testcontainersappsettings.json", optional: true)
                 .AddInMemoryCollection(new Dictionary<string, string>
                 {
                     ["ConnectionStrings:DefaultConnection"] = _mssqlContainer.GetConnectionString(),
