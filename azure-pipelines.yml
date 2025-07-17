@@ -12,7 +12,7 @@ variables:
      # !**/*IntegrationTests*.csproj
      !**/*FunctionalTests*.csproj
      !**/*IntegrationTests*.csproj
-     **/*TestContainersIntegrationTests*.csproj
+    #  **/*TestContainersIntegrationTests*.csproj
   # system.debug: 'true' # Enable debug logging
 
 jobs:
