@@ -20,8 +20,15 @@ jobs:
   displayName: Build and Test with Testcontainers
 
   steps:
-    - task: DockerCompose@0
-      displayName: "Run a Docker Compose command"
+    # ✅ Start Docker (Ubuntu hosted agent)
+    - script: |
+        sudo service docker start
+        docker --version
+      displayName: Start Docker
+
+    # ✅ Run Integration Tests in Docker Compose (Testcontainers: SQL + RabbitMQ)
+    - task: DockerCompose@1
+      displayName: Run Integration Tests (Testcontainers)
       inputs:
         dockerComposeFile: "docker-compose-integration-tests.yml"
         dockerComposeCommand: "up --abort-on-container-exit"
@@ -30,13 +37,16 @@ jobs:
         COMPOSE_PROJECT_NAME: 'bookywooks_onlinestore'
         CONTAINER_NAME: 'bookywooks_orderapi_integrationtests'
 
-    # ✅ Ensure Docker is available and running
-    - script: |
-        sudo service docker start
-        docker --version
-      displayName: Start Docker
+    # ✅ Publish TRX Test Results from Mounted Volume
+    - task: PublishTestResults@2
+      displayName: Publish Integration Test Results
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFormat: VSTest
+        testResultsFiles: '**/tests-results/booky-wooks-integration-test-results.xml'
+        mergeTestResults: true
 
-    # ✅ Restore NuGet Packages
+    # ✅ Restore NuGet Packages for Remaining Projects
     - task: DotNetCoreCLI@2
       displayName: Restore NuGet Packages
       inputs:
@@ -44,17 +54,17 @@ jobs:
         projects: $(BuildParameters.RestoreBuildProjects)
         configuration: $(buildConfiguration)
 
-    # ✅ Build the Solution
+    # ✅ Build the Solution (excludes integration tests)
     - task: DotNetCoreCLI@2
-      displayName: 'Build Solution'
+      displayName: Build Solution
       inputs:
-        command: 'build'
+        command: build
         projects: '**/BookyWooks.sln'
         arguments: '--configuration $(buildConfiguration)'
 
-    # ✅ Run Tests (Testcontainers will start SQL, RabbitMQ, Redis automatically)
+    # ✅ Run Unit Tests (excludes integration tests)
     - task: DotNetCoreCLI@2
-      displayName: Run Integration & Unit Tests
+      displayName: Run Unit Tests
       inputs:
         command: test
         projects: $(BuildParameters.TestProjects)
@@ -64,7 +74,7 @@ jobs:
         TESTCONTAINERS_HOST_OVERRIDE: 'localhost'
         DOCKER_HOST: 'unix:///var/run/docker.sock'
 
-    # ✅ Publish the App (optional for CI/CD)
+    # ✅ Publish App Artifacts (Optional)
     - task: DotNetCoreCLI@2
       displayName: Publish App
       inputs:
@@ -74,7 +84,7 @@ jobs:
         arguments: --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)
         zipAfterPublish: true
 
-    # ✅ Publish Build Artifacts
+    # ✅ Publish Build Artifacts (Optional)
     - task: PublishBuildArtifacts@1
       displayName: Publish Artifact
       condition: succeededOrFailed()
