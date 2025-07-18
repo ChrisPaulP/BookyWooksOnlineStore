@@ -59,7 +59,7 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
                         ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname,
                         ["RabbitMQConfiguration:Config:UserName"] = RabbitMqUsername,
                         ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword,
-                        ["ConnectionStrings:Redis"] = _redisContainer.GetConnectionString()
+                        ["ConnectionStrings:Redis"] = $"{_redisContainer.Hostname}:{_redisContainer.GetMappedPublicPort(6379)}"
                     })
                     .AddEnvironmentVariables()
                     .Build();
