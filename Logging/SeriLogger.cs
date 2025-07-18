@@ -17,8 +17,11 @@ public static class SeriLogger
                 .Enrich.FromLogContext()
                 .Enrich.WithMachineName()
                 .WriteTo.Debug()
-                .WriteTo.Console()
-                .WriteTo.Elasticsearch(
+                .WriteTo.Console();
+
+            if (!string.IsNullOrWhiteSpace(elasticUri))
+            {
+                configuration.WriteTo.Elasticsearch(
                     new ElasticsearchSinkOptions(new Uri(elasticUri))
                     {
                         IndexFormat = $"bookywooks-applogs-{context.HostingEnvironment.ApplicationName?.ToLowerInvariant().Replace(".", "-")}" +
@@ -27,7 +30,10 @@ public static class SeriLogger
                         AutoRegisterTemplate = true,
                         NumberOfShards = 2,
                         NumberOfReplicas = 1
-                    })
+                    });
+            }
+
+            configuration
                 .Enrich.WithProperty("Application", context.HostingEnvironment.ApplicationName)
                 .Enrich.WithProperty("ContentRootPath", context.HostingEnvironment.ContentRootPath)
                 .Enrich.WithEnvironmentName()
