@@ -19,8 +19,11 @@ builder.Services.AddInfrastructureServices(builder.Configuration, builder.Enviro
 builder.Services.AddUseCasesServices();
 builder.Services.AddCoreServices();
 
-builder.Services.AddOpenTelemetryTracing(builder.Configuration);
-builder.Services.AddOpenTelemetryMetrics(builder.Configuration);
+if (!builder.Environment.IsEnvironment("Test"))
+{
+  builder.Services.AddOpenTelemetryTracing(builder.Configuration);
+  builder.Services.AddOpenTelemetryMetrics(builder.Configuration);
+}
 RegisterEndpointsFromAssemblyContaining<IEndpoint>(builder.Services);
 builder.Services.AddEndpointsApiExplorer();
 AddSwagger();
