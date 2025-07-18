@@ -38,15 +38,27 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
     {
         builder.ConfigureAppConfiguration(configurationBuilder =>
         {
-            Configuration = new ConfigurationBuilder().AddJsonFile("testcontainersappsettings.json", optional: true)
-                .AddInMemoryCollection(new Dictionary<string, string>
-                {
-                    ["ConnectionStrings:DefaultConnection"] = _mssqlContainer.GetConnectionString(),
-                    ["ConnectionStrings:SagaOrchestrationDatabase"] = _mssqlContainer.GetConnectionString(),
-                    ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname
-                })
-                .AddEnvironmentVariables()
-                .Build();
+            //Configuration = new ConfigurationBuilder().AddJsonFile("testcontainersappsettings.json", optional: true)
+            //    .AddInMemoryCollection(new Dictionary<string, string>
+            //    {
+            //        ["ConnectionStrings:DefaultConnection"] = _mssqlContainer.GetConnectionString(),
+            //        ["ConnectionStrings:SagaOrchestrationDatabase"] = _mssqlContainer.GetConnectionString(),
+            //        ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname
+            //    })
+            //    .AddEnvironmentVariables()
+            //    .Build();
+
+            Configuration = new ConfigurationBuilder()
+                    .AddInMemoryCollection(new Dictionary<string, string>
+                    {
+                        ["ConnectionStrings:DefaultConnection"] = _mssqlContainer.GetConnectionString(),
+                        ["ConnectionStrings:SagaOrchestrationDatabase"] = _mssqlContainer.GetConnectionString(),
+                        ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname,
+                        ["RabbitMQConfiguration:Config:UserName"] = RabbitMqUsername,
+                        ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword
+                    })
+                    .AddEnvironmentVariables()
+                    .Build();
 
             configurationBuilder.AddConfiguration(Configuration);
         });
