@@ -1,73 +1,72 @@
 trigger:
-  - master
+- master
 
 pool:
   vmImage: ubuntu-latest
 
 variables:
   buildConfiguration: 'Release'
+  BuildParameters.RestoreBuildProjects: '**/*.csproj'
+  BuildParameters.TestProjects: |
+    $(BuildParameters.RestoreBuildProjects)
+    !**/*FunctionalTests*.csproj
+    !**/*IntegrationTests*.csproj
+    !**/BookWooks.OrderApi.FunctionalTests.csproj
+    !**/BookyWooks.OrderApi.IntegrationTests.csproj
 
 jobs:
 - job: BuildAndTest
-  displayName: Build and Run Tests with Testcontainers
+  displayName: Build and Test with Testcontainers
 
   steps:
-  # 1. Install .NET SDK
-  - task: UseDotNet@2
-    inputs:
-      packageType: sdk
-      version: 8.0.x
+    # ✅ Ensure Docker is available and running
+    - script: |
+        sudo service docker start
+        docker --version
+      displayName: Start Docker
 
-  # 2. Restore NuGet packages
-  - task: DotNetCoreCLI@2
-    displayName: Restore Nuget Packages 
-    inputs:
-      command: restore
-      projects: '**/*.csproj'
+    # ✅ Restore NuGet Packages
+    - task: DotNetCoreCLI@2
+      displayName: Restore NuGet Packages
+      inputs:
+        command: restore
+        projects: $(BuildParameters.RestoreBuildProjects)
+        configuration: $(buildConfiguration)
 
-  # 3. Build solution
-  - task: DotNetCoreCLI@2
-    displayName: Build Solution
-    inputs:
-      command: build
-      projects: '**/BookyWooks.sln'
-      arguments: '--configuration $(buildConfiguration)'
+    # ✅ Build the Solution
+    - task: DotNetCoreCLI@2
+      displayName: 'Build Solution'
+      inputs:
+        command: 'build'
+        projects: '**/BookyWooks.sln'
+        arguments: '--configuration $(buildConfiguration)'
 
-  # 4. Check Docker is available (Testcontainers needs Docker)
-  - script: docker --version
-    displayName: Check Docker Availability
+    # ✅ Run Tests (Testcontainers will start SQL, RabbitMQ, Redis automatically)
+    - task: DotNetCoreCLI@2
+      displayName: Run Integration & Unit Tests
+      inputs:
+        command: test
+        projects: $(BuildParameters.TestProjects)
+        arguments: --configuration $(buildConfiguration) --no-build --logger trx
+      env:
+        # ✅ Testcontainers settings to ensure proper networking in CI
+        TESTCONTAINERS_HOST_OVERRIDE: 'localhost'
+        DOCKER_HOST: 'unix:///var/run/docker.sock'
 
-  # 5. Run all tests (unit + integration)
-  - task: DotNetCoreCLI@2
-    displayName: Run All Tests (Including Testcontainers Integration Tests)
-    inputs:
-      command: test
-      projects: |
-        **/*UnitTests*.csproj
-        **/*IntegrationTests*.csproj
-        **/*TestContainersIntegrationTests*.csproj
-      arguments: --configuration $(buildConfiguration) --no-build --logger trx
+    # ✅ Publish the App (optional for CI/CD)
+    - task: DotNetCoreCLI@2
+      displayName: Publish App
+      inputs:
+        command: publish
+        publishWebProjects: false
+        projects: $(BuildParameters.RestoreBuildProjects)
+        arguments: --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)
+        zipAfterPublish: true
 
-  # 6. Publish test results to DevOps
-  - task: PublishTestResults@2
-    condition: succeededOrFailed()
-    inputs:
-      testResultsFormat: VSTest
-      testResultsFiles: '**/*.trx'
-      failTaskOnFailedTests: true
-
-  # 7. Publish build artifacts (optional)
-  - task: DotNetCoreCLI@2
-    displayName: Publish App (Optional)
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: '**/BookyWooks.sln'
-      arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-      zipAfterPublish: true
-
-  - task: PublishBuildArtifacts@1
-    displayName: Publish Artifact
-    condition: succeededOrFailed()
-    inputs:
-      PathtoPublish: $(Build.ArtifactStagingDirectory)
+    # ✅ Publish Build Artifacts
+    - task: PublishBuildArtifacts@1
+      displayName: Publish Artifact
+      condition: succeededOrFailed()
+      inputs:
+        PathtoPublish: $(Build.ArtifactStagingDirectory)
+        TargetPath: '\\my\share\$(Build.DefinitionName)\$(Build.BuildNumber)'
