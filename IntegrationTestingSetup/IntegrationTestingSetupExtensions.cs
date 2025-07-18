@@ -52,11 +52,11 @@ public static class IntegrationTestingSetupExtensions
              .Build();
     }
 
-    public static async Task StartContainersAsync(this MsSqlContainer msSqlContainer, RabbitMqContainer rabbitMqContainer, RedisContainer redisContainer)
+    public static async Task StartContainersAsync(this MsSqlContainer msSqlContainer, RabbitMqContainer rabbitMqContainer) //, RedisContainer redisContainer)
         {
             await msSqlContainer.StartAsync();
             await rabbitMqContainer.StartAsync();
-            await redisContainer.StartAsync();
+            //await redisContainer.StartAsync();
     }
     }
 
