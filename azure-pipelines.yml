@@ -51,6 +51,7 @@ jobs:
         arguments: --configuration $(buildConfiguration) --no-build --logger trx
       env:
         # ✅ Testcontainers settings to ensure proper networking in CI
+        ASPNETCORE_ENVIRONMENT: Test
         TESTCONTAINERS_HOST_OVERRIDE: 'localhost'
         DOCKER_HOST: 'unix:///var/run/docker.sock'
 
