@@ -13,6 +13,7 @@ variables:
     !**/*IntegrationTests*.csproj
     !**/BookWooks.OrderApi.FunctionalTests.csproj
     !**/BookyWooks.OrderApi.IntegrationTests.csproj
+    **/BookWooks.OrderApi.TestContainersIntegrationTests.csproj
 
 jobs:
 - job: BuildAndTest
