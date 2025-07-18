@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Testcontainers.MsSql;
 using Testcontainers.RabbitMq;
+using Testcontainers.Redis;
 
 namespace IntegrationTestingSetup;
 
@@ -19,6 +20,7 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
 {
     protected readonly MsSqlContainer _mssqlContainer;
     private readonly RabbitMqContainer _rabbitMqContainer;
+    private readonly RedisContainer _redisContainer;  
     private const string RabbitMqUsername = "guest";
     private const string RabbitMqPassword = "guest";
     protected IConfiguration Configuration { get; private set; }
@@ -27,11 +29,12 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
     {
         _mssqlContainer = IntegrationTestingSetupExtensions.CreateMsSqlContainer();
         _rabbitMqContainer = IntegrationTestingSetupExtensions.CreateRabbitMqContainer();
+        _redisContainer = IntegrationTestingSetupExtensions.CreateRedisContainer();
     }
 
     public async Task InitializeAsync()
     {
-        await IntegrationTestingSetupExtensions.StartContainersAsync(_mssqlContainer, _rabbitMqContainer);
+        await IntegrationTestingSetupExtensions.StartContainersAsync(_mssqlContainer, _rabbitMqContainer, _redisContainer);
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -55,7 +58,8 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
                         ["ConnectionStrings:SagaOrchestrationDatabase"] = _mssqlContainer.GetConnectionString(),
                         ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname,
                         ["RabbitMQConfiguration:Config:UserName"] = RabbitMqUsername,
-                        ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword
+                        ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword,
+                        ["ConnectionStrings:Redis"] = _redisContainer.GetConnectionString()
                     })
                     .AddEnvironmentVariables()
                     .Build();
@@ -96,6 +100,7 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
     {
         await _mssqlContainer.DisposeAsync();
         await _rabbitMqContainer.DisposeAsync();
+        await _redisContainer.DisposeAsync();
     }
 }
 

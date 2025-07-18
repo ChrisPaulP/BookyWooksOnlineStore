@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Testcontainers.MsSql;
 using Testcontainers.RabbitMq;
+using Testcontainers.Redis;
 
 namespace IntegrationTestingSetup;
 
@@ -43,11 +44,19 @@ public static class IntegrationTestingSetupExtensions
                     .UntilPortIsAvailable(15672))
                 .Build();
         }
+        public static RedisContainer CreateRedisContainer()
+        {
+            return new RedisBuilder()
+             .WithImage("redis:7-alpine")
+             .WithCleanUp(true)
+             .Build();
+    }
 
-        public static async Task StartContainersAsync(this MsSqlContainer msSqlContainer, RabbitMqContainer rabbitMqContainer)
+    public static async Task StartContainersAsync(this MsSqlContainer msSqlContainer, RabbitMqContainer rabbitMqContainer, RedisContainer redisContainer)
         {
             await msSqlContainer.StartAsync();
             await rabbitMqContainer.StartAsync();
-        }
+            await redisContainer.StartAsync();
+    }
     }
 
