@@ -13,13 +13,23 @@ variables:
     !**/*IntegrationTests*.csproj
     !**/BookWooks.OrderApi.FunctionalTests.csproj
     !**/BookyWooks.OrderApi.IntegrationTests.csproj
-    **/BookWooks.OrderApi.TestContainersIntegrationTests.csproj
+    !**/BookWooks.OrderApi.TestContainersIntegrationTests.csproj
 
 jobs:
 - job: BuildAndTest
   displayName: Build and Test with Testcontainers
 
   steps:
+    - task: DockerCompose@0
+      displayName: "Run a Docker Compose command"
+      inputs:
+        dockerComposeFile: "docker-compose-integration-tests.yml"
+        dockerComposeCommand: "up --abort-on-container-exit"
+        projectName: "bookywooks_onlinestore"
+      env:
+        COMPOSE_PROJECT_NAME: 'bookywooks_onlinestore'
+        CONTAINER_NAME: 'bookywooks_orderapi_integrationtests'
+
     # ✅ Ensure Docker is available and running
     - script: |
         sudo service docker start
@@ -50,7 +60,6 @@ jobs:
         projects: $(BuildParameters.TestProjects)
         arguments: --configuration $(buildConfiguration) --no-build --logger trx
       env:
-        # ✅ Testcontainers settings to ensure proper networking in CI
         ASPNETCORE_ENVIRONMENT: Test
         TESTCONTAINERS_HOST_OVERRIDE: 'localhost'
         DOCKER_HOST: 'unix:///var/run/docker.sock'
