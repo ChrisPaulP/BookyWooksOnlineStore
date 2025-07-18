@@ -52,6 +52,7 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
             //    .Build();
 
             Configuration = new ConfigurationBuilder()
+                    .AddEnvironmentVariables()
                     .AddInMemoryCollection(new Dictionary<string, string>
                     {
                         ["ConnectionStrings:DefaultConnection"] = _mssqlContainer.GetConnectionString(),
@@ -61,7 +62,7 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
                         ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword,
                         ["ConnectionStrings:Redis"] = $"{_redisContainer.Hostname}:{_redisContainer.GetMappedPublicPort(6379)}"
                     })
-                    .AddEnvironmentVariables()
+                    //.AddEnvironmentVariables()
                     .Build();
 
             configurationBuilder.AddConfiguration(Configuration);
