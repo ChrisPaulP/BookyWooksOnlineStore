@@ -154,12 +154,13 @@ public static class InfrastructureDependencyInjection
   private static void RegisterRedisDistributedCache(IServiceCollection services, IConfiguration configuration)
   {
         var redisConnectionString = configuration.GetValue<string>("ConnectionStrings:Redis");
-        var redisConfiguration = new RedisCacheOptions
+    var redis = "localhost:6379"; // Default Redis connection string, can be overridden by configuration
+    var redisConfiguration = new RedisCacheOptions
         {
             ConfigurationOptions = new StackExchange.Redis.ConfigurationOptions
             {
                 AbortOnConnectFail = true,
-                EndPoints = { redisConnectionString ?? throw new ArgumentNullException(nameof(redisConnectionString)) }
+                EndPoints = { redis ?? throw new ArgumentNullException(nameof(redisConnectionString)) }
             }
         };
     services.AddSingleton(redisConfiguration);
