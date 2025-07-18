@@ -2,8 +2,11 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,6 +54,8 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
             //    .AddEnvironmentVariables()
             //    .Build();
 
+            var redisConn = $"{_redisContainer.Hostname}:{_redisContainer.GetMappedPublicPort(6379)}";
+            Console.WriteLine($"[DEBUG] Redis Testcontainers connection string: {redisConn}");
             Configuration = new ConfigurationBuilder()
                     .AddEnvironmentVariables()
                     .AddInMemoryCollection(new Dictionary<string, string>
@@ -60,7 +65,7 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
                         ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname,
                         ["RabbitMQConfiguration:Config:UserName"] = RabbitMqUsername,
                         ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword,
-                        ["ConnectionStrings:Redis"] = $"{_redisContainer.Hostname}:{_redisContainer.GetMappedPublicPort(6379)}"
+                        ["ConnectionStrings:Redis"] = redisConn
                     })
                     //.AddEnvironmentVariables()
                     .Build();
@@ -70,6 +75,7 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
 
         builder.ConfigureTestServices(services =>
         {
+            OverrideRedis(services, Configuration);
             services.AddMassTransitTestHarness(busRegistrationConfigurator =>
             {
                 ConfigureMassTransit(busRegistrationConfigurator);
@@ -88,7 +94,40 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
             //ConfigureProjectSpecificServices(services);
         });
     }
+    private static void OverrideRedis(IServiceCollection services, IConfiguration configuration)
+    {
+        // Remove existing Redis registrations (from Startup)
+        var descriptors = services
+            .Where(s => s.ServiceType == typeof(IDistributedCache) || s.ServiceType == typeof(RedisCacheOptions))
+            .ToList();
 
+        foreach (var descriptor in descriptors)
+        {
+            services.Remove(descriptor);
+        }
+
+        // Re-register using Testcontainers connection string
+        var redisConnectionString = configuration.GetValue<string>("ConnectionStrings:Redis")
+            ?? throw new ArgumentNullException("Redis connection string not configured");
+
+        Console.WriteLine($"[DEBUG] Overriding Redis with: {redisConnectionString}");
+
+        var redisConfiguration = new RedisCacheOptions
+        {
+            ConfigurationOptions = new ConfigurationOptions
+            {
+                AbortOnConnectFail = true,
+                EndPoints = { redisConnectionString }
+            }
+        };
+
+        services.AddSingleton(redisConfiguration);
+        services.AddSingleton<IDistributedCache>(sp =>
+        {
+            var options = sp.GetRequiredService<RedisCacheOptions>();
+            return new RedisCache(options);
+        });
+    }
     //protected abstract void ConfigureProjectSpecificServices(IServiceCollection services);
     protected abstract void ConfigureMassTransit(IBusRegistrationConfigurator busRegistrationConfigurator);
     protected virtual void ConfigureEndpoints(IBusRegistrationContext busRegistrationContext, IRabbitMqBusFactoryConfigurator rabbitMqBusFactoryConfigurator)
