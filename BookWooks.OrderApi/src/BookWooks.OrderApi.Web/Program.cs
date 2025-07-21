@@ -50,7 +50,10 @@ app.UseMiddleware<LogContextMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseOpenTelemetryPrometheusScrapingEndpoint();
+if (!app.Environment.IsEnvironment("Test"))
+{
+  app.UseOpenTelemetryPrometheusScrapingEndpoint();
+}
 
 app.UseSwagger();
 app.UseSwaggerUI();
