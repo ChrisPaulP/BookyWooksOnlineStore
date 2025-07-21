@@ -12,6 +12,11 @@
       "VirtualHost": "/",
       "Port": 5672
     },
+    "OpenTelemetry": {
+      "ActivitySourceName": "ActivitySource.Bookwooks.OrderApi.Web",
+      "ServiceName": "Bookwooks.OrderApi.Web",
+      "ServiceVersion": "1.0.0"
+    },
     "Serilog": {
       "MinimumLevel": {
         "Default": "Information"
