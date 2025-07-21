@@ -8,7 +8,9 @@ namespace Tracing;
 
 public class JaegerSettings
 {
-    public string Protocol { get; set; }
-    public string Host { get; set; }
-    public int Port { get; set; }
+    public string Protocol { get; init; } = "http";
+    public string Host { get; init; } = "localhost";
+    public int Port { get; init; } = 4317;
+
+    public static JaegerSettings Default => new JaegerSettings();
 }

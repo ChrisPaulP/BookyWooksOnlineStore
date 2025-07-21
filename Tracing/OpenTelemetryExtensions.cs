@@ -11,44 +11,51 @@ public static class OpenTelemetryExtensions
 {
     public static void AddOpenTelemetryTracing(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<OpenTelemetryParameters>(configuration.GetSection("OpenTelemetry"));
-        var openTelemetryParameters = configuration.GetSection("OpenTelemetry").Get<OpenTelemetryParameters>();
-        var y = configuration.GetSection("OpenTelemetry");
+        // ✅ Bind with safe defaults
+        var openTelemetryParameters = configuration
+            .GetSection("OpenTelemetry")
+            .Get<OpenTelemetryParameters>() ?? OpenTelemetryParameters.Default;
 
-        var jaegerSettings = configuration.GetSection("Jaeger").Get<JaegerSettings>();
+        var jaegerSettings = configuration
+            .GetSection("Jaeger")
+            .Get<JaegerSettings>() ?? JaegerSettings.Default;
 
-        ActivitySourceProvider.Source = new System.Diagnostics.ActivitySource(openTelemetryParameters.ActivitySourceName);
+        // ✅ Skip entirely if disabled
+        if (!openTelemetryParameters.Enabled)
+        {
+            Console.WriteLine("[DEBUG] OpenTelemetry tracing disabled via configuration.");
+            return;
+        }
 
-        services
-            .AddOpenTelemetry()
-            .WithTracing(tracing =>
+        ActivitySourceProvider.Source =
+            new System.Diagnostics.ActivitySource(openTelemetryParameters.ActivitySourceName);
+
+        services.AddOpenTelemetry().WithTracing(tracing =>
         {
             tracing.AddSource(openTelemetryParameters.ActivitySourceName)
-                .AddSource(DiagnosticHeaders.DefaultListenerName)
-                .ConfigureResource(resource =>
-                {
-                   resource.AddService(openTelemetryParameters.ServiceName,
-                        serviceVersion: openTelemetryParameters.ServiceVersion);
-                });
+                   .AddSource(DiagnosticHeaders.DefaultListenerName)
+                   .ConfigureResource(resource =>
+                   {
+                       resource.AddService(openTelemetryParameters.ServiceName,
+                           serviceVersion: openTelemetryParameters.ServiceVersion);
+                   });
 
             tracing.AddAspNetCoreInstrumentation(o =>
             {
-                // to trace only api requests
-                o.Filter = (context) => !string.IsNullOrEmpty(context.Request.Path.Value) && context.Request.Path.Value.Contains("Api", StringComparison.InvariantCulture);
-                // to trace only order requests
-                o.Filter = (context) =>
+                o.Filter = context =>
                 {
                     var path = context.Request.Path.Value;
-                    return !string.IsNullOrEmpty(path) && path.Contains("Orders", StringComparison.InvariantCulture);
+                    return !string.IsNullOrEmpty(path) &&
+                           (path.Contains("Api", StringComparison.InvariantCulture) ||
+                            path.Contains("Orders", StringComparison.InvariantCulture));
                 };
-                // example: only collect telemetry about HTTP GET requests
-                // return httpContext.Request.Method.Equals("GET");
 
-                // enrich activity with http request and response
-                o.EnrichWithHttpRequest = (activity, httpRequest) => { activity.SetTag("requestProtocol", httpRequest.Protocol); };
-                o.EnrichWithHttpResponse = (activity, httpResponse) => { activity.SetTag("responseLength", httpResponse.ContentLength); };
+                o.EnrichWithHttpRequest = (activity, httpRequest) =>
+                    activity.SetTag("requestProtocol", httpRequest.Protocol);
 
-                // automatically sets Activity Status to Error if an unhandled exception is thrown
+                o.EnrichWithHttpResponse = (activity, httpResponse) =>
+                    activity.SetTag("responseLength", httpResponse.ContentLength);
+
                 o.RecordException = true;
                 o.EnrichWithException = (activity, exception) =>
                 {
@@ -57,34 +64,38 @@ public static class OpenTelemetryExtensions
                 };
             });
 
-            tracing.AddHttpClientInstrumentation(); // This enables HttpClient instrumentation for outgoing requests
-
+            tracing.AddHttpClientInstrumentation();
             tracing.AddEntityFrameworkCoreInstrumentation(opt =>
             {
                 opt.SetDbStatementForText = true;
                 opt.SetDbStatementForStoredProcedure = true;
                 opt.EnrichWithIDbCommand = (activity, command) =>
                 {
-                    Console.WriteLine("TEST");
                     var stateDisplayName = $"{command.CommandType} main";
                     activity.DisplayName = stateDisplayName;
                     activity.SetTag("db.name", stateDisplayName);
                 };
             });
+
+            // ✅ Always safe because of defaults
             tracing.AddOtlpExporter(options =>
             {
-                options.Endpoint =
-                            new Uri(
-                                $"{jaegerSettings.Protocol}://{jaegerSettings.Host}:{jaegerSettings.Port}");
-            });  // is used to display data on Jaeger.
-
+                options.Endpoint = new Uri($"{jaegerSettings.Protocol}://{jaegerSettings.Host}:{jaegerSettings.Port}");
+            });
         });
     }
 
     public static void AddOpenTelemetryMetrics(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<OpenTelemetryParameters>(configuration.GetSection("OpenTelemetry"));
-        var openTelemetryParameters = configuration.GetSection("OpenTelemetry").Get<OpenTelemetryParameters>();
+        var openTelemetryParameters = configuration
+            .GetSection("OpenTelemetry")
+            .Get<OpenTelemetryParameters>() ?? OpenTelemetryParameters.Default;
+
+        if (!openTelemetryParameters.Enabled)
+        {
+            Console.WriteLine("[DEBUG] OpenTelemetry metrics disabled via configuration.");
+            return;
+        }
 
         services.AddOpenTelemetry().WithMetrics(options =>
         {
@@ -98,3 +109,4 @@ public static class OpenTelemetryExtensions
         });
     }
 }
+
