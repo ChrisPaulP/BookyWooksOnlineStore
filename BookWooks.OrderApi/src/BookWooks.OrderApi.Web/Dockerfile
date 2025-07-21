@@ -50,7 +50,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
-# Copy project files for faster restore
+# Copy only project files for faster restore
 COPY ["BookWooks.OrderApi/Directory.Packages.props", "BookWooks.OrderApi/"]
 COPY ["BookWooks.OrderApi/Directory.Build.props", "BookWooks.OrderApi/"]
 COPY ["BookWooks.OrderApi/nuget.config", "BookWooks.OrderApi/"]
@@ -65,9 +65,13 @@ COPY ["Tracing/Tracing.csproj", "Tracing/"]
 COPY ["BookWooks.OrderApi.TestContainersIntegrationTests/BookWooks.OrderApi.TestContainersIntegrationTests.csproj", "BookWooks.OrderApi.TestContainersIntegrationTests/"]
 COPY ["IntegrationTestingSetup/IntegrationTestingSetup.csproj", "IntegrationTestingSetup/"]
 
-# Copy everything else and restore all projects
+# Restore only the projects you need (not the whole solution)
+RUN dotnet restore BookWooks.OrderApi/src/BookWooks.OrderApi.Web/BookWooks.OrderApi.Web.csproj
+RUN dotnet restore BookWooks.OrderApi.TestContainersIntegrationTests/BookWooks.OrderApi.TestContainersIntegrationTests.csproj
+RUN dotnet restore IntegrationTestingSetup/IntegrationTestingSetup.csproj
+
+# Copy everything else
 COPY . .
-RUN dotnet restore
 
 # Build the main web project
 WORKDIR "/src/BookWooks.OrderApi/src/BookWooks.OrderApi.Web"
