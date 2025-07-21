@@ -44,32 +44,33 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
     {
         builder.ConfigureAppConfiguration(configurationBuilder =>
         {
-            Configuration = new ConfigurationBuilder().AddJsonFile("testcontainersappsettings.json", optional: true)
-                .AddInMemoryCollection(new Dictionary<string, string>
-                {
-                    ["ConnectionStrings:DefaultConnection"] = _mssqlContainer.GetConnectionString(),
-                    ["ConnectionStrings:SagaOrchestrationDatabase"] = _mssqlContainer.GetConnectionString(),
-                    ["ConnectionStrings:OrderDatabase"] = _mssqlContainer.GetConnectionString(),
-                    ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname
-                })
-                .AddEnvironmentVariables()
-                .Build();
+            //Configuration = new ConfigurationBuilder().AddJsonFile("testcontainersappsettings.json", optional: true)
+            //    .AddInMemoryCollection(new Dictionary<string, string>
+            //    {
+            //        ["ConnectionStrings:DefaultConnection"] = _mssqlContainer.GetConnectionString(),
+            //        ["ConnectionStrings:SagaOrchestrationDatabase"] = _mssqlContainer.GetConnectionString(),
+            //        ["ConnectionStrings:OrderDatabase"] = _mssqlContainer.GetConnectionString(),
+            //        ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname
+            //    })
+            //    .AddEnvironmentVariables()
+            //    .Build();
 
             //var redisConn = $"{_redisContainer.Hostname}:{_redisContainer.GetMappedPublicPort(6379)}";
             //Console.WriteLine($"[DEBUG] Redis Testcontainers connection string: {redisConn}");
-            //Configuration = new ConfigurationBuilder()
-            //        .AddEnvironmentVariables()
-            //        .AddInMemoryCollection(new Dictionary<string, string>
-            //        {
-            //            ["ConnectionStrings:DefaultConnection"] = _mssqlContainer.GetConnectionString(),
-            //            ["ConnectionStrings:SagaOrchestrationDatabase"] = _mssqlContainer.GetConnectionString(),
-            //            ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname,
-            //            ["RabbitMQConfiguration:Config:UserName"] = RabbitMqUsername,
-            //            ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword,
-            //            ["ConnectionStrings:Redis"] = redisConn
-            //        })
-            //        //.AddEnvironmentVariables()
-            //        .Build();
+            Configuration = new ConfigurationBuilder()
+                    .AddEnvironmentVariables()
+                    .AddInMemoryCollection(new Dictionary<string, string>
+                    {
+                        ["ConnectionStrings:DefaultConnection"] = _mssqlContainer.GetConnectionString(),
+                        ["ConnectionStrings:OrderDatabase"] = _mssqlContainer.GetConnectionString(),
+                        ["ConnectionStrings:SagaOrchestrationDatabase"] = _mssqlContainer.GetConnectionString(),
+                        ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname,
+                        ["RabbitMQConfiguration:Config:UserName"] = RabbitMqUsername,
+                        ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword,
+                        //["ConnectionStrings:Redis"] = redisConn
+                    })
+                    //.AddEnvironmentVariables()
+                    .Build();
 
             configurationBuilder.AddConfiguration(Configuration);
         });
