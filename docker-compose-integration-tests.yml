@@ -58,6 +58,7 @@ services:
       RabbitMQConfiguration__Config__Password: ${BOOKYWOOKS_RABBITMQ_PASSWORD:-guest}
     volumes:
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+      - /var/run/docker.sock:/var/run/docker.sock
     working_dir: /src/BookWooks.OrderApi.TestContainersIntegrationTests
 
 
