@@ -58,7 +58,7 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
             //var redisConn = $"{_redisContainer.Hostname}:{_redisContainer.GetMappedPublicPort(6379)}";
             //Console.WriteLine($"[DEBUG] Redis Testcontainers connection string: {redisConn}");
             Configuration = new ConfigurationBuilder()
-                    .AddEnvironmentVariables()
+                    //.AddEnvironmentVariables()
                     .AddInMemoryCollection(new Dictionary<string, string>
                     {
                         ["ConnectionStrings:DefaultConnection"] = _mssqlContainer.GetConnectionString(),
@@ -69,9 +69,9 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
                         ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword,
                         //["ConnectionStrings:Redis"] = redisConn
                     })
-                    //.AddEnvironmentVariables()
+                    .AddEnvironmentVariables()
                     .Build();
-
+            Console.WriteLine($"[DEBUG] SQL Connection: {_mssqlContainer.GetConnectionString()}");
             configurationBuilder.AddConfiguration(Configuration);
         });
 
