@@ -49,6 +49,7 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
                 {
                     ["ConnectionStrings:DefaultConnection"] = _mssqlContainer.GetConnectionString(),
                     ["ConnectionStrings:SagaOrchestrationDatabase"] = _mssqlContainer.GetConnectionString(),
+                    ["ConnectionStrings:OrderDatabase"] = _mssqlContainer.GetConnectionString(),
                     ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname
                 })
                 .AddEnvironmentVariables()
