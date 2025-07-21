@@ -38,7 +38,7 @@
 #       - "5672:5672"    # Map RabbitMQ port for message communication
 #     image: rabbitmq:3-management-alpine  # Use RabbitMQ 3 with management plugin
 
-version: "3.9"
+
 
 services:
 
@@ -58,7 +58,7 @@ services:
       RabbitMQConfiguration__Config__Password: ${BOOKYWOOKS_RABBITMQ_PASSWORD:-guest}
     volumes:
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
-    working_dir: /src/BookWooks.OrderApi/tests/BookWooks.OrderApi.TestContainersIntegrationTests
+    working_dir: /src/BookWooks.OrderApi.TestContainersIntegrationTests
 
 
   integrationtestsdatabase:

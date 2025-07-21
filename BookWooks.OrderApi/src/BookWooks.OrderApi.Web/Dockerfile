@@ -65,11 +65,12 @@ COPY ["BookyWooks.Messaging/BookyWooks.Messaging.csproj", "BookyWooks.Messaging/
 COPY ["Logging/Logging.csproj", "Logging/"]
 COPY ["Tracing/Tracing.csproj", "Tracing/"]
 
-COPY ["BookWooks.OrderApi/tests/BookWooks.OrderApi.TestContainersIntegrationTests/BookWooks.OrderApi.TestContainersIntegrationTests.csproj", "BookWooks.OrderApi/tests/BookWooks.OrderApi.TestContainersIntegrationTests/"]
+#COPY ["BookWooks.OrderApi/tests/BookWooks.OrderApi.TestContainersIntegrationTests/BookWooks.OrderApi.TestContainersIntegrationTests.csproj", "BookWooks.OrderApi/tests/BookWooks.OrderApi.TestContainersIntegrationTests/"]
+COPY ["BookWooks.OrderApi.TestContainersIntegrationTests/BookWooks.OrderApi.TestContainersIntegrationTests.csproj", "BookWooks.OrderApi.TestContainersIntegrationTests/"]
 
 
 RUN dotnet restore "./BookWooks.OrderApi/src/BookWooks.OrderApi.Web/BookWooks.OrderApi.Web.csproj"
-RUN dotnet restore "./BookWooks.OrderApi/tests/BookWooks.OrderApi.TestContainersIntegrationTests/BookWooks.OrderApi.TestContainersIntegrationTests.csproj"
+RUN dotnet restore "./BookWooks.OrderApi.TestContainersIntegrationTests/BookWooks.OrderApi.TestContainersIntegrationTests.csproj"
 
 
 COPY . .
@@ -80,9 +81,8 @@ RUN dotnet build "./BookWooks.OrderApi.Web.csproj" -c $BUILD_CONFIGURATION -o /a
 
 
 FROM build as integrationtest
-WORKDIR "/src/BookWooks.OrderApi/tests/BookWooks.OrderApi.TestContainersIntegrationTests"
+WORKDIR "/src/BookWooks.OrderApi.TestContainersIntegrationTests"
 RUN dotnet build "BookWooks.OrderApi.TestContainersIntegrationTests.csproj" -c Release --no-restore
-
 ENTRYPOINT ["dotnet", "test", "BookWooks.OrderApi.TestContainersIntegrationTests.csproj", "--logger", "trx;LogFileName=/tests/booky-wooks-integration-test-results.xml"]
 
 
