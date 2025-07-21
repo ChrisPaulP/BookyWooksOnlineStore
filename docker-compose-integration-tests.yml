@@ -51,7 +51,7 @@ services:
       - integrationtestsdatabase
       - rabbitmq
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_ENVIRONMENT: Test
       ConnectionStrings__DefaultConnection: "Server=integrationtestsdatabase;Database=BookyWooks.OrderDbIntegrationTests;User=sa;Password=Your_password123;MultipleActiveResultSets=true;TrustServerCertificate=true;"
       RabbitMQConfiguration__Config__HostName: ${BOOKYWOOKS_RABBITMQ_HOSTNAME:-rabbitmq}
       RabbitMQConfiguration__Config__UserName: ${BOOKYWOOKS_RABBITMQ_USERNAME:-guest}
