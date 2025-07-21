@@ -17,6 +17,11 @@
       "ServiceName": "Bookwooks.OrderApi.Web",
       "ServiceVersion": "1.0.0"
     },
+    "Jaeger": {
+      "Protocol": "http",
+      "Host": "localhost",
+      "Port": 4317
+    },
     "Serilog": {
       "MinimumLevel": {
         "Default": "Information"
