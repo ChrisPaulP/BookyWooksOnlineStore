@@ -15,7 +15,7 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
 
 AddShowAllServicesSupport();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderRequestValidator>();
-builder.Services.AddInfrastructureServices(builder.Configuration, builder.Environment.IsDevelopment(), InitializeDomainEventsMap(), InitializeInternalCommandMap());
+builder.Services.AddInfrastructureServices(builder.Configuration, builder.Environment.IsDevelopment(), InitializeDomainEventsMap(), InitializeInternalCommandMap(), builder.Environment.IsEnvironment("Test"));
 builder.Services.AddUseCasesServices();
 builder.Services.AddCoreServices();
 

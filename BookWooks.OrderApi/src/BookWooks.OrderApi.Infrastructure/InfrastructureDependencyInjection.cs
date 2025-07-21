@@ -4,7 +4,7 @@ using BookWooks.OrderApi.UseCases.Create;
 namespace BookWooks.OrderApi.Infrastructure;
 public static class InfrastructureDependencyInjection
 {
-  public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,IConfiguration configuration,bool isDevelopment,BiDirectionalDictionary<string, Type>? domainEventsMap = null,BiDirectionalDictionary<string, Type>? internalCommandMap = null)
+  public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,IConfiguration configuration,bool isDevelopment,BiDirectionalDictionary<string, Type>? domainEventsMap = null,BiDirectionalDictionary<string, Type>? internalCommandMap = null, bool isTest = false)
   {
         domainEventsMap ??= new BiDirectionalDictionary<string, Type>();
         internalCommandMap ??= new BiDirectionalDictionary<string, Type>();
@@ -24,10 +24,13 @@ public static class InfrastructureDependencyInjection
         RegisterDistributedCacheService(services);
         RegisterRedisDistributedCache(services, configuration);
         RegisterEnvironmentSpecificDependencies(services, isDevelopment);
-        RegisterAIOptions(services);
         RegisterQuartz(services);
-        RegisterAIService(services);
-   
+        if (!isTest)
+        {
+          RegisterAIOptions(services);
+          RegisterAIService(services);
+        }
+
     return services;
     }
 
