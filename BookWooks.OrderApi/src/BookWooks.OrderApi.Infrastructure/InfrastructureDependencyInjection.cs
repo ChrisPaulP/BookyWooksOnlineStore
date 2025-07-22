@@ -11,7 +11,7 @@ public static class InfrastructureDependencyInjection
                 
         RegisterMassTransit(services);      
         RegisterSerializer(services);
-        RegisterMessageBroker(services, configuration);
+       
         RegisterDbContext(services, configuration);
         RegisterOutboxContext(services);
         RegisterDomainEventsWrapper(services, domainEventsMap);
@@ -27,6 +27,7 @@ public static class InfrastructureDependencyInjection
         
         if (!isTest)
         {
+          RegisterMessageBroker(services, configuration);
           RegisterQuartz(services);
           RegisterAIOptions(services);
           RegisterAIService(services);

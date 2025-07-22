@@ -41,7 +41,8 @@ public static class IntegrationTestingSetupExtensions
                 .WithEnvironment("RABBITMQ_DEFAULT_PASS", RabbitMqPassword)
                 .WithWaitStrategy(Wait.ForUnixContainer()
                     .UntilPortIsAvailable(RabbitMqPort)
-                    .UntilPortIsAvailable(15672))
+                    .UntilPortIsAvailable(15672)
+                    .UntilMessageIsLogged("Server startup complete"))
                 .Build();
         }
         public static RedisContainer CreateRedisContainer()
