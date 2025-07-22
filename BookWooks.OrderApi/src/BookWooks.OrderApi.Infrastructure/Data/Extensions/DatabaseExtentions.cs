@@ -17,7 +17,7 @@ public static class DatabaseExtentions
     await ClearData(context);
     await SeedAsync(context);
   }
-  private static async Task ClearData(BookyWooksOrderDbContext context)
+  public static async Task ClearData(BookyWooksOrderDbContext context)
   {
     context.Orders.RemoveRange(context.Orders);
     context.Products.RemoveRange(context.Products);
@@ -27,7 +27,7 @@ public static class DatabaseExtentions
     context.OutboxMessages.RemoveRange(context.OutboxMessages);
     await context.SaveChangesAsync();
   }
-  private static async Task SeedAsync(BookyWooksOrderDbContext context)
+  public static async Task SeedAsync(BookyWooksOrderDbContext context)
   {
     await SeedCustomers(context);
     await SeedProducts(context);

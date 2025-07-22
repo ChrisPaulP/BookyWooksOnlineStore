@@ -36,7 +36,7 @@ var app = builder.Build();
 
 
 
-if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Test"))
+if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseShowAllServicesMiddleware();

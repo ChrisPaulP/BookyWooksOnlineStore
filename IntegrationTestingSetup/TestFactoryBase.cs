@@ -1,31 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Data.SqlClient;
-using System.Threading.Tasks;
+﻿using BookWooks.OrderApi.Infrastructure.Data;
+using BookWooks.OrderApi.Infrastructure.Data.Extensions;
 using IntegrationTestingSetup;
+using MassTransit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Testcontainers.MsSql;
 using Testcontainers.RabbitMq;
-using MassTransit;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.StackExchangeRedis;
-using StackExchange.Redis;
 
 public abstract class TestFactoryBase<TEntryPoint>
     : WebApplicationFactory<TEntryPoint>, IAsyncLifetime where TEntryPoint : class
 {
     protected readonly MsSqlContainer _mssqlContainer;
-    private readonly RabbitMqContainer _rabbitMqContainer;
-    protected IConfiguration Configuration { get; private set; }
-
+    protected readonly RabbitMqContainer _rabbitMqContainer;
     private const string RabbitMqUsername = "guest";
     private const string RabbitMqPassword = "guest";
-
-    private const string TestDatabaseName = "BookyWooksTest";
+    protected IConfiguration Configuration { get; private set; }
 
     protected TestFactoryBase()
     {
@@ -35,48 +29,41 @@ public abstract class TestFactoryBase<TEntryPoint>
 
     public async Task InitializeAsync()
     {
-        await _mssqlContainer.StartAsync();
-        await _rabbitMqContainer.StartAsync();
+        await IntegrationTestingSetupExtensions.StartContainersAsync(_mssqlContainer, _rabbitMqContainer);
 
-        await EnsureTestDatabaseCreatedAsync();
-    }
-
-    private async Task EnsureTestDatabaseCreatedAsync()
-    {
-        var connectionString = _mssqlContainer.GetConnectionString();
-
-        await using var connection = new SqlConnection(connectionString);
+        // Optional: Create test database if not exists
+        await using var connection = new Microsoft.Data.SqlClient.SqlConnection(_mssqlContainer.GetConnectionString());
         await connection.OpenAsync();
+        await using var command = connection.CreateCommand();
+        command.CommandText = "IF DB_ID('BookyWooksTest') IS NULL CREATE DATABASE [BookyWooksTest];";
+        await command.ExecuteNonQueryAsync();
 
-        var cmd = connection.CreateCommand();
-        cmd.CommandText = $@"
-            IF DB_ID('{TestDatabaseName}') IS NULL
-            BEGIN
-                CREATE DATABASE [{TestDatabaseName}];
-            END";
-        await cmd.ExecuteNonQueryAsync();
+        // ✅ Run migrations & seed the database (same logic as in real app)
+        using var scope = Services.CreateScope();
+        var appServices = scope.ServiceProvider;
+        var context = appServices.GetRequiredService<BookyWooksOrderDbContext>();
+
+        await context.Database.MigrateAsync();
+        await DatabaseExtentions.ClearData(context); // you can call the private methods if you make them internal
+        await DatabaseExtentions.SeedAsync(context);
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureAppConfiguration(configurationBuilder =>
         {
-            var testConfig = new Dictionary<string, string>
-            {
-                ["ConnectionStrings:DefaultConnection"] = $"{_mssqlContainer.GetConnectionString()};Database={TestDatabaseName}",
-                ["ConnectionStrings:SagaOrchestrationDatabase"] = $"{_mssqlContainer.GetConnectionString()};Database={TestDatabaseName}",
-                ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname,
-                ["RabbitMQConfiguration:Config:UserName"] = RabbitMqUsername,
-                ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword,
-
-                // ✅ Disable OpenTelemetry for integration tests
-                ["OpenTelemetry:TracingEnabled"] = "false",
-                ["OpenTelemetry:MetricsEnabled"] = "false"
-            };
-
             Configuration = new ConfigurationBuilder()
-                .AddInMemoryCollection(testConfig)
-                .AddEnvironmentVariables() // allow CI/CD overrides if needed
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    ["ConnectionStrings:DefaultConnection"] = GetTestDatabaseConnectionString(),
+                    ["ConnectionStrings:SagaOrchestrationDatabase"] = GetTestDatabaseConnectionString(),
+                    ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname,
+                    ["RabbitMQConfiguration:Config:UserName"] = RabbitMqUsername,
+                    ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword,
+                    ["OpenTelemetry:EnableTracing"] = "false", // ✅ disable in tests
+                    ["OpenTelemetry:EnableMetrics"] = "false" // ✅ disable in tests
+                })
+                .AddEnvironmentVariables()
                 .Build();
 
             configurationBuilder.AddConfiguration(Configuration);
@@ -84,6 +71,16 @@ public abstract class TestFactoryBase<TEntryPoint>
 
         builder.ConfigureTestServices(services =>
         {
+            // ✅ Force EF to use Testcontainers DB
+            services.RemoveAll<DbContextOptions<BookyWooksOrderDbContext>>();
+            services.AddDbContext<BookyWooksOrderDbContext>(options =>
+            {
+                var testDbConnectionString = GetTestDatabaseConnectionString();
+                Console.WriteLine($"[DEBUG] FORCED EF ConnectionString: {testDbConnectionString}");
+                options.UseSqlServer(testDbConnectionString);
+            });
+
+            // ✅ Use MassTransit Test Harness with RabbitMQ
             services.AddMassTransitTestHarness(busRegistrationConfigurator =>
             {
                 ConfigureMassTransit(busRegistrationConfigurator);
@@ -95,44 +92,10 @@ public abstract class TestFactoryBase<TEntryPoint>
                         h.Username(RabbitMqUsername);
                         h.Password(RabbitMqPassword);
                     });
+
                     ConfigureEndpoints(context, cfg);
                 });
             });
-
-            // If you need Redis override in the future, call: OverrideRedis(services, Configuration);
-        });
-    }
-
-    private static void OverrideRedis(IServiceCollection services, IConfiguration configuration)
-    {
-        var descriptors = services
-            .Where(s => s.ServiceType == typeof(IDistributedCache) || s.ServiceType == typeof(RedisCacheOptions))
-            .ToList();
-
-        foreach (var descriptor in descriptors)
-        {
-            services.Remove(descriptor);
-        }
-
-        var redisConnectionString = configuration.GetValue<string>("ConnectionStrings:Redis")
-            ?? throw new ArgumentNullException("Redis connection string not configured");
-
-        Console.WriteLine($"[DEBUG] Overriding Redis with: {redisConnectionString}");
-
-        var redisConfiguration = new RedisCacheOptions
-        {
-            ConfigurationOptions = new ConfigurationOptions
-            {
-                AbortOnConnectFail = true,
-                EndPoints = { redisConnectionString }
-            }
-        };
-
-        services.AddSingleton(redisConfiguration);
-        services.AddSingleton<IDistributedCache>(sp =>
-        {
-            var options = sp.GetRequiredService<RedisCacheOptions>();
-            return new RedisCache(options);
         });
     }
 
@@ -143,6 +106,15 @@ public abstract class TestFactoryBase<TEntryPoint>
         IRabbitMqBusFactoryConfigurator rabbitMqBusFactoryConfigurator)
     {
         rabbitMqBusFactoryConfigurator.ConfigureEndpoints(busRegistrationContext);
+    }
+
+    private string GetTestDatabaseConnectionString()
+    {
+        var builder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(_mssqlContainer.GetConnectionString())
+        {
+            InitialCatalog = "BookyWooksTest"
+        };
+        return builder.ConnectionString;
     }
 
     public new async Task DisposeAsync()
