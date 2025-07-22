@@ -15,8 +15,8 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
 
 AddShowAllServicesSupport();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderRequestValidator>();
-var AiEnabled = builder.Configuration.GetValue<bool>("OpenAIOptions:DisabledForIntegrationTests");
-builder.Services.AddInfrastructureServices(builder.Configuration, builder.Environment.IsDevelopment(), InitializeDomainEventsMap(), InitializeInternalCommandMap(), AiEnabled);
+Console.WriteLine($"[DEBUG] ENVIRONMENT NAME: {builder.Environment.EnvironmentName}");
+builder.Services.AddInfrastructureServices(builder.Configuration, builder.Environment.IsDevelopment(), InitializeDomainEventsMap(), InitializeInternalCommandMap(), builder.Environment.IsEnvironment("Test"));
 builder.Services.AddUseCasesServices();
 builder.Services.AddCoreServices();
 
