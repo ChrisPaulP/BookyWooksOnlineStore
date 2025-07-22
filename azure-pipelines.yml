@@ -60,7 +60,7 @@ jobs:
         projects: 'BookWooks.OrderApi.TestContainersIntegrationTests/BookWooks.OrderApi.TestContainersIntegrationTests.csproj'
         arguments: '--configuration $(buildConfiguration) --no-build --logger trx;LogFileName=booky-wooks-integration-test-results.trx'
       env:
-        ASPNETCORE_ENVIRONMENT: Development
+        ASPNETCORE_ENVIRONMENT: Test
         TESTCONTAINERS_RYUK_DISABLED: 'false' # optional, enable Ryuk resource cleanup
         DOTNET_TESTCONTAINERS_HOST_OVERRIDE: 'unix:///var/run/docker.sock'
 
