@@ -36,7 +36,8 @@ public static class IntegrationTestingSetupExtensions
 
             return new RabbitMqBuilder()
                 .WithImage(RabbitMqImage)
-                .WithPortBinding(5672, RabbitMqPort)
+                 //.WithPortBinding(5672, RabbitMqPort)
+                .WithPortBinding(0, RabbitMqPort)
                 .WithEnvironment("RABBITMQ_DEFAULT_USER", RabbitMqUsername)
                 .WithEnvironment("RABBITMQ_DEFAULT_PASS", RabbitMqPassword)
                 .WithWaitStrategy(Wait.ForUnixContainer()
