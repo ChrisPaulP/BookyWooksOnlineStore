@@ -50,7 +50,7 @@ public abstract class TestFactoryBase<TEntryPoint>
         var context = appServices.GetRequiredService<BookyWooksOrderDbContext>();
 
         await context.Database.MigrateAsync();
-        await DatabaseExtentions.ClearData(context); // you can call the private methods if you make them internal
+        await DatabaseExtentions.ClearData(context);
         await DatabaseExtentions.SeedAsync(context);
     }
 
@@ -58,9 +58,9 @@ public abstract class TestFactoryBase<TEntryPoint>
     {
         builder.ConfigureAppConfiguration(configurationBuilder =>
         {
-            var rabbitMqHost = _rabbitMqContainer.Hostname; // [COPILOT]
-            var rabbitMqPort = _rabbitMqContainer.GetMappedPublicPort(5672); // [COPILOT] 
-            var rabbitMqConnectionString = $"amqp://{RabbitMqUsername}:{RabbitMqPassword}@{rabbitMqHost}:{rabbitMqPort}/"; // [COPILOT]
+            var rabbitMqHost = _rabbitMqContainer.Hostname;
+            var rabbitMqPort = _rabbitMqContainer.GetMappedPublicPort(5672);
+            var rabbitMqConnectionString = $"amqp://{RabbitMqUsername}:{RabbitMqPassword}@{rabbitMqHost}:{rabbitMqPort}/";
 
             Console.WriteLine($"[COPILOT][RabbitMQ] Host: {rabbitMqHost}");
             Console.WriteLine($"[COPILOT][RabbitMQ] Port: {rabbitMqPort}");
@@ -71,12 +71,12 @@ public abstract class TestFactoryBase<TEntryPoint>
                 {
                     ["ConnectionStrings:DefaultConnection"] = GetTestDatabaseConnectionString(),
                     ["ConnectionStrings:SagaOrchestrationDatabase"] = GetTestDatabaseConnectionString(),
-                    ["RabbitMQConfiguration:Config:HostName"] = rabbitMqHost, // [COPILOT]
-                    ["RabbitMQConfiguration:Config:Port"] = rabbitMqPort.ToString(), // [COPILOT]
+                    ["RabbitMQConfiguration:Config:HostName"] = rabbitMqHost,
+                    ["RabbitMQConfiguration:Config:Port"] = rabbitMqPort.ToString(),
                     ["RabbitMQConfiguration:Config:UserName"] = RabbitMqUsername,
                     ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword,
-                    ["OpenTelemetry:EnableTracing"] = "false", // ✅ disable in tests
-                    ["OpenTelemetry:EnableMetrics"] = "false" // ✅ disable in tests
+                    ["OpenTelemetry:EnableTracing"] = "false",
+                    ["OpenTelemetry:EnableMetrics"] = "false"
                 })
                 .AddEnvironmentVariables()
                 .Build();
@@ -104,7 +104,6 @@ public abstract class TestFactoryBase<TEntryPoint>
                 services.Remove(descriptor);
             }
 
-            // Or more explicitly:
             services.AddQuartz(q => q.UseInMemoryStore());
             services.Configure<QuartzOptions>(opt =>
             {
@@ -122,9 +121,9 @@ public abstract class TestFactoryBase<TEntryPoint>
 
                 busRegistrationConfigurator.UsingRabbitMq((context, cfg) =>
                 {
-                    var rabbitMqHost = _rabbitMqContainer.Hostname; // [COPILOT]
-                    var rabbitMqPort = _rabbitMqContainer.GetMappedPublicPort(5672); // [COPILOT]
-                    Console.WriteLine($"[COPILOT][RabbitMQ] Configuring MassTransit with Host: {rabbitMqHost}, Port: {rabbitMqPort}");
+                    var rabbitMqHost = _rabbitMqContainer.Hostname;
+                    var rabbitMqPort = _rabbitMqContainer.GetMappedPublicPort(5672);
+                    Console.WriteLine($"[COPILOT][RabbitMQ] MassTransit Host: {rabbitMqHost}, Port: {rabbitMqPort}");
 
                     cfg.Host(rabbitMqHost, rabbitMqPort, "/", h =>
                     {
@@ -132,14 +131,65 @@ public abstract class TestFactoryBase<TEntryPoint>
                         h.Password(RabbitMqPassword);
                     });
 
-                    // [COPILOT] Add connection diagnostics
-                    //cfg.UseHealthCheck(context);
+                    // [COPILOT] Log endpoint configuration
+                    cfg.ConnectBusObserver(new LoggingBusObserver());
 
                     ConfigureEndpoints(context, cfg);
                 });
             });
         });
     }
+
+    // Update the LoggingBusObserver class to match the interface signature
+    private class LoggingBusObserver : IBusObserver
+    {
+        public void PostCreate(IBus bus)
+        {
+            Console.WriteLine("[COPILOT][RabbitMQ] Bus created");
+        }
+
+        public void CreateFaulted(Exception exception)
+        {
+            Console.WriteLine($"[COPILOT][RabbitMQ] Bus creation faulted: {exception.Message}");
+        }
+
+        public Task PreStart(IBus bus)
+        {
+            Console.WriteLine("[COPILOT][RabbitMQ] Bus starting");
+            return Task.CompletedTask;
+        }
+
+        public Task PostStart(IBus bus, Task<BusReady> busReady)
+        {
+            Console.WriteLine("[COPILOT][RabbitMQ] Bus started");
+            return Task.CompletedTask;
+        }
+
+        public Task StartFaulted(IBus bus, Exception exception)
+        {
+            Console.WriteLine($"[COPILOT][RabbitMQ] Bus start faulted: {exception.Message}");
+            return Task.CompletedTask;
+        }
+
+        public Task PreStop(IBus bus)
+        {
+            Console.WriteLine("[COPILOT][RabbitMQ] Bus stopping");
+            return Task.CompletedTask;
+        }
+
+        public Task PostStop(IBus bus)
+        {
+            Console.WriteLine("[COPILOT][RabbitMQ] Bus stopped");
+            return Task.CompletedTask;
+        }
+
+        public Task StopFaulted(IBus bus, Exception exception)
+        {
+            Console.WriteLine($"[COPILOT][RabbitMQ] Bus stop faulted: {exception.Message}");
+            return Task.CompletedTask;
+        }
+    }
+
     public class NoOpOutboxJob : IJob
     {
         public Task Execute(IJobExecutionContext context) => Task.CompletedTask;
