@@ -46,7 +46,7 @@ services:
     build:
       context: .
       dockerfile: BookWooks.OrderApi.TestContainersIntegrationTests/Dockerfile
-      target: integrationtest
+      # target: integrationtest
     depends_on:
       - integrationtestsdatabase
       - rabbitmq
