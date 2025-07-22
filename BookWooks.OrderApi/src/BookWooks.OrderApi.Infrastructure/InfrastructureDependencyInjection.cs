@@ -24,9 +24,10 @@ public static class InfrastructureDependencyInjection
         RegisterDistributedCacheService(services);
         RegisterRedisDistributedCache(services, configuration);
         RegisterEnvironmentSpecificDependencies(services, isDevelopment);
-        RegisterQuartz(services);
+        
         if (!isTest)
         {
+          RegisterQuartz(services);
           RegisterAIOptions(services);
           RegisterAIService(services);
         }
