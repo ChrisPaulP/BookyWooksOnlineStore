@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Quartz;
 using Testcontainers.MsSql;
 using Testcontainers.RabbitMq;
 
@@ -81,6 +82,26 @@ public abstract class TestFactoryBase<TEntryPoint>
                 options.UseSqlServer(testDbConnectionString);
             });
 
+            // 🔥 Disable Quartz jobs for tests
+            var quartzDescriptors = services
+                .Where(s => s.ServiceType.Name.Contains("Quartz"))
+                .ToList();
+            foreach (var descriptor in quartzDescriptors)
+            {
+                services.Remove(descriptor);
+            }
+
+            // Or more explicitly:
+            services.AddQuartz(q => q.UseInMemoryStore());
+            services.Configure<QuartzOptions>(opt =>
+            {
+                opt.Scheduling.IgnoreDuplicates = true;
+                opt.Scheduling.OverWriteExistingData = true;
+            });
+
+            // Replace the outbox job with a no-op
+            services.AddSingleton<IJob, NoOpOutboxJob>();
+
             // ✅ Use MassTransit Test Harness with RabbitMQ
             services.AddMassTransitTestHarness(busRegistrationConfigurator =>
             {
@@ -99,7 +120,10 @@ public abstract class TestFactoryBase<TEntryPoint>
             });
         });
     }
-
+    public class NoOpOutboxJob : IJob
+    {
+        public Task Execute(IJobExecutionContext context) => Task.CompletedTask;
+    }
     protected abstract void ConfigureMassTransit(IBusRegistrationConfigurator busRegistrationConfigurator);
 
     protected virtual void ConfigureEndpoints(
