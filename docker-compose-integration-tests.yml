@@ -45,7 +45,7 @@ services:
   bookywooks_orderapi_integrationtests:
     build:
       context: .
-      dockerfile: BookWooks.OrderApi/src/BookWooks.OrderApi.Web/Dockerfile
+      dockerfile: BookWooks.OrderApi.TestContainersIntegrationTests/Dockerfile
       target: integrationtest
     depends_on:
       - integrationtestsdatabase

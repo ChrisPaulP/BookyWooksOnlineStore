@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "BookWooks.OrderApi.TestContainersIntegrationTests": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

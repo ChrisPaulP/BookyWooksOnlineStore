@@ -1,23 +1,29 @@
-﻿using BookWooks.OrderApi.Infrastructure.Data;
-using BookWooks.OrderApi.Infrastructure.Data.Extensions;
-using IntegrationTestingSetup;
-using MassTransit;
+﻿using MassTransit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Quartz;
+using StackExchange.Redis;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 using Testcontainers.MsSql;
 using Testcontainers.RabbitMq;
+using Testcontainers.Redis;
 
-public abstract class TestFactoryBase<TEntryPoint>
-    : WebApplicationFactory<TEntryPoint>, IAsyncLifetime where TEntryPoint : class
+namespace IntegrationTestingSetup;
+
+public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntryPoint>, IAsyncLifetime where TEntryPoint : class
 {
     protected readonly MsSqlContainer _mssqlContainer;
-    protected readonly RabbitMqContainer _rabbitMqContainer;
+    private readonly RabbitMqContainer _rabbitMqContainer;
+    private readonly RedisContainer _redisContainer;  
     private const string RabbitMqUsername = "guest";
     private const string RabbitMqPassword = "guest";
     protected IConfiguration Configuration { get; private set; }
@@ -26,195 +32,166 @@ public abstract class TestFactoryBase<TEntryPoint>
     {
         _mssqlContainer = IntegrationTestingSetupExtensions.CreateMsSqlContainer();
         _rabbitMqContainer = IntegrationTestingSetupExtensions.CreateRabbitMqContainer();
+        _redisContainer = IntegrationTestingSetupExtensions.CreateRedisContainer();
     }
 
     public async Task InitializeAsync()
     {
-        await _mssqlContainer.StartAsync();
-        await _rabbitMqContainer.StartAsync();
-
-        // [COPILOT] Wait for RabbitMQ to be fully ready
-        Console.WriteLine($"[COPILOT][RabbitMQ] Waiting for RabbitMQ container to be fully ready...");
-        await Task.Delay(5000);
-
-        // Optional: Create test database if not exists
-        await using var connection = new Microsoft.Data.SqlClient.SqlConnection(_mssqlContainer.GetConnectionString());
-        await connection.OpenAsync();
-        await using var command = connection.CreateCommand();
-        command.CommandText = "IF DB_ID('BookyWooksTest') IS NULL CREATE DATABASE [BookyWooksTest];";
-        await command.ExecuteNonQueryAsync();
-
-        // ✅ Run migrations & seed the database (same logic as in real app)
-        using var scope = Services.CreateScope();
-        var appServices = scope.ServiceProvider;
-        var context = appServices.GetRequiredService<BookyWooksOrderDbContext>();
-
-        await context.Database.MigrateAsync();
-        await DatabaseExtentions.ClearData(context);
-        await DatabaseExtentions.SeedAsync(context);
+        await IntegrationTestingSetupExtensions.StartContainersAsync(_mssqlContainer, _rabbitMqContainer, _redisContainer);
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureAppConfiguration(configurationBuilder =>
         {
-            var rabbitMqHost = _rabbitMqContainer.Hostname;
-            var rabbitMqPort = _rabbitMqContainer.GetMappedPublicPort(5672);
-            var rabbitMqConnectionString = $"amqp://{RabbitMqUsername}:{RabbitMqPassword}@{rabbitMqHost}:{rabbitMqPort}/";
+            //Configuration = new ConfigurationBuilder().AddJsonFile("testcontainersappsettings.json", optional: true)
+            //    .AddInMemoryCollection(new Dictionary<string, string>
+            //    {
+            //        ["ConnectionStrings:DefaultConnection"] = _mssqlContainer.GetConnectionString(),
+            //        ["ConnectionStrings:SagaOrchestrationDatabase"] = _mssqlContainer.GetConnectionString(),
+            //        ["ConnectionStrings:OrderDatabase"] = _mssqlContainer.GetConnectionString(),
+            //        ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname
+            //    })
+            //    .AddEnvironmentVariables()
+            //    .Build();
 
-            Console.WriteLine($"[COPILOT][RabbitMQ] Host: {rabbitMqHost}");
-            Console.WriteLine($"[COPILOT][RabbitMQ] Port: {rabbitMqPort}");
-            Console.WriteLine($"[COPILOT][RabbitMQ] ConnectionString: {rabbitMqConnectionString}");
-
+            var redisConn = $"{_redisContainer.Hostname}:{_redisContainer.GetMappedPublicPort(6379)}";
+            Console.WriteLine($"[DEBUG] Redis Testcontainers connection string: {redisConn}");
             Configuration = new ConfigurationBuilder()
-                .AddInMemoryCollection(new Dictionary<string, string>
-                {
-                    ["ConnectionStrings:DefaultConnection"] = GetTestDatabaseConnectionString(),
-                    ["ConnectionStrings:SagaOrchestrationDatabase"] = GetTestDatabaseConnectionString(),
-                    ["RabbitMQConfiguration:Config:HostName"] = rabbitMqHost,
-                    ["RabbitMQConfiguration:Config:Port"] = rabbitMqPort.ToString(),
-                    ["RabbitMQConfiguration:Config:UserName"] = RabbitMqUsername,
-                    ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword,
-                    ["OpenTelemetry:EnableTracing"] = "false",
-                    ["OpenTelemetry:EnableMetrics"] = "false"
-                })
-                .AddEnvironmentVariables()
-                .Build();
+                    .AddEnvironmentVariables()
+                    .AddInMemoryCollection(new Dictionary<string, string>
+                    {
+                        ["ConnectionStrings:DefaultConnection"] = _mssqlContainer.GetConnectionString(),
+                        ["ConnectionStrings:OrderDatabase"] = _mssqlContainer.GetConnectionString(),
+                        ["ConnectionStrings:SagaOrchestrationDatabase"] = _mssqlContainer.GetConnectionString(),
+                        ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname,
+                        ["RabbitMQConfiguration:Config:UserName"] = RabbitMqUsername,
+                        ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword,
+                        ["ConnectionStrings:Redis"] = redisConn
+                    })
+                    //.AddEnvironmentVariables()
+                    .Build();
 
             configurationBuilder.AddConfiguration(Configuration);
         });
 
         builder.ConfigureTestServices(services =>
         {
-            // ✅ Force EF to use Testcontainers DB
-            services.RemoveAll<DbContextOptions<BookyWooksOrderDbContext>>();
-            services.AddDbContext<BookyWooksOrderDbContext>(options =>
-            {
-                var testDbConnectionString = GetTestDatabaseConnectionString();
-                Console.WriteLine($"[DEBUG] FORCED EF ConnectionString: {testDbConnectionString}");
-                options.UseSqlServer(testDbConnectionString);
-            });
-
-            // 🔥 Disable Quartz jobs for tests
-            var quartzDescriptors = services
-                .Where(s => s.ServiceType.Name.Contains("Quartz"))
-                .ToList();
-            foreach (var descriptor in quartzDescriptors)
-            {
-                services.Remove(descriptor);
-            }
-
-            services.AddQuartz(q => q.UseInMemoryStore());
-            services.Configure<QuartzOptions>(opt =>
-            {
-                opt.Scheduling.IgnoreDuplicates = true;
-                opt.Scheduling.OverWriteExistingData = true;
-            });
-
-            // Replace the outbox job with a no-op
-            services.AddSingleton<IJob, NoOpOutboxJob>();
-
-            // ✅ Use MassTransit Test Harness with RabbitMQ
+            OverrideRedis(services, Configuration);
             services.AddMassTransitTestHarness(busRegistrationConfigurator =>
             {
                 ConfigureMassTransit(busRegistrationConfigurator);
 
                 busRegistrationConfigurator.UsingRabbitMq((context, cfg) =>
                 {
-                    var rabbitMqHost = _rabbitMqContainer.Hostname;
-                    var rabbitMqPort = _rabbitMqContainer.GetMappedPublicPort(5672);
-                    Console.WriteLine($"[COPILOT][RabbitMQ] MassTransit Host: {rabbitMqHost}, Port: {rabbitMqPort}");
-
-                    cfg.Host(rabbitMqHost, rabbitMqPort, "/", h =>
+                    cfg.Host(new Uri(_rabbitMqContainer.GetConnectionString()), h =>
                     {
                         h.Username(RabbitMqUsername);
                         h.Password(RabbitMqPassword);
                     });
-
-                    // [COPILOT] Log endpoint configuration
-                    cfg.ConnectBusObserver(new LoggingBusObserver());
-
                     ConfigureEndpoints(context, cfg);
                 });
             });
+
+            //ConfigureProjectSpecificServices(services);
         });
     }
-
-    // Update the LoggingBusObserver class to match the interface signature
-    private class LoggingBusObserver : IBusObserver
+    private static void OverrideRedis(IServiceCollection services, IConfiguration configuration)
     {
-        public void PostCreate(IBus bus)
+        // Remove existing Redis registrations (from Startup)
+        var descriptors = services
+            .Where(s => s.ServiceType == typeof(IDistributedCache) || s.ServiceType == typeof(RedisCacheOptions))
+            .ToList();
+
+        foreach (var descriptor in descriptors)
         {
-            Console.WriteLine("[COPILOT][RabbitMQ] Bus created");
+            services.Remove(descriptor);
         }
 
-        public void CreateFaulted(Exception exception)
-        {
-            Console.WriteLine($"[COPILOT][RabbitMQ] Bus creation faulted: {exception.Message}");
-        }
+        // Re-register using Testcontainers connection string
+        var redisConnectionString = configuration.GetValue<string>("ConnectionStrings:Redis")
+            ?? throw new ArgumentNullException("Redis connection string not configured");
 
-        public Task PreStart(IBus bus)
-        {
-            Console.WriteLine("[COPILOT][RabbitMQ] Bus starting");
-            return Task.CompletedTask;
-        }
+        Console.WriteLine($"[DEBUG] Overriding Redis with: {redisConnectionString}");
 
-        public Task PostStart(IBus bus, Task<BusReady> busReady)
+        var redisConfiguration = new RedisCacheOptions
         {
-            Console.WriteLine("[COPILOT][RabbitMQ] Bus started");
-            return Task.CompletedTask;
-        }
+            ConfigurationOptions = new ConfigurationOptions
+            {
+                AbortOnConnectFail = true,
+                EndPoints = { redisConnectionString }
+            }
+        };
 
-        public Task StartFaulted(IBus bus, Exception exception)
+        services.AddSingleton(redisConfiguration);
+        services.AddSingleton<IDistributedCache>(sp =>
         {
-            Console.WriteLine($"[COPILOT][RabbitMQ] Bus start faulted: {exception.Message}");
-            return Task.CompletedTask;
-        }
-
-        public Task PreStop(IBus bus)
-        {
-            Console.WriteLine("[COPILOT][RabbitMQ] Bus stopping");
-            return Task.CompletedTask;
-        }
-
-        public Task PostStop(IBus bus)
-        {
-            Console.WriteLine("[COPILOT][RabbitMQ] Bus stopped");
-            return Task.CompletedTask;
-        }
-
-        public Task StopFaulted(IBus bus, Exception exception)
-        {
-            Console.WriteLine($"[COPILOT][RabbitMQ] Bus stop faulted: {exception.Message}");
-            return Task.CompletedTask;
-        }
+            var options = sp.GetRequiredService<RedisCacheOptions>();
+            return new RedisCache(options);
+        });
     }
-
-    public class NoOpOutboxJob : IJob
-    {
-        public Task Execute(IJobExecutionContext context) => Task.CompletedTask;
-    }
+    //protected abstract void ConfigureProjectSpecificServices(IServiceCollection services);
     protected abstract void ConfigureMassTransit(IBusRegistrationConfigurator busRegistrationConfigurator);
-
-    protected virtual void ConfigureEndpoints(
-        IBusRegistrationContext busRegistrationContext,
-        IRabbitMqBusFactoryConfigurator rabbitMqBusFactoryConfigurator)
+    protected virtual void ConfigureEndpoints(IBusRegistrationContext busRegistrationContext, IRabbitMqBusFactoryConfigurator rabbitMqBusFactoryConfigurator)
     {
         rabbitMqBusFactoryConfigurator.ConfigureEndpoints(busRegistrationContext);
     }
 
-    private string GetTestDatabaseConnectionString()
-    {
-        var builder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(_mssqlContainer.GetConnectionString())
-        {
-            InitialCatalog = "BookyWooksTest"
-        };
-        return builder.ConnectionString;
-    }
 
     public new async Task DisposeAsync()
     {
         await _mssqlContainer.DisposeAsync();
         await _rabbitMqContainer.DisposeAsync();
+        await _redisContainer.DisposeAsync();
     }
 }
+
+// Register the endpoint convention for OrderCreatedMessage
+//EndpointConvention.Map<OrderCreatedMessage>(new Uri("queue:order-created")); // Ensure Queue Names Match: Ensure that the queue name specified in EndpointConvention.Map<OrderCreatedMessage> matches the one that MassTransit is generating automatically for the consumer.
+// If MassTransit is creating a queue named order-created, then map the message to that queue:
+//EndpointConvention.Map<OrderCreatedMessage>(new Uri("queue:order-created"));
+
+//EndpointConvention.Map<OrderCreatedMessage>(new Uri("queue:test")); This will not work.
+
+// Notes
+// The issue you're facing with EndpointConvention.Map<OrderCreatedMessage>(new Uri("queue:test")); 
+// likely stems from the fact that the queue name you're specifying("test") does not match the automatically generated queue name that 
+// is being used when cfg.ConfigureEndpoints(context) is called for the OrderCreatedConsumer.Here's a detailed explanation of what's happening:
+
+//Why Does queue:order-created Work?
+//EndpointConvention.Map<OrderCreatedMessage>(new Uri("queue:order-created")); works because it matches the default convention that MassTransit uses for naming the queue associated with a consumer handling the OrderCreatedMessage.
+
+//If you are using a consumer like OrderCreatedConsumer, then the default name for its queue is something like order-created-consumer(or order-created, depending on your configuration).
+//By mapping OrderCreatedMessage to queue:order-created, you're closely matching or aligning with the queue name that MassTransit is expecting, either because it's close enough to the auto-generated name or because you've set the name manually somewhere else.
+
+//Why queue:test Does Not Work
+//When you map OrderCreatedMessage to queue:test, MassTransit is being told to send OrderCreatedMessage to a specific queue(test). However, if there is no consumer registered to listen on the test queue, the message won't be handled.
+
+//Queue Mismatch: Since you're configuring endpoints dynamically using ConfigureEndpoints(context), MassTransit is likely creating a queue like order-created-consumer for the OrderCreatedConsumer, but it's expecting OrderCreatedMessage to go to the test queue.This mismatch causes the consumer to not receive the message because it's listening on order-created-consumer, but you're sending the message to queue:test.
+//Possible Solutions
+//Change the Queue Name in the Consumer: If you want the OrderCreatedConsumer to listen to the test queue, you can explicitly set the queue name when configuring the consumer.
+
+//Example:
+
+//cfg.ReceiveEndpoint("test", e =>
+//{
+//    e.ConfigureConsumer<OrderCreatedConsumer>(context);
+//});
+//This will make the OrderCreatedConsumer listen on the test queue, so EndpointConvention.Map<OrderCreatedMessage>(new Uri("queue:test")); will now work.
+
+//Ensure Queue Names Match: Ensure that the queue name specified in EndpointConvention.Map<OrderCreatedMessage> matches the one that MassTransit is generating automatically for the consumer.If MassTransit is creating a queue named order-created-consumer, then map the message to that queue:
+
+//EndpointConvention.Map<OrderCreatedMessage>(new Uri("queue:order-created-consumer"));
+//Explicit Queue for the Message: If you want OrderCreatedMessage to go to a custom queue(test), you need to make sure that either:
+
+//There is a consumer listening on that queue, or
+//You manually configure an endpoint for that queue like this:
+
+//cfg.ReceiveEndpoint("test", e =>
+//{
+//    // Configure the endpoint to consume OrderCreatedMessage
+//    e.ConfigureConsumer<OrderCreatedConsumer>(context);
+//});
+
+//Conclusion
+//The EndpointConvention.Map<OrderCreatedMessage>(new Uri("queue:order-created")); works because the queue name aligns with the convention MassTransit uses to name the consumer’s queue.When you change it to queue:test, the consumer isn’t listening on that queue by default. To fix this, you need to either configure the consumer to listen on the test queue or make sure the queue name in EndpointConvention.Map matches the one generated by MassTransit.
