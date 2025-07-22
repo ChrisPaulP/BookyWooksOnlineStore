@@ -19,7 +19,8 @@ builder.Services.AddInfrastructureServices(builder.Configuration, builder.Enviro
 builder.Services.AddUseCasesServices();
 builder.Services.AddCoreServices();
 
-if (!builder.Environment.IsEnvironment("Test"))
+var tracingEnabled = builder.Configuration.GetValue<bool>("OpenTelemetry:TracingEnabled");
+if (tracingEnabled)
 {
   builder.Services.AddOpenTelemetryTracing(builder.Configuration);
   builder.Services.AddOpenTelemetryMetrics(builder.Configuration);
@@ -50,7 +51,8 @@ app.UseMiddleware<LogContextMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
-if (!app.Environment.IsEnvironment("Test"))
+var metricsEnabled = builder.Configuration.GetValue<bool>("OpenTelemetry:MetricsEnabled");
+if (metricsEnabled)
 {
   app.UseOpenTelemetryPrometheusScrapingEndpoint();
 }

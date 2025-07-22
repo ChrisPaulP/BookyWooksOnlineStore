@@ -66,19 +66,21 @@ public abstract class TestFactoryBase<TEntryPoint> :
 
         builder.ConfigureAppConfiguration(configurationBuilder =>
         {
-            Configuration = new ConfigurationBuilder()
-                .AddInMemoryCollection(new Dictionary<string, string>
-                {
-                    ["ConnectionStrings:DefaultConnection"] = testDbConnectionString,
-                    ["ConnectionStrings:SagaOrchestrationDatabase"] = testDbConnectionString,
-                    ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname,
-                    ["RabbitMQConfiguration:Config:UserName"] = RabbitMqUsername,
-                    ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword
-                })
-                .AddEnvironmentVariables()
-                .Build();
+            var testConfig = new Dictionary<string, string>
+            {
+                ["ConnectionStrings:DefaultConnection"] = _mssqlContainer.GetConnectionString(),
+                ["ConnectionStrings:SagaOrchestrationDatabase"] = _mssqlContainer.GetConnectionString(),
+                ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname,
 
-            configurationBuilder.AddConfiguration(Configuration);
+                // ✅ Disable OpenTelemetry for integration tests
+                ["OpenTelemetry:TracingEnabled"] = "false",
+                ["OpenTelemetry:MetricsEnabled"] = "false"
+            };
+
+            Configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(testConfig)
+                .AddEnvironmentVariables() // still allow overrides from CI if needed
+                .Build();
         });
 
         builder.ConfigureTestServices(services =>
