@@ -74,7 +74,9 @@ public abstract class TestFactoryBase<TEntryPoint> :
 
                 // ✅ Disable OpenTelemetry for integration tests
                 ["OpenTelemetry:TracingEnabled"] = "false",
-                ["OpenTelemetry:MetricsEnabled"] = "false"
+                ["OpenTelemetry:MetricsEnabled"] = "false",
+
+                ["OpenAIOptions:DisabledForIntegrationTests"] = "true"
             };
 
             Configuration = new ConfigurationBuilder()
