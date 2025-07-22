@@ -33,6 +33,10 @@ public abstract class TestFactoryBase<TEntryPoint>
         await _mssqlContainer.StartAsync();
         await _rabbitMqContainer.StartAsync();
 
+        // [COPILOT] Wait for RabbitMQ to be fully ready
+        Console.WriteLine($"[COPILOT][RabbitMQ] Waiting for RabbitMQ container to be fully ready...");
+        await Task.Delay(5000);
+
         // Optional: Create test database if not exists
         await using var connection = new Microsoft.Data.SqlClient.SqlConnection(_mssqlContainer.GetConnectionString());
         await connection.OpenAsync();
@@ -54,12 +58,21 @@ public abstract class TestFactoryBase<TEntryPoint>
     {
         builder.ConfigureAppConfiguration(configurationBuilder =>
         {
+            var rabbitMqHost = _rabbitMqContainer.Hostname; // [COPILOT]
+            var rabbitMqPort = _rabbitMqContainer.GetMappedPublicPort(5672); // [COPILOT] 
+            var rabbitMqConnectionString = $"amqp://{RabbitMqUsername}:{RabbitMqPassword}@{rabbitMqHost}:{rabbitMqPort}/"; // [COPILOT]
+
+            Console.WriteLine($"[COPILOT][RabbitMQ] Host: {rabbitMqHost}");
+            Console.WriteLine($"[COPILOT][RabbitMQ] Port: {rabbitMqPort}");
+            Console.WriteLine($"[COPILOT][RabbitMQ] ConnectionString: {rabbitMqConnectionString}");
+
             Configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string>
                 {
                     ["ConnectionStrings:DefaultConnection"] = GetTestDatabaseConnectionString(),
                     ["ConnectionStrings:SagaOrchestrationDatabase"] = GetTestDatabaseConnectionString(),
-                    ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname,
+                    ["RabbitMQConfiguration:Config:HostName"] = rabbitMqHost, // [COPILOT]
+                    ["RabbitMQConfiguration:Config:Port"] = rabbitMqPort.ToString(), // [COPILOT]
                     ["RabbitMQConfiguration:Config:UserName"] = RabbitMqUsername,
                     ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword,
                     ["OpenTelemetry:EnableTracing"] = "false", // ✅ disable in tests
@@ -109,11 +122,18 @@ public abstract class TestFactoryBase<TEntryPoint>
 
                 busRegistrationConfigurator.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.Host(new Uri(_rabbitMqContainer.GetConnectionString()), h =>
+                    var rabbitMqHost = _rabbitMqContainer.Hostname; // [COPILOT]
+                    var rabbitMqPort = _rabbitMqContainer.GetMappedPublicPort(5672); // [COPILOT]
+                    Console.WriteLine($"[COPILOT][RabbitMQ] Configuring MassTransit with Host: {rabbitMqHost}, Port: {rabbitMqPort}");
+
+                    cfg.Host(rabbitMqHost, rabbitMqPort, "/", h =>
                     {
                         h.Username(RabbitMqUsername);
                         h.Password(RabbitMqPassword);
                     });
+
+                    // [COPILOT] Add connection diagnostics
+                    //cfg.UseHealthCheck(context);
 
                     ConfigureEndpoints(context, cfg);
                 });
