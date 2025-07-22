@@ -17,16 +17,36 @@ variables:
 
 jobs:
 - job: BuildAndTest
-  displayName: Build and Test (Unit + Integration with Testcontainers)
+  displayName: Build and Test with Testcontainers
 
   steps:
-    # ✅ Ensure Docker is running (Testcontainers uses it)
+    # ✅ Start Docker (Ubuntu hosted agent)
     - script: |
         sudo service docker start
         docker --version
       displayName: Start Docker
 
-    # ✅ Restore NuGet Packages
+    # ✅ Run Integration Tests in Docker Compose (Testcontainers: SQL + RabbitMQ)
+    - task: DockerCompose@1
+      displayName: Run Integration Tests (Testcontainers)
+      inputs:
+        dockerComposeFile: "docker-compose-integration-tests.yml"
+        dockerComposeCommand: "up --abort-on-container-exit"
+        projectName: "bookywooks_onlinestore"
+      env:
+        COMPOSE_PROJECT_NAME: 'bookywooks_onlinestore'
+        CONTAINER_NAME: 'bookywooks_orderapi_integrationtests'
+
+    # ✅ Publish TRX Test Results from Mounted Volume
+    - task: PublishTestResults@2
+      displayName: Publish Integration Test Results
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFormat: VSTest
+        testResultsFiles: '**/tests-results/booky-wooks-integration-test-results.xml'
+        mergeTestResults: true
+
+    # ✅ Restore NuGet Packages for Remaining Projects
     - task: DotNetCoreCLI@2
       displayName: Restore NuGet Packages
       inputs:
@@ -34,7 +54,7 @@ jobs:
         projects: $(BuildParameters.RestoreBuildProjects)
         configuration: $(buildConfiguration)
 
-    # ✅ Build the Solution
+    # ✅ Build the Solution (excludes integration tests)
     - task: DotNetCoreCLI@2
       displayName: Build Solution
       inputs:
@@ -42,36 +62,17 @@ jobs:
         projects: '**/BookyWooks.sln'
         arguments: '--configuration $(buildConfiguration)'
 
-    # ✅ Run **Unit Tests** (excludes integration tests)
+    # ✅ Run Unit Tests (excludes integration tests)
     - task: DotNetCoreCLI@2
       displayName: Run Unit Tests
       inputs:
         command: test
         projects: $(BuildParameters.TestProjects)
-        arguments: '--configuration $(buildConfiguration) --no-build --logger trx'
+        arguments: --configuration $(buildConfiguration) --no-build --logger trx
       env:
         ASPNETCORE_ENVIRONMENT: Test
-
-    # ✅ Run **Integration Tests (Testcontainers)**
-    - task: DotNetCoreCLI@2
-      displayName: Run Integration Tests (Testcontainers)
-      inputs:
-        command: test
-        projects: 'BookWooks.OrderApi.TestContainersIntegrationTests/BookWooks.OrderApi.TestContainersIntegrationTests.csproj'
-        arguments: '--configuration $(buildConfiguration) --no-build --logger trx;LogFileName=booky-wooks-integration-test-results.trx'
-      env:
-        ASPNETCORE_ENVIRONMENT: Test
-        TESTCONTAINERS_RYUK_DISABLED: 'false' # optional, enable Ryuk resource cleanup
-        DOTNET_TESTCONTAINERS_HOST_OVERRIDE: 'unix:///var/run/docker.sock'
-
-    # ✅ Publish TRX Test Results
-    - task: PublishTestResults@2
-      displayName: Publish Integration Test Results
-      condition: succeededOrFailed()
-      inputs:
-        testResultsFormat: VSTest
-        testResultsFiles: '**/booky-wooks-integration-test-results.trx'
-        mergeTestResults: true
+        TESTCONTAINERS_HOST_OVERRIDE: 'localhost'
+        DOCKER_HOST: 'unix:///var/run/docker.sock'
 
     # ✅ Publish App Artifacts (Optional)
     - task: DotNetCoreCLI@2
@@ -80,9 +81,10 @@ jobs:
         command: publish
         publishWebProjects: false
         projects: $(BuildParameters.RestoreBuildProjects)
-        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+        arguments: --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)
         zipAfterPublish: true
 
+    # ✅ Publish Build Artifacts (Optional)
     - task: PublishBuildArtifacts@1
       displayName: Publish Artifact
       condition: succeededOrFailed()
