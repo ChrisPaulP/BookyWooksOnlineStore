@@ -1,31 +1,31 @@
-﻿using BookWooks.OrderApi.Infrastructure; // Your EF DbContext namespace
-using BookWooks.OrderApi.Infrastructure.Data;
-using DotNet.Testcontainers.Containers;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Data.SqlClient;
+using System.Threading.Tasks;
 using IntegrationTestingSetup;
-using MassTransit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using OpenTelemetry;
-using OpenTelemetry.Metrics;
 using Testcontainers.MsSql;
 using Testcontainers.RabbitMq;
+using MassTransit;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
+using StackExchange.Redis;
 
-public abstract class TestFactoryBase<TEntryPoint> :
-    WebApplicationFactory<TEntryPoint>, IAsyncLifetime
-    where TEntryPoint : class
+public abstract class TestFactoryBase<TEntryPoint>
+    : WebApplicationFactory<TEntryPoint>, IAsyncLifetime where TEntryPoint : class
 {
     protected readonly MsSqlContainer _mssqlContainer;
     private readonly RabbitMqContainer _rabbitMqContainer;
-    private const string TestDatabaseName = "BookyWooksTest";
+    protected IConfiguration Configuration { get; private set; }
+
     private const string RabbitMqUsername = "guest";
     private const string RabbitMqPassword = "guest";
-    protected IConfiguration Configuration { get; private set; }
+
+    private const string TestDatabaseName = "BookyWooksTest";
 
     protected TestFactoryBase()
     {
@@ -35,42 +35,39 @@ public abstract class TestFactoryBase<TEntryPoint> :
 
     public async Task InitializeAsync()
     {
-        // ✅ Start containers BEFORE WebHost starts
         await _mssqlContainer.StartAsync();
         await _rabbitMqContainer.StartAsync();
 
-        Console.WriteLine($"[DEBUG] SQL Connection: {_mssqlContainer.GetConnectionString()}");
-
-        // ✅ Ensure a clean test database exists
-        await EnsureTestDatabaseAsync(_mssqlContainer.GetConnectionString(), TestDatabaseName);
+        await EnsureTestDatabaseCreatedAsync();
     }
 
-    private static async Task EnsureTestDatabaseAsync(string masterConnectionString, string databaseName)
+    private async Task EnsureTestDatabaseCreatedAsync()
     {
-        await using var connection = new  SqlConnection(masterConnectionString);
+        var connectionString = _mssqlContainer.GetConnectionString();
+
+        await using var connection = new SqlConnection(connectionString);
         await connection.OpenAsync();
-        await using var cmd = connection.CreateCommand();
+
+        var cmd = connection.CreateCommand();
         cmd.CommandText = $@"
-            IF DB_ID('{databaseName}') IS NULL
+            IF DB_ID('{TestDatabaseName}') IS NULL
             BEGIN
-                CREATE DATABASE [{databaseName}];
+                CREATE DATABASE [{TestDatabaseName}];
             END";
         await cmd.ExecuteNonQueryAsync();
-        Console.WriteLine($"[DEBUG] Ensured test database: {databaseName}");
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        var testDbConnectionString =
-            $"{_mssqlContainer.GetConnectionString()};Database={TestDatabaseName}";
-
         builder.ConfigureAppConfiguration(configurationBuilder =>
         {
             var testConfig = new Dictionary<string, string>
             {
-                ["ConnectionStrings:DefaultConnection"] = _mssqlContainer.GetConnectionString(),
-                ["ConnectionStrings:SagaOrchestrationDatabase"] = _mssqlContainer.GetConnectionString(),
+                ["ConnectionStrings:DefaultConnection"] = $"{_mssqlContainer.GetConnectionString()};Database={TestDatabaseName}",
+                ["ConnectionStrings:SagaOrchestrationDatabase"] = $"{_mssqlContainer.GetConnectionString()};Database={TestDatabaseName}",
                 ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname,
+                ["RabbitMQConfiguration:Config:UserName"] = RabbitMqUsername,
+                ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword,
 
                 // ✅ Disable OpenTelemetry for integration tests
                 ["OpenTelemetry:TracingEnabled"] = "false",
@@ -79,25 +76,14 @@ public abstract class TestFactoryBase<TEntryPoint> :
 
             Configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(testConfig)
-                .AddEnvironmentVariables() // still allow overrides from CI if needed
+                .AddEnvironmentVariables() // allow CI/CD overrides if needed
                 .Build();
+
+            configurationBuilder.AddConfiguration(Configuration);
         });
 
         builder.ConfigureTestServices(services =>
         {
-            // ✅ Force EF Core to use the Testcontainers database
-            services.RemoveAll<DbContextOptions<BookyWooksOrderDbContext>>();
-            services.AddDbContext<BookyWooksOrderDbContext>(options =>
-            {
-                Console.WriteLine($"[DEBUG] FORCED EF ConnectionString: {testDbConnectionString}");
-                options.UseSqlServer(testDbConnectionString);
-            });
-            // ✅ Register No-Op MeterProvider for tests
-            services.RemoveAll<MeterProvider>();
-            services.AddSingleton(sp =>
-                Sdk.CreateMeterProviderBuilder().Build());
-
-            // ✅ Configure MassTransit Test Harness
             services.AddMassTransitTestHarness(busRegistrationConfigurator =>
             {
                 ConfigureMassTransit(busRegistrationConfigurator);
@@ -112,6 +98,41 @@ public abstract class TestFactoryBase<TEntryPoint> :
                     ConfigureEndpoints(context, cfg);
                 });
             });
+
+            // If you need Redis override in the future, call: OverrideRedis(services, Configuration);
+        });
+    }
+
+    private static void OverrideRedis(IServiceCollection services, IConfiguration configuration)
+    {
+        var descriptors = services
+            .Where(s => s.ServiceType == typeof(IDistributedCache) || s.ServiceType == typeof(RedisCacheOptions))
+            .ToList();
+
+        foreach (var descriptor in descriptors)
+        {
+            services.Remove(descriptor);
+        }
+
+        var redisConnectionString = configuration.GetValue<string>("ConnectionStrings:Redis")
+            ?? throw new ArgumentNullException("Redis connection string not configured");
+
+        Console.WriteLine($"[DEBUG] Overriding Redis with: {redisConnectionString}");
+
+        var redisConfiguration = new RedisCacheOptions
+        {
+            ConfigurationOptions = new ConfigurationOptions
+            {
+                AbortOnConnectFail = true,
+                EndPoints = { redisConnectionString }
+            }
+        };
+
+        services.AddSingleton(redisConfiguration);
+        services.AddSingleton<IDistributedCache>(sp =>
+        {
+            var options = sp.GetRequiredService<RedisCacheOptions>();
+            return new RedisCache(options);
         });
     }
 
