@@ -29,7 +29,8 @@ public abstract class TestFactoryBase<TEntryPoint>
 
     public async Task InitializeAsync()
     {
-        await IntegrationTestingSetupExtensions.StartContainersAsync(_mssqlContainer, _rabbitMqContainer);
+        await _mssqlContainer.StartAsync();
+        await _rabbitMqContainer.StartAsync();
 
         // Optional: Create test database if not exists
         await using var connection = new Microsoft.Data.SqlClient.SqlConnection(_mssqlContainer.GetConnectionString());
