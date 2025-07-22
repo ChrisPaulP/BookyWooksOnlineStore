@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BookWooks.OrderApi\src\BookWooks.OrderApi.Infrastructure\BookWooks.OrderApi.Infrastructure.csproj" />
     <ProjectReference Include="..\BookyWooks.Messaging\BookyWooks.Messaging.csproj" />
   </ItemGroup>
 
