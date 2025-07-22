@@ -1,76 +1,73 @@
-﻿using MassTransit;
+﻿
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
+
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.StackExchangeRedis;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using StackExchange.Redis;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+
 using Testcontainers.MsSql;
 using Testcontainers.RabbitMq;
 using Testcontainers.Redis;
 
 namespace IntegrationTestingSetup;
 
-public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntryPoint>, IAsyncLifetime where TEntryPoint : class
+using System;
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
+using StackExchange.Redis;
+using Xunit; // Needed for IAsyncLifetime (xUnit)
+using MassTransit;
+
+public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntryPoint>, IAsyncLifetime
+    where TEntryPoint : class
 {
-    protected readonly MsSqlContainer _mssqlContainer;
-    private readonly RabbitMqContainer _rabbitMqContainer;
-    private readonly RedisContainer _redisContainer;  
+    // ✅ Shared containers (one instance for all test classes)
+    private static readonly Lazy<Task> _containerInit = new(() => InitializeContainersAsync());
+    private static bool _containersInitialized;
+
+    protected static MsSqlContainer SqlContainer { get; private set; }
+    protected static RabbitMqContainer RabbitMqContainer { get; private set; }
+    protected static RedisContainer RedisContainer { get; private set; }
+
     private const string RabbitMqUsername = "guest";
     private const string RabbitMqPassword = "guest";
-    protected IConfiguration Configuration { get; private set; }
 
-    protected TestFactoryBase()
-    {
-        _mssqlContainer = IntegrationTestingSetupExtensions.CreateMsSqlContainer();
-        _rabbitMqContainer = IntegrationTestingSetupExtensions.CreateRabbitMqContainer();
-        _redisContainer = IntegrationTestingSetupExtensions.CreateRedisContainer();
-    }
+    protected IConfiguration Configuration { get; private set; }
 
     public async Task InitializeAsync()
     {
-        await IntegrationTestingSetupExtensions.StartContainersAsync(_mssqlContainer, _rabbitMqContainer, _redisContainer);
+        if (!_containersInitialized)
+        {
+            await _containerInit.Value; // Initialize only once
+            _containersInitialized = true;
+        }
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureAppConfiguration(configurationBuilder =>
         {
-            //Configuration = new ConfigurationBuilder().AddJsonFile("testcontainersappsettings.json", optional: true)
-            //    .AddInMemoryCollection(new Dictionary<string, string>
-            //    {
-            //        ["ConnectionStrings:DefaultConnection"] = _mssqlContainer.GetConnectionString(),
-            //        ["ConnectionStrings:SagaOrchestrationDatabase"] = _mssqlContainer.GetConnectionString(),
-            //        ["ConnectionStrings:OrderDatabase"] = _mssqlContainer.GetConnectionString(),
-            //        ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname
-            //    })
-            //    .AddEnvironmentVariables()
-            //    .Build();
-
-            var redisConn = $"{_redisContainer.Hostname}:{_redisContainer.GetMappedPublicPort(6379)}";
+            var redisConn = $"{RedisContainer.Hostname}:{RedisContainer.GetMappedPublicPort(6379)}";
             Console.WriteLine($"[DEBUG] Redis Testcontainers connection string: {redisConn}");
+
             Configuration = new ConfigurationBuilder()
-                    .AddEnvironmentVariables()
-                    .AddInMemoryCollection(new Dictionary<string, string>
-                    {
-                        ["ConnectionStrings:DefaultConnection"] = _mssqlContainer.GetConnectionString(),
-                        ["ConnectionStrings:OrderDatabase"] = _mssqlContainer.GetConnectionString(),
-                        ["ConnectionStrings:SagaOrchestrationDatabase"] = _mssqlContainer.GetConnectionString(),
-                        ["RabbitMQConfiguration:Config:HostName"] = _rabbitMqContainer.Hostname,
-                        ["RabbitMQConfiguration:Config:UserName"] = RabbitMqUsername,
-                        ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword,
-                        ["ConnectionStrings:Redis"] = redisConn
-                    })
-                    //.AddEnvironmentVariables()
-                    .Build();
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    ["ConnectionStrings:DefaultConnection"] = SqlContainer.GetConnectionString(),
+                    ["ConnectionStrings:OrderDatabase"] = SqlContainer.GetConnectionString(),
+                    ["ConnectionStrings:SagaOrchestrationDatabase"] = SqlContainer.GetConnectionString(),
+                    ["RabbitMQConfiguration:Config:HostName"] = RabbitMqContainer.Hostname,
+                    ["RabbitMQConfiguration:Config:UserName"] = RabbitMqUsername,
+                    ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword,
+                    ["ConnectionStrings:Redis"] = redisConn
+                })
+                .AddEnvironmentVariables()
+                .Build();
 
             configurationBuilder.AddConfiguration(Configuration);
         });
@@ -78,13 +75,14 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
         builder.ConfigureTestServices(services =>
         {
             OverrideRedis(services, Configuration);
+
             services.AddMassTransitTestHarness(busRegistrationConfigurator =>
             {
                 ConfigureMassTransit(busRegistrationConfigurator);
 
                 busRegistrationConfigurator.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.Host(new Uri(_rabbitMqContainer.GetConnectionString()), h =>
+                    cfg.Host(new Uri(RabbitMqContainer.GetConnectionString()), h =>
                     {
                         h.Username(RabbitMqUsername);
                         h.Password(RabbitMqPassword);
@@ -92,13 +90,11 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
                     ConfigureEndpoints(context, cfg);
                 });
             });
-
-            //ConfigureProjectSpecificServices(services);
         });
     }
+
     private static void OverrideRedis(IServiceCollection services, IConfiguration configuration)
     {
-        // Remove existing Redis registrations (from Startup)
         var descriptors = services
             .Where(s => s.ServiceType == typeof(IDistributedCache) || s.ServiceType == typeof(RedisCacheOptions))
             .ToList();
@@ -108,7 +104,6 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
             services.Remove(descriptor);
         }
 
-        // Re-register using Testcontainers connection string
         var redisConnectionString = configuration.GetValue<string>("ConnectionStrings:Redis")
             ?? throw new ArgumentNullException("Redis connection string not configured");
 
@@ -130,21 +125,57 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
             return new RedisCache(options);
         });
     }
-    //protected abstract void ConfigureProjectSpecificServices(IServiceCollection services);
+
     protected abstract void ConfigureMassTransit(IBusRegistrationConfigurator busRegistrationConfigurator);
+
     protected virtual void ConfigureEndpoints(IBusRegistrationContext busRegistrationContext, IRabbitMqBusFactoryConfigurator rabbitMqBusFactoryConfigurator)
     {
         rabbitMqBusFactoryConfigurator.ConfigureEndpoints(busRegistrationContext);
     }
 
-
-    public new async Task DisposeAsync()
+    public async Task DisposeAsync()
     {
-        await _mssqlContainer.DisposeAsync();
-        await _rabbitMqContainer.DisposeAsync();
-        await _redisContainer.DisposeAsync();
+        // ✅ Dispose only after all tests (one-time cleanup)
+        if (_containersInitialized)
+        {
+            await SqlContainer.DisposeAsync();
+            await RabbitMqContainer.DisposeAsync();
+            await RedisContainer.DisposeAsync();
+        }
+    }
+
+    // ✅ Static container initialization (only once per test run)
+    private static async Task InitializeContainersAsync()
+    {
+        Console.WriteLine("[DEBUG] Starting Testcontainers (one-time shared)...");
+
+        SqlContainer = new MsSqlBuilder()
+            .WithPassword("Your_password123")
+            .WithCleanUp(true)
+            .Build();
+
+        RabbitMqContainer = new RabbitMqBuilder()
+            .WithUsername(RabbitMqUsername)
+            .WithPassword(RabbitMqPassword)
+            .WithCleanUp(true)
+            .Build();
+
+        RedisContainer = new RedisBuilder()
+            .WithCleanUp(true)
+            .Build();
+
+        await Task.WhenAll(
+            SqlContainer.StartAsync(),
+            RabbitMqContainer.StartAsync(),
+            RedisContainer.StartAsync()
+        );
+
+        Console.WriteLine($"[DEBUG] SQL running at: {SqlContainer.GetConnectionString()}");
+        Console.WriteLine($"[DEBUG] RabbitMQ running at: {RabbitMqContainer.Hostname}:{RabbitMqContainer.GetMappedPublicPort(5672)}");
+        Console.WriteLine($"[DEBUG] Redis running at: {RedisContainer.Hostname}:{RedisContainer.GetMappedPublicPort(6379)}");
     }
 }
+
 
 // Register the endpoint convention for OrderCreatedMessage
 //EndpointConvention.Map<OrderCreatedMessage>(new Uri("queue:order-created")); // Ensure Queue Names Match: Ensure that the queue name specified in EndpointConvention.Map<OrderCreatedMessage> matches the one that MassTransit is generating automatically for the consumer.
