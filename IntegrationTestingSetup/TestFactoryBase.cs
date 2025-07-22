@@ -6,11 +6,13 @@ using MassTransit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Data.SqlClient;
+using OpenTelemetry;
+using OpenTelemetry.Metrics;
 using Testcontainers.MsSql;
 using Testcontainers.RabbitMq;
 
@@ -88,6 +90,10 @@ public abstract class TestFactoryBase<TEntryPoint> :
                 Console.WriteLine($"[DEBUG] FORCED EF ConnectionString: {testDbConnectionString}");
                 options.UseSqlServer(testDbConnectionString);
             });
+            // ✅ Register No-Op MeterProvider for tests
+            services.RemoveAll<MeterProvider>();
+            services.AddSingleton(sp =>
+                Sdk.CreateMeterProviderBuilder().Build());
 
             // ✅ Configure MassTransit Test Harness
             services.AddMassTransitTestHarness(busRegistrationConfigurator =>
