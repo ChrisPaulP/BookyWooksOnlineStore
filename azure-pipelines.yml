@@ -25,13 +25,18 @@ jobs:
   displayName: Build and Test with Testcontainers
 
   steps:
-    # ✅ Ensure Docker is running on Ubuntu Agent
+    # ✅ Ensure Docker is running and stable before Testcontainers starts
     - script: |
         sudo service docker start
-        docker --version
-      displayName: Start Docker
+        echo "Waiting for Docker to be ready..."
+        until docker info >/dev/null 2>&1; do
+          echo "Docker not ready yet, retrying..."
+          sleep 2
+        done
+        docker info
+      displayName: Ensure Docker is ready
 
-    # ✅ Restore NuGet Packages (all projects)
+    # ✅ Restore NuGet Packages
     - task: DotNetCoreCLI@2
       displayName: Restore NuGet Packages
       inputs:
@@ -39,7 +44,7 @@ jobs:
         projects: $(BuildParameters.RestoreBuildProjects)
         configuration: $(buildConfiguration)
 
-    # ✅ Build the Solution (all projects, including test projects)
+    # ✅ Build Solution
     - task: DotNetCoreCLI@2
       displayName: Build Solution
       inputs:
@@ -47,10 +52,9 @@ jobs:
         projects: |
           **/*.csproj
           !**/SagaOrchestration.IntegrationTests.csproj
-        # projects: '**/BookyWooks.sln'
         arguments: '--configuration $(buildConfiguration)'
 
-    # ✅ Run Unit Tests (excluding integration/functional tests)
+    # ✅ Run Unit Tests
     - task: DotNetCoreCLI@2
       displayName: Run Unit Tests
       inputs:
@@ -60,7 +64,7 @@ jobs:
       env:
         ASPNETCORE_ENVIRONMENT: Test
 
-    # ✅ Run Integration Tests (Testcontainers spins up SQL, RabbitMQ, Redis)
+    # ✅ Run Integration Tests (Testcontainers with CI optimizations)
     - task: DotNetCoreCLI@2
       displayName: Run Integration Tests (Testcontainers)
       inputs:
@@ -70,9 +74,10 @@ jobs:
       env:
         ASPNETCORE_ENVIRONMENT: Test
         TESTCONTAINERS_HOST_OVERRIDE: 'localhost'
+        TESTCONTAINERS_RYUK_DISABLED: 'true'   # ✅ Disables Ryuk for CI reliability
         DOCKER_HOST: 'unix:///var/run/docker.sock'
 
-    # ✅ Publish All Test Results (Unit + Integration)
+    # ✅ Publish All Test Results
     - task: PublishTestResults@2
       displayName: Publish Test Results
       condition: succeededOrFailed()
