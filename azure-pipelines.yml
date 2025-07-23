@@ -14,9 +14,11 @@ variables:
     !**/BookWooks.OrderApi.FunctionalTests.csproj
     !**/BookyWooks.OrderApi.IntegrationTests.csproj
     !**/BookWooks.OrderApi.TestContainersIntegrationTests.csproj
+    !**/SagaOrchestration.IntegrationTests.csproj
   BuildParameters.IntegrationTestProjects: |
     **/*IntegrationTests*.csproj
     **/BookWooks.OrderApi.TestContainersIntegrationTests.csproj
+    !**/SagaOrchestration.IntegrationTests.csproj
 
 jobs:
 - job: BuildAndTest
@@ -42,7 +44,10 @@ jobs:
       displayName: Build Solution
       inputs:
         command: build
-        projects: '**/BookyWooks.sln'
+        projects: |
+          **/*.csproj
+          !**/SagaOrchestration.IntegrationTests.csproj
+        # projects: '**/BookyWooks.sln'
         arguments: '--configuration $(buildConfiguration)'
 
     # ✅ Run Unit Tests (excluding integration/functional tests)
