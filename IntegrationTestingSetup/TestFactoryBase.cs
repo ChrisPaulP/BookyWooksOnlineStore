@@ -28,40 +28,53 @@ using Xunit; // Needed for IAsyncLifetime (xUnit)
 
 
 
-public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntryPoint>, IAsyncLifetime
-    where TEntryPoint : class
+public abstract class TestFactoryBase<TEntryPoint>
+    : WebApplicationFactory<TEntryPoint>, IAsyncLifetime where TEntryPoint : class
 {
-    private static readonly Lazy<Task> _containerInit = new(() => InitializeContainersAsync());
-    private static bool _containersInitialized;
-
-    protected static MsSqlContainer SqlContainer { get; private set; }
-    protected static RabbitMqContainer RabbitMqContainer { get; private set; }
-    protected static RedisContainer RedisContainer { get; private set; }
+    // ✅ Shared static containers (parallel tests across classes use same instances)
+    private static readonly MsSqlContainer SqlContainer = IntegrationTestingSetupExtensions.CreateMsSqlContainer();
+    private static readonly RabbitMqContainer RabbitMqContainer = IntegrationTestingSetupExtensions.CreateRabbitMqContainer();
+    private static readonly RedisContainer RedisContainer = IntegrationTestingSetupExtensions.CreateRedisContainer();
 
     private const string RabbitMqUsername = "guest";
     private const string RabbitMqPassword = "guest";
+    private static bool _containersStarted = false;
 
-    protected IConfiguration Configuration { get; private set; }
+    protected IConfiguration Configuration { get; private set; } = default!;
 
     public async Task InitializeAsync()
     {
-        if (!_containersInitialized)
+        // ✅ Start containers only once across all test classes (parallel-safe)
+        if (!_containersStarted)
         {
-            await _containerInit.Value;
-            _containersInitialized = true;
+            await SqlContainer.StartAsync();
+            await RabbitMqContainer.StartAsync();
+            await RedisContainer.StartAsync();
+            _containersStarted = true;
+
+            Console.WriteLine($"[DEBUG] SQL running at: {SqlContainer.GetConnectionString()}");
+            Console.WriteLine($"[DEBUG] RabbitMQ running at: {RabbitMqContainer.Hostname}:{RabbitMqContainer.GetMappedPublicPort(5672)}");
+            Console.WriteLine($"[DEBUG] Redis running at: {RedisContainer.Hostname}:{RedisContainer.GetMappedPublicPort(6379)}");
         }
+
+        // ✅ Auto-seed DB once per test suite run (fast in CI)
         using var scope = Services.CreateScope();
-        var app = scope.ServiceProvider.GetRequiredService<WebApplication>();
-        await app.InitialiseDatabaseAsync();
+        var dbContext = scope.ServiceProvider.GetRequiredService<BookyWooksOrderDbContext>();
+
+        await dbContext.Database.MigrateAsync();
+        await DatabaseExtentions.ClearData(dbContext);
+        await DatabaseExtentions.SeedAsync(dbContext);
+
+        Console.WriteLine($"[DEBUG] EF Core seeded using connection: {dbContext.Database.GetConnectionString()}");
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.ConfigureAppConfiguration(configurationBuilder =>
+        builder.ConfigureAppConfiguration(_ =>
         {
             var sqlConn = SqlContainer.GetConnectionString();
-            var redisConn = $"{RedisContainer.Hostname}:{RedisContainer.GetMappedPublicPort(6379)}";
             var rabbitPort = RabbitMqContainer.GetMappedPublicPort(5672);
+            var redisConn = $"{RedisContainer.Hostname}:{RedisContainer.GetMappedPublicPort(6379)}";
 
             Console.WriteLine($"[DEBUG] SQL connection: {sqlConn}");
             Console.WriteLine($"[DEBUG] RabbitMQ connection: {RabbitMqContainer.Hostname}:{rabbitPort}");
@@ -79,133 +92,91 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
                     ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword,
                     ["ConnectionStrings:Redis"] = redisConn
                 })
-                //.AddEnvironmentVariables()
                 .Build();
-
-            configurationBuilder.AddConfiguration(Configuration);
         });
 
         builder.ConfigureTestServices(services =>
         {
-            // ✅ Remove existing DbContext registrations
-            var dbContextDescriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(DbContextOptions<BookyWooksOrderDbContext>)
-            );
-            if (dbContextDescriptor != null)
-            {
-                services.Remove(dbContextDescriptor);
-            }
-            var sqlConn = SqlContainer.GetConnectionString();
-            // ✅ Register with Testcontainers connection string
-            services.AddDbContext<BookyWooksOrderDbContext>(options =>
-            {
-                options.UseSqlServer(sqlConn);
-            });
+            // ✅ Override DbContext with Testcontainers connection
+            OverrideDbContext(services, Configuration);
 
-            using (var scope = services.BuildServiceProvider().CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<BookyWooksOrderDbContext>();
-                Console.WriteLine($"[DEBUG] CHRIS EF Core using connection: {dbContext.Database.GetConnectionString()}");
-            }
+            // ✅ Override Redis
             OverrideRedis(services, Configuration);
 
-            // Remove existing MassTransit registrations if needed
-            var massTransitDescriptors = services
-                .Where(d => d.ServiceType.FullName != null && d.ServiceType.FullName.Contains("MassTransit"))
-                .ToList();
-            foreach (var descriptor in massTransitDescriptors)
+            // ✅ Override MassTransit (RabbitMQ)
+            services.AddMassTransitTestHarness(cfg =>
             {
-                services.Remove(descriptor);
-            }
+                ConfigureMassTransit(cfg);
 
-            services.AddMassTransitTestHarness(busRegistrationConfigurator =>
-            {
-                ConfigureMassTransit(busRegistrationConfigurator);
-
-                busRegistrationConfigurator.UsingRabbitMq((context, cfg) =>
+                cfg.UsingRabbitMq((context, rabbitCfg) =>
                 {
-                    cfg.Host(
-                        RabbitMqContainer.Hostname,
-                        RabbitMqContainer.GetMappedPublicPort(5672),
-                        "/",
-                        h =>
-                        {
-                            h.Username(RabbitMqUsername);
-                            h.Password(RabbitMqPassword);
-                        });
+                    var host = RabbitMqContainer.Hostname;
+                    var port = RabbitMqContainer.GetMappedPublicPort(5672);
 
-                    ConfigureEndpoints(context, cfg);
+                    rabbitCfg.Host(host, port, "/", h =>
+                    {
+                        h.Username(RabbitMqUsername);
+                        h.Password(RabbitMqPassword);
+                    });
+
+                    ConfigureEndpoints(context, rabbitCfg);
                 });
             });
         });
     }
 
+    private static void OverrideDbContext(IServiceCollection services, IConfiguration configuration)
+    {
+        var descriptors = services
+            .Where(s => s.ServiceType == typeof(DbContextOptions<BookyWooksOrderDbContext>))
+            .ToList();
+
+        foreach (var d in descriptors)
+            services.Remove(d);
+
+        services.AddDbContext<BookyWooksOrderDbContext>(options =>
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+    }
+
     private static void OverrideRedis(IServiceCollection services, IConfiguration configuration)
     {
+        var redisConn = configuration.GetValue<string>("ConnectionStrings:Redis")
+            ?? throw new ArgumentNullException("Redis connection string not configured");
+
+        Console.WriteLine($"[DEBUG] Overriding Redis with: {redisConn}");
+
+        // Remove existing registrations
         var descriptors = services
             .Where(s => s.ServiceType == typeof(IDistributedCache) || s.ServiceType == typeof(RedisCacheOptions))
             .ToList();
+        foreach (var d in descriptors)
+            services.Remove(d);
 
-        foreach (var descriptor in descriptors)
-        {
-            services.Remove(descriptor);
-        }
-
-        var redisConnectionString = configuration.GetValue<string>("ConnectionStrings:Redis")
-            ?? throw new ArgumentNullException("Redis connection string not configured");
-
-        Console.WriteLine($"[DEBUG] Overriding Redis with: {redisConnectionString}");
-
+        // Re-register
         var redisConfiguration = new RedisCacheOptions
         {
             ConfigurationOptions = new ConfigurationOptions
             {
                 AbortOnConnectFail = true,
-                EndPoints = { redisConnectionString }
+                EndPoints = { redisConn }
             }
         };
 
         services.AddSingleton(redisConfiguration);
-        services.AddSingleton<IDistributedCache>(sp =>
-        {
-            var options = sp.GetRequiredService<RedisCacheOptions>();
-            return new RedisCache(options);
-        });
+        services.AddSingleton<IDistributedCache>(_ => new RedisCache(redisConfiguration));
     }
 
-    protected abstract void ConfigureMassTransit(IBusRegistrationConfigurator busRegistrationConfigurator);
+    protected abstract void ConfigureMassTransit(IBusRegistrationConfigurator cfg);
 
-    protected virtual void ConfigureEndpoints(
-        IBusRegistrationContext busRegistrationContext,
-        IRabbitMqBusFactoryConfigurator rabbitMqBusFactoryConfigurator)
+    protected virtual void ConfigureEndpoints(IBusRegistrationContext ctx, IRabbitMqBusFactoryConfigurator cfg)
     {
-        rabbitMqBusFactoryConfigurator.ConfigureEndpoints(busRegistrationContext);
+        cfg.ConfigureEndpoints(ctx);
     }
 
-    public async Task DisposeAsync()
+    public new Task DisposeAsync()
     {
-        if (_containersInitialized)
-        {
-            await SqlContainer.DisposeAsync();
-            await RabbitMqContainer.DisposeAsync();
-            await RedisContainer.DisposeAsync();
-        }
-    }
-
-    // ✅ Containers now fully created by your updated IntegrationTestingSetupExtensions
-    private static async Task InitializeContainersAsync()
-    {
-        Console.WriteLine("[DEBUG] Starting Testcontainers via IntegrationTestingSetupExtensions...");
-
-        SqlContainer = IntegrationTestingSetupExtensions.CreateMsSqlContainer();
-        RabbitMqContainer = IntegrationTestingSetupExtensions.CreateRabbitMqContainer();
-        RedisContainer = IntegrationTestingSetupExtensions.CreateRedisContainer();
-
-        await SqlContainer.StartContainersAsync(RabbitMqContainer, RedisContainer);
-
-        Console.WriteLine($"[DEBUG] SQL running at: {SqlContainer.GetConnectionString()}");
-        Console.WriteLine($"[DEBUG] RabbitMQ running at: {RabbitMqContainer.Hostname}:{RabbitMqContainer.GetMappedPublicPort(5672)}");
-        Console.WriteLine($"[DEBUG] Redis running at: {RedisContainer.Hostname}:{RedisContainer.GetMappedPublicPort(6379)}");
+        // ✅ DO NOT stop containers – keep them alive for entire test run
+        return Task.CompletedTask;
     }
 }
 
