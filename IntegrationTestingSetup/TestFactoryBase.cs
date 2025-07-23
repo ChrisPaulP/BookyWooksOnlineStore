@@ -81,6 +81,7 @@ public abstract class TestFactoryBase<TEntryPoint>
             Console.WriteLine($"[DEBUG] Redis connection: {redisConn}");
 
             Configuration = new ConfigurationBuilder()
+            .AddEnvironmentVariables()
                 .AddInMemoryCollection(new Dictionary<string, string>
                 {
                     ["ConnectionStrings:DefaultConnection"] = sqlConn,
