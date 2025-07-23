@@ -25,9 +25,10 @@ jobs:
   displayName: Build and Test with Testcontainers
 
   steps:
-    # ✅ Ensure Docker is running on Ubuntu Agent
+    # ✅ Ensure Docker is running (required for Testcontainers)
     - script: |
         sudo service docker start
+        docker info
         docker --version
       displayName: Start Docker
 
@@ -39,7 +40,7 @@ jobs:
         projects: $(BuildParameters.RestoreBuildProjects)
         configuration: $(buildConfiguration)
 
-    # ✅ Build the Solution (all projects, including test projects)
+    # ✅ Build the Solution (skip rebuild for test phase)
     - task: DotNetCoreCLI@2
       displayName: Build Solution
       inputs:
@@ -47,10 +48,9 @@ jobs:
         projects: |
           **/*.csproj
           !**/SagaOrchestration.IntegrationTests.csproj
-        # projects: '**/BookyWooks.sln'
         arguments: '--configuration $(buildConfiguration)'
 
-    # ✅ Run Unit Tests (excluding integration/functional tests)
+    # ✅ Run Unit Tests (fast)
     - task: DotNetCoreCLI@2
       displayName: Run Unit Tests
       inputs:
@@ -60,19 +60,24 @@ jobs:
       env:
         ASPNETCORE_ENVIRONMENT: Test
 
-    # ✅ Run Integration Tests (Testcontainers spins up SQL, RabbitMQ, Redis)
+    # ✅ Run Integration Tests (Testcontainers optimized for CI)
     - task: DotNetCoreCLI@2
       displayName: Run Integration Tests (Testcontainers)
       inputs:
         command: test
         projects: $(BuildParameters.IntegrationTestProjects)
-        arguments: --configuration $(buildConfiguration) --no-build --logger trx
+        arguments: >
+          --configuration $(buildConfiguration)
+          --no-build
+          --logger trx
+          --collect:"XPlat Code Coverage"
       env:
         ASPNETCORE_ENVIRONMENT: Test
-        TESTCONTAINERS_HOST_OVERRIDE: 'localhost'
-        DOCKER_HOST: 'unix:///var/run/docker.sock'
+        TESTCONTAINERS_HOST_OVERRIDE: 'host.docker.internal' # ✅ key change!
+        DOTNET_USE_POLLING_FILE_WATCHER: '1'
+        DOTNET_RUNNING_IN_CONTAINER: 'false'
 
-    # ✅ Publish All Test Results (Unit + Integration)
+    # ✅ Publish Test Results
     - task: PublishTestResults@2
       displayName: Publish Test Results
       condition: succeededOrFailed()
@@ -81,7 +86,7 @@ jobs:
         testResultsFiles: '**/TestResults/*.trx'
         mergeTestResults: true
 
-    # ✅ Publish App Artifacts (Optional)
+    # ✅ Publish Artifacts (Optional)
     - task: DotNetCoreCLI@2
       displayName: Publish App
       inputs:
@@ -91,10 +96,8 @@ jobs:
         arguments: --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)
         zipAfterPublish: true
 
-    # ✅ Publish Build Artifacts (Optional)
     - task: PublishBuildArtifacts@1
       displayName: Publish Artifact
       condition: succeededOrFailed()
       inputs:
         PathtoPublish: $(Build.ArtifactStagingDirectory)
-        TargetPath: '\\my\share\$(Build.DefinitionName)\$(Build.BuildNumber)'
