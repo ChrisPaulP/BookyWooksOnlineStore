@@ -23,10 +23,10 @@ using StackExchange.Redis;
 using Xunit; // Needed for IAsyncLifetime (xUnit)
 using MassTransit;
 
+
 public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntryPoint>, IAsyncLifetime
     where TEntryPoint : class
 {
-    // ✅ Shared containers (one instance for all test classes)
     private static readonly Lazy<Task> _containerInit = new(() => InitializeContainersAsync());
     private static bool _containersInitialized;
 
@@ -43,7 +43,7 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
     {
         if (!_containersInitialized)
         {
-            await _containerInit.Value; // Initialize only once
+            await _containerInit.Value;
             _containersInitialized = true;
         }
     }
@@ -53,7 +53,19 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
         builder.ConfigureAppConfiguration(configurationBuilder =>
         {
             var redisConn = $"{RedisContainer.Hostname}:{RedisContainer.GetMappedPublicPort(6379)}";
-            Console.WriteLine($"[DEBUG] Redis Testcontainers connection string: {redisConn}");
+            //Console.WriteLine($"[DEBUG] Redis Testcontainers connection string: {redisConn}");
+
+            //Configuration = new ConfigurationBuilder().AddJsonFile("testcontainersappsettings.json", optional: true)
+            //    .AddInMemoryCollection(new Dictionary<string, string>
+            //    {
+            //        ["ConnectionStrings:DefaultConnection"] = SqlContainer.GetConnectionString(),
+            //        ["ConnectionStrings:SagaOrchestrationDatabase"] = SqlContainer.GetConnectionString(),
+            //        ["RabbitMQConfiguration:Config:HostName"] = RabbitMqContainer.Hostname,
+            //        ["ConnectionStrings:Redis"] = redisConn
+            //    })
+            //    .AddEnvironmentVariables()
+            //    .Build();
+
 
             Configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string>
@@ -128,14 +140,15 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
 
     protected abstract void ConfigureMassTransit(IBusRegistrationConfigurator busRegistrationConfigurator);
 
-    protected virtual void ConfigureEndpoints(IBusRegistrationContext busRegistrationContext, IRabbitMqBusFactoryConfigurator rabbitMqBusFactoryConfigurator)
+    protected virtual void ConfigureEndpoints(
+        IBusRegistrationContext busRegistrationContext,
+        IRabbitMqBusFactoryConfigurator rabbitMqBusFactoryConfigurator)
     {
         rabbitMqBusFactoryConfigurator.ConfigureEndpoints(busRegistrationContext);
     }
 
     public async Task DisposeAsync()
     {
-        // ✅ Dispose only after all tests (one-time cleanup)
         if (_containersInitialized)
         {
             await SqlContainer.DisposeAsync();
@@ -144,31 +157,16 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
         }
     }
 
-    // ✅ Static container initialization (only once per test run)
+    // ✅ Now completely uses your IntegrationTestingSetupExtensions
     private static async Task InitializeContainersAsync()
     {
-        Console.WriteLine("[DEBUG] Starting Testcontainers (one-time shared)...");
+        Console.WriteLine("[DEBUG] Starting Testcontainers via IntegrationTestingSetupExtensions...");
 
-        SqlContainer = new MsSqlBuilder()
-            .WithPassword("Your_password123")
-            .WithCleanUp(true)
-            .Build();
+        SqlContainer = IntegrationTestingSetupExtensions.CreateMsSqlContainer();
+        RabbitMqContainer = IntegrationTestingSetupExtensions.CreateRabbitMqContainer();
+        RedisContainer = IntegrationTestingSetupExtensions.CreateRedisContainer();
 
-        RabbitMqContainer = new RabbitMqBuilder()
-            .WithUsername(RabbitMqUsername)
-            .WithPassword(RabbitMqPassword)
-            .WithCleanUp(true)
-            .Build();
-
-        RedisContainer = new RedisBuilder()
-            .WithCleanUp(true)
-            .Build();
-
-        await Task.WhenAll(
-            SqlContainer.StartAsync(),
-            RabbitMqContainer.StartAsync(),
-            RedisContainer.StartAsync()
-        );
+        await SqlContainer.StartContainersAsync(RabbitMqContainer, RedisContainer);
 
         Console.WriteLine($"[DEBUG] SQL running at: {SqlContainer.GetConnectionString()}");
         Console.WriteLine($"[DEBUG] RabbitMQ running at: {RabbitMqContainer.Hostname}:{RabbitMqContainer.GetMappedPublicPort(5672)}");

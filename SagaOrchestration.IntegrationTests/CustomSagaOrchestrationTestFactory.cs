@@ -26,7 +26,7 @@ public class CustomSagaOrchestrationTestFactory<TEntryPoint> : TestFactoryBase<T
         {
             opt.AddDbContext<DbContext, StateMachineDbContext>((provider, builder) =>
             {
-                builder.UseSqlServer(_mssqlContainer.GetConnectionString(), m => { m.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name); });
+                builder.UseSqlServer(SqlContainer.GetConnectionString(), m => { m.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name); });
             });
             opt.ConcurrencyMode = ConcurrencyMode.Optimistic;
         });

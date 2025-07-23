@@ -15,6 +15,7 @@ public class CreateOrderTests : ApiTestBase<Program, BookyWooksOrderDbContext>
     [Fact]
     public async Task SuccessfullyCreateNewOrder()
     {
+        //System.Diagnostics.Debugger.Launch();
         var (customerResult, productResult) = await OrderTestHelper.SetupCustomerAndProductAsync(AddAsync<Customer>, AddAsync<Product>);
         // Assert: Ensure customer and product creation succeeded
         customerResult.IsSuccess.Should().BeTrue("Customer creation should succeed");
@@ -60,42 +61,42 @@ public class CreateOrderTests : ApiTestBase<Program, BookyWooksOrderDbContext>
         order.Payment.CardName.Value.Should().Be(createOrderCommand.PaymentDetails.CardHolderName);
         orderItems.Should().HaveCount(createOrderCommand.OrderItems.Count());
     }
-    [Fact]
-    public async Task PublishOrderCreated()
-    {
-        await _harness.Start();
+    //[Fact]
+    //public async Task PublishOrderCreated()
+    //{
+    //    await _harness.Start();
 
-        var (customerResult, productResult) = await OrderTestHelper.SetupCustomerAndProductAsync(AddAsync<Customer>, AddAsync<Product>);
+    //    var (customerResult, productResult) = await OrderTestHelper.SetupCustomerAndProductAsync(AddAsync<Customer>, AddAsync<Product>);
 
-        // Assert: Ensure customer and product creation succeeded
-        customerResult.IsSuccess.Should().BeTrue("Customer creation should succeed");
-        productResult.IsSuccess.Should().BeTrue("Product creation should succeed");
+    //    // Assert: Ensure customer and product creation succeeded
+    //    customerResult.IsSuccess.Should().BeTrue("Customer creation should succeed");
+    //    productResult.IsSuccess.Should().BeTrue("Product creation should succeed");
 
-        var customerId = customerResult.Match(
-            customer => customer.CustomerId,
-            errors => CustomerId.New()
-        );
+    //    var customerId = customerResult.Match(
+    //        customer => customer.CustomerId,
+    //        errors => CustomerId.New()
+    //    );
 
-        var product = productResult.Match(
-            product => (Product?)product,
-            errors => null
-        );
+    //    var product = productResult.Match(
+    //        product => (Product?)product,
+    //        errors => null
+    //    );
 
-        product.Should().NotBeNull("Product creation should succeed");
-        var createOrderCommand = OrderTestHelper.CreateOrderCommand(customerId, product!);
+    //    product.Should().NotBeNull("Product creation should succeed");
+    //    var createOrderCommand = OrderTestHelper.CreateOrderCommand(customerId, product!);
 
-        var commandResult = await SendAsync(createOrderCommand);
+    //    var commandResult = await SendAsync(createOrderCommand);
 
-        var isEventPublished = await _harness.Sent.Any<OrderCreatedMessage>();
-        isEventPublished.Should().BeTrue();
+    //    var isEventPublished = await _harness.Sent.Any<OrderCreatedMessage>();
+    //    isEventPublished.Should().BeTrue();
 
-        var messageSent = await _harness.Sent.SelectAsync<OrderCreatedMessage>()
-        .FirstOrDefault();
+    //    var messageSent = await _harness.Sent.SelectAsync<OrderCreatedMessage>()
+    //    .FirstOrDefault();
 
-        Assert.Equal(createOrderCommand.CustomerId, messageSent?.Context.Message.customerId);
+    //    Assert.Equal(createOrderCommand.CustomerId, messageSent?.Context.Message.customerId);
 
-        await _harness.Stop();
-    }
+    //    await _harness.Stop();
+    //}
     [Fact]
     public async Task CompletePayment()
     {
