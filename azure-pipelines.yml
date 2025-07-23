@@ -14,9 +14,11 @@ variables:
     !**/BookWooks.OrderApi.FunctionalTests.csproj
     !**/BookyWooks.OrderApi.IntegrationTests.csproj
     !**/BookWooks.OrderApi.TestContainersIntegrationTests.csproj
+    !**/SagaOrchestration.IntegrationTests.csproj
   BuildParameters.IntegrationTestProjects: |
     **/*IntegrationTests*.csproj
     **/BookWooks.OrderApi.TestContainersIntegrationTests.csproj
+    !**/SagaOrchestration.IntegrationTests.csproj
 
 jobs:
 - job: BuildAndTest
