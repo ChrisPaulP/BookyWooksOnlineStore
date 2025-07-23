@@ -10,9 +10,9 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <UserSecretsId>31586f26-fd1c-4557-82f4-03467751b877</UserSecretsId>
   </PropertyGroup>
-  <!--<ItemGroup>
+  <ItemGroup>
     <None Remove="appsettings.json" />
-  </ItemGroup>-->
+  </ItemGroup>
   <!--<ItemGroup>
     <Content Include="testcontainersappsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
