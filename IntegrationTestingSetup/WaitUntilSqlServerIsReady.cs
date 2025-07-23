@@ -25,8 +25,7 @@ public class WaitUntilSqlServerIsReady : IWaitUntil
         }
     }
 
+    // ✅ Delegate to the main method for older Testcontainers versions
     public Task<bool> UntilAsync(IContainer container)
-    {
-        throw new NotImplementedException();
-    }
+        => UntilAsync(container, default);
 }
