@@ -1,11 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Hosting;
 
-using Microsoft.AspNetCore.TestHost;
 
-using Testcontainers.MsSql;
-using Testcontainers.RabbitMq;
-using Testcontainers.Redis;
 
 namespace IntegrationTestingSetup;
 
@@ -22,6 +18,12 @@ using Microsoft.Extensions.Caching.StackExchangeRedis;
 using StackExchange.Redis;
 using Xunit; // Needed for IAsyncLifetime (xUnit)
 using MassTransit;
+using Microsoft.AspNetCore.TestHost;
+
+using Testcontainers.MsSql;
+using Testcontainers.RabbitMq;
+using Testcontainers.Redis;
+
 
 
 public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntryPoint>, IAsyncLifetime
@@ -52,28 +54,22 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
     {
         builder.ConfigureAppConfiguration(configurationBuilder =>
         {
+            var sqlConn = SqlContainer.GetConnectionString();
             var redisConn = $"{RedisContainer.Hostname}:{RedisContainer.GetMappedPublicPort(6379)}";
-            //Console.WriteLine($"[DEBUG] Redis Testcontainers connection string: {redisConn}");
+            var rabbitPort = RabbitMqContainer.GetMappedPublicPort(5672);
 
-            //Configuration = new ConfigurationBuilder().AddJsonFile("testcontainersappsettings.json", optional: true)
-            //    .AddInMemoryCollection(new Dictionary<string, string>
-            //    {
-            //        ["ConnectionStrings:DefaultConnection"] = SqlContainer.GetConnectionString(),
-            //        ["ConnectionStrings:SagaOrchestrationDatabase"] = SqlContainer.GetConnectionString(),
-            //        ["RabbitMQConfiguration:Config:HostName"] = RabbitMqContainer.Hostname,
-            //        ["ConnectionStrings:Redis"] = redisConn
-            //    })
-            //    .AddEnvironmentVariables()
-            //    .Build();
-
+            Console.WriteLine($"[DEBUG] SQL connection: {sqlConn}");
+            Console.WriteLine($"[DEBUG] RabbitMQ connection: {RabbitMqContainer.Hostname}:{rabbitPort}");
+            Console.WriteLine($"[DEBUG] Redis connection: {redisConn}");
 
             Configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string>
                 {
-                    ["ConnectionStrings:DefaultConnection"] = SqlContainer.GetConnectionString(),
-                    ["ConnectionStrings:OrderDatabase"] = SqlContainer.GetConnectionString(),
-                    ["ConnectionStrings:SagaOrchestrationDatabase"] = SqlContainer.GetConnectionString(),
+                    ["ConnectionStrings:DefaultConnection"] = sqlConn,
+                    ["ConnectionStrings:OrderDatabase"] = sqlConn,
+                    ["ConnectionStrings:SagaOrchestrationDatabase"] = sqlConn,
                     ["RabbitMQConfiguration:Config:HostName"] = RabbitMqContainer.Hostname,
+                    ["RabbitMQConfiguration:Config:Port"] = rabbitPort.ToString(),
                     ["RabbitMQConfiguration:Config:UserName"] = RabbitMqUsername,
                     ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword,
                     ["ConnectionStrings:Redis"] = redisConn
@@ -94,11 +90,16 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
 
                 busRegistrationConfigurator.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.Host(new Uri(RabbitMqContainer.GetConnectionString()), h =>
-                    {
-                        h.Username(RabbitMqUsername);
-                        h.Password(RabbitMqPassword);
-                    });
+                    cfg.Host(
+                        RabbitMqContainer.Hostname,
+                        RabbitMqContainer.GetMappedPublicPort(5672),
+                        "/",
+                        h =>
+                        {
+                            h.Username(RabbitMqUsername);
+                            h.Password(RabbitMqPassword);
+                        });
+
                     ConfigureEndpoints(context, cfg);
                 });
             });
@@ -157,7 +158,7 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
         }
     }
 
-    // ✅ Now completely uses your IntegrationTestingSetupExtensions
+    // ✅ Containers now fully created by your updated IntegrationTestingSetupExtensions
     private static async Task InitializeContainersAsync()
     {
         Console.WriteLine("[DEBUG] Starting Testcontainers via IntegrationTestingSetupExtensions...");
@@ -173,6 +174,7 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
         Console.WriteLine($"[DEBUG] Redis running at: {RedisContainer.Hostname}:{RedisContainer.GetMappedPublicPort(6379)}");
     }
 }
+
 
 
 // Register the endpoint convention for OrderCreatedMessage
