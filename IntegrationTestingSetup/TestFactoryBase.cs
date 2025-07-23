@@ -5,24 +5,26 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace IntegrationTestingSetup;
 
+using BookWooks.OrderApi.Infrastructure.Data;
+using BookWooks.OrderApi.Infrastructure.Data.Extensions;
+using MassTransit;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 using System;
-
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Caching.StackExchangeRedis;
-using StackExchange.Redis;
-using Xunit; // Needed for IAsyncLifetime (xUnit)
-using MassTransit;
-using Microsoft.AspNetCore.TestHost;
-
 using Testcontainers.MsSql;
 using Testcontainers.RabbitMq;
 using Testcontainers.Redis;
+using Xunit; // Needed for IAsyncLifetime (xUnit)
 
 
 
@@ -48,6 +50,9 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
             await _containerInit.Value;
             _containersInitialized = true;
         }
+        using var scope = Services.CreateScope();
+        var app = scope.ServiceProvider.GetRequiredService<WebApplication>();
+        await app.InitialiseDatabaseAsync();
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -82,7 +87,36 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
 
         builder.ConfigureTestServices(services =>
         {
+            // ✅ Remove existing DbContext registrations
+            var dbContextDescriptor = services.SingleOrDefault(
+                d => d.ServiceType == typeof(DbContextOptions<BookyWooksOrderDbContext>)
+            );
+            if (dbContextDescriptor != null)
+            {
+                services.Remove(dbContextDescriptor);
+            }
+            var sqlConn = SqlContainer.GetConnectionString();
+            // ✅ Register with Testcontainers connection string
+            services.AddDbContext<BookyWooksOrderDbContext>(options =>
+            {
+                options.UseSqlServer(sqlConn);
+            });
+
+            using (var scope = services.BuildServiceProvider().CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<BookyWooksOrderDbContext>();
+                Console.WriteLine($"[DEBUG] CHRIS EF Core using connection: {dbContext.Database.GetConnectionString()}");
+            }
             OverrideRedis(services, Configuration);
+
+            // Remove existing MassTransit registrations if needed
+            var massTransitDescriptors = services
+                .Where(d => d.ServiceType.FullName != null && d.ServiceType.FullName.Contains("MassTransit"))
+                .ToList();
+            foreach (var descriptor in massTransitDescriptors)
+            {
+                services.Remove(descriptor);
+            }
 
             services.AddMassTransitTestHarness(busRegistrationConfigurator =>
             {
