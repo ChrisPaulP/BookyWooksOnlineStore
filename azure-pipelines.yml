@@ -25,14 +25,18 @@ jobs:
   displayName: Build and Test with Testcontainers
 
   steps:
-    # ✅ Ensure Docker is running (required for Testcontainers)
+    # ✅ Ensure Docker is running and stable before Testcontainers starts
     - script: |
         sudo service docker start
+        echo "Waiting for Docker to be ready..."
+        until docker info >/dev/null 2>&1; do
+          echo "Docker not ready yet, retrying..."
+          sleep 2
+        done
         docker info
-        docker --version
-      displayName: Start Docker
+      displayName: Ensure Docker is ready
 
-    # ✅ Restore NuGet Packages (all projects)
+    # ✅ Restore NuGet Packages
     - task: DotNetCoreCLI@2
       displayName: Restore NuGet Packages
       inputs:
@@ -40,7 +44,7 @@ jobs:
         projects: $(BuildParameters.RestoreBuildProjects)
         configuration: $(buildConfiguration)
 
-    # ✅ Build the Solution (skip rebuild for test phase)
+    # ✅ Build Solution
     - task: DotNetCoreCLI@2
       displayName: Build Solution
       inputs:
@@ -50,7 +54,7 @@ jobs:
           !**/SagaOrchestration.IntegrationTests.csproj
         arguments: '--configuration $(buildConfiguration)'
 
-    # ✅ Run Unit Tests (fast)
+    # ✅ Run Unit Tests
     - task: DotNetCoreCLI@2
       displayName: Run Unit Tests
       inputs:
@@ -60,24 +64,20 @@ jobs:
       env:
         ASPNETCORE_ENVIRONMENT: Test
 
-    # ✅ Run Integration Tests (Testcontainers optimized for CI)
+    # ✅ Run Integration Tests (Testcontainers with CI optimizations)
     - task: DotNetCoreCLI@2
       displayName: Run Integration Tests (Testcontainers)
       inputs:
         command: test
         projects: $(BuildParameters.IntegrationTestProjects)
-        arguments: >
-          --configuration $(buildConfiguration)
-          --no-build
-          --logger trx
-          --collect:"XPlat Code Coverage"
+        arguments: --configuration $(buildConfiguration) --no-build --logger trx
       env:
         ASPNETCORE_ENVIRONMENT: Test
-        TESTCONTAINERS_HOST_OVERRIDE: 'host.docker.internal' # ✅ key change!
-        DOTNET_USE_POLLING_FILE_WATCHER: '1'
-        DOTNET_RUNNING_IN_CONTAINER: 'false'
+        TESTCONTAINERS_HOST_OVERRIDE: 'localhost'
+        TESTCONTAINERS_RYUK_DISABLED: 'true'   # ✅ Disables Ryuk for CI reliability
+        DOCKER_HOST: 'unix:///var/run/docker.sock'
 
-    # ✅ Publish Test Results
+    # ✅ Publish All Test Results
     - task: PublishTestResults@2
       displayName: Publish Test Results
       condition: succeededOrFailed()
@@ -86,7 +86,7 @@ jobs:
         testResultsFiles: '**/TestResults/*.trx'
         mergeTestResults: true
 
-    # ✅ Publish Artifacts (Optional)
+    # ✅ Publish App Artifacts (Optional)
     - task: DotNetCoreCLI@2
       displayName: Publish App
       inputs:
@@ -96,8 +96,10 @@ jobs:
         arguments: --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)
         zipAfterPublish: true
 
+    # ✅ Publish Build Artifacts (Optional)
     - task: PublishBuildArtifacts@1
       displayName: Publish Artifact
       condition: succeededOrFailed()
       inputs:
         PathtoPublish: $(Build.ArtifactStagingDirectory)
+        TargetPath: '\\my\share\$(Build.DefinitionName)\$(Build.BuildNumber)'
