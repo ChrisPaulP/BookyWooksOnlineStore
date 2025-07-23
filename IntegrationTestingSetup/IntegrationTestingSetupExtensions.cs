@@ -81,15 +81,17 @@ public static class IntegrationTestingSetupExtensions
     public static RabbitMqContainer CreateRabbitMqContainer()
     {
         return new RabbitMqBuilder()
-            .WithImage("rabbitmq:3-management-alpine")
-            .WithPortBinding(0, 5672) // ✅ Dynamic port for CI
-            .WithEnvironment("RABBITMQ_DEFAULT_USER", "guest")
-            .WithEnvironment("RABBITMQ_DEFAULT_PASS", "guest")
-            .WithWaitStrategy(Wait.ForUnixContainer()
+        .WithImage("rabbitmq:3-management-alpine")
+        .WithPortBinding(0, 5672)
+        .WithEnvironment("RABBITMQ_DEFAULT_USER", "guest")
+        .WithEnvironment("RABBITMQ_DEFAULT_PASS", "guest")
+        .WithWaitStrategy(
+            Wait.ForUnixContainer()
                 .UntilPortIsAvailable(5672)
-                .UntilPortIsAvailable(15672))
-            .WithCleanUp(true)
-            .Build();
+                .AddCustomWaitStrategy(new WaitUntilRabbitMqIsReady())
+        )
+        .WithCleanUp(true)
+        .Build();
     }
 
     public static RedisContainer CreateRedisContainer()

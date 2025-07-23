@@ -74,7 +74,7 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
                     ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword,
                     ["ConnectionStrings:Redis"] = redisConn
                 })
-                .AddEnvironmentVariables()
+                //.AddEnvironmentVariables()
                 .Build();
 
             configurationBuilder.AddConfiguration(Configuration);
