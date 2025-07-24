@@ -156,9 +156,15 @@ public abstract class TestFactoryBase<TEntryPoint>
 
         builder.ConfigureTestServices(services =>
         {
+            var descriptor = services.SingleOrDefault(
+       d => d.ServiceType == typeof(DbContextOptions<BookyWooksOrderDbContext>));
+            if (descriptor != null)
+            {
+                services.Remove(descriptor);
+            }
             // ✅ Override EF Core DbContext to use Testcontainers SQL connection
             services.AddDbContext<BookyWooksOrderDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("OrderDatabase")));
 
             // ✅ Override MassTransit (RabbitMQ)
             services.AddMassTransitTestHarness(cfg =>
