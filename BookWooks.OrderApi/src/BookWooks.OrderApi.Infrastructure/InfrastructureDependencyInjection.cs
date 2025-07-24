@@ -79,9 +79,9 @@ public static class InfrastructureDependencyInjection
   private static void RegisterAIOptions(IServiceCollection services)
   {
     services.AddOptions<OpenAIOptions>()
-            .BindConfiguration(OpenAIOptions.Key)
-            .ValidateDataAnnotations()  
-            .ValidateOnStart();
+            .BindConfiguration(OpenAIOptions.Key);
+            //.ValidateDataAnnotations()  
+            //.ValidateOnStart();
   }
 
   private static void RegisterDomainEventsDispatcherNotificationHandlerDecorator(IServiceCollection services)
