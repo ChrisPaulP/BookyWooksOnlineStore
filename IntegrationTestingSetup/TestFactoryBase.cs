@@ -100,7 +100,7 @@ public abstract class TestFactoryBase<TEntryPoint>
     {
         var builder = new SqlConnectionStringBuilder(masterConnection)
         {
-            InitialCatalog = "BookWooksOrderDb"
+            InitialCatalog = "BookyWooksOrderDbContext"
         };
 
         var databaseConnectionString = builder.ConnectionString;
