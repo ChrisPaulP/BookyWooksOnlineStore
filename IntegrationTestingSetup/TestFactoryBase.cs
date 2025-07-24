@@ -195,7 +195,11 @@ public abstract class TestFactoryBase<TEntryPoint>
     }
 
     protected abstract void ConfigureMassTransit(IBusRegistrationConfigurator cfg);
-    protected abstract void ConfigureEndpoints(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator cfg);
+
+    protected virtual void ConfigureEndpoints(IBusRegistrationContext ctx, IRabbitMqBusFactoryConfigurator cfg)
+    {
+        cfg.ConfigureEndpoints(ctx);
+    }
 }
 //public abstract class TestFactoryBase<TEntryPoint>
 //    : WebApplicationFactory<TEntryPoint>, IAsyncLifetime where TEntryPoint : class

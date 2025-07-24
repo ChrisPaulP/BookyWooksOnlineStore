@@ -1,4 +1,5 @@
-﻿namespace BookWooks.OrderApi.TestContainersIntegrationTests;
+﻿
+namespace BookWooks.OrderApi.TestContainersIntegrationTests;
 
 public class CustomOrderTestFactory<TEntryPoint> : TestFactoryBase<TEntryPoint> where TEntryPoint : class
 {
