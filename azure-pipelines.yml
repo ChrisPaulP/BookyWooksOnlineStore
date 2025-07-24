@@ -72,7 +72,7 @@ jobs:
         projects: $(BuildParameters.IntegrationTestProjects)
         arguments: --configuration $(buildConfiguration) --no-build --logger trx
       env:
-        ASPNETCORE_ENVIRONMENT: Test
+        # ASPNETCORE_ENVIRONMENT: Test
         TESTCONTAINERS_HOST_OVERRIDE: 'localhost'
         TESTCONTAINERS_RYUK_DISABLED: 'true'   # ✅ Disables Ryuk for CI reliability
         DOCKER_HOST: 'unix:///var/run/docker.sock'
