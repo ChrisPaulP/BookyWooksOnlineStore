@@ -104,8 +104,9 @@ public abstract class TestFactoryBase<TEntryPoint>
             Console.WriteLine($"[DEBUG] RabbitMQ connection: {RabbitMqContainer.Hostname}:{rabbitPort}");
             Console.WriteLine($"[DEBUG] Redis connection: {redisConn}");
 
-            Configuration = new ConfigurationBuilder().AddJsonFile("testcontainersappsettings.json", optional: true)
-            .AddEnvironmentVariables()
+            Configuration = new ConfigurationBuilder()
+                .AddJsonFile("testcontainersappsettings.json", optional: false) // <-- set optional: false
+                //.AddEnvironmentVariables()
                 .AddInMemoryCollection(new Dictionary<string, string>
                 {
                     ["ConnectionStrings:DefaultConnection"] = sqlConn,
@@ -119,7 +120,7 @@ public abstract class TestFactoryBase<TEntryPoint>
                     ["ConnectionStrings:Redis"] = redisConn
                 })
                 .Build();
-        });
+                    });
 
         builder.ConfigureTestServices(services =>
         {
