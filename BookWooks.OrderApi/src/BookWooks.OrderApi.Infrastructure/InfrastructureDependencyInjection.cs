@@ -4,14 +4,14 @@ using BookWooks.OrderApi.UseCases.Create;
 namespace BookWooks.OrderApi.Infrastructure;
 public static class InfrastructureDependencyInjection
 {
-  public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,IConfiguration configuration,bool isDevelopment,BiDirectionalDictionary<string, Type>? domainEventsMap = null,BiDirectionalDictionary<string, Type>? internalCommandMap = null, bool isTest = false)
+  public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,IConfiguration configuration,bool isDevelopment,BiDirectionalDictionary<string, Type>? domainEventsMap = null,BiDirectionalDictionary<string, Type>? internalCommandMap = null)
   {
         domainEventsMap ??= new BiDirectionalDictionary<string, Type>();
         internalCommandMap ??= new BiDirectionalDictionary<string, Type>();
                 
         RegisterMassTransit(services);      
         RegisterSerializer(services);
-       
+        RegisterMessageBroker(services, configuration);
         RegisterDbContext(services, configuration);
         RegisterOutboxContext(services);
         RegisterDomainEventsWrapper(services, domainEventsMap);
@@ -24,16 +24,11 @@ public static class InfrastructureDependencyInjection
         RegisterDistributedCacheService(services);
         RegisterRedisDistributedCache(services, configuration);
         RegisterEnvironmentSpecificDependencies(services, isDevelopment);
-        
-        if (!isTest)
-        {
-          RegisterMessageBroker(services, configuration);
-          RegisterQuartz(services);
-          RegisterAIOptions(services);
-          RegisterAIService(services);
-        }
+        RegisterQuartz(services);
+        RegisterAIOptions(services);
+        RegisterAIService(services);
 
-    return services;
+        return services;
     }
 
   private static void RegisterAIService(IServiceCollection services)

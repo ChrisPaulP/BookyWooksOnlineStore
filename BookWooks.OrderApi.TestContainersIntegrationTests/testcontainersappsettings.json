@@ -1,33 +1,91 @@
+//{
+//  "ConnectionStrings": {
+//    "DefaultConnection": "Server=5CG131BX19;Database=TestContainersDb;Trusted_Connection=True;MultipleActiveResultSets=true; TrustServerCertificate=Yes;",
+//    "TestConnection": "MyTest",
+//    "Redis": "localhost:6379"
+//  },
+//  "RabbitMQConfiguration": {
+//    "Config": {
+//      "HostName": "amqp://localhost:5672",
+//      "UserName": "guest",
+//      "Password": "guest",
+//      "VirtualHost": "/",
+//      "Port": 5672
+//    },
+//    "Serilog": {
+//      "MinimumLevel": {
+//        "Default": "Information"
+//      },
+//      "WriteTo": [
+//        {
+//          "Name": "Console"
+//        },
+//        {
+//          "Name": "File",
+//          "Args": {
+//            "path": "Logs/tests-log.txt",
+//            "rollingInterval": "Day"
+//          }
+//        }
+//      ]
+//    }
+//  }
+//}
+
 {
+  "IdentityServerURL": "",
   "ConnectionStrings": {
-    "DefaultConnection": "Server=5CG131BX19;Database=TestContainersDb;Trusted_Connection=True;MultipleActiveResultSets=true; TrustServerCertificate=Yes;",
-    "TestConnection": "MyTest",
+    "OrderDatabase": "",
+    "TestConnection": "",
+    "SqliteConnection": "Data Source=database.sqlite",
     "Redis": "localhost:6379"
   },
   "RabbitMQConfiguration": {
     "Config": {
-      "HostName": "amqp://localhost:5672",
+      "HostName": "localhost",
       "UserName": "guest",
       "Password": "guest",
       "VirtualHost": "/",
       "Port": 5672
-    },
-    "Serilog": {
-      "MinimumLevel": {
-        "Default": "Information"
-      },
-      "WriteTo": [
-        {
-          "Name": "Console"
-        },
-        {
-          "Name": "File",
-          "Args": {
-            "path": "Logs/tests-log.txt",
-            "rollingInterval": "Day"
-          }
-        }
-      ]
     }
+  },
+  "ElasticConfiguration": {
+    "Url": "http://localhost:9200"
+  },
+  "OpenTelemetry": {
+    "Enabled": true,
+    "MetricsEnabled": true,
+    "TracingEnabled": true,
+    "ActivitySourceName": "ActivitySource.Bookwooks.OrderApi.Web",
+    "ServiceName": "Bookwooks.OrderApi.Web",
+    "ServiceVersion": "1.0.0"
+  },
+  "Jaeger": {
+    "Protocol": "http",
+    "Host": "localhost",
+    "Port": 4317
+  },
+  "OpenAIOptions": {
+    "OpenAiApiKey": "This is a test",
+    "ChatModelId": "This is a test",
+    "EmbeddingModelId": "This is a test",
+    "DisabledForIntegrationTests": false
+  },
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Information"
+    },
+    "WriteTo": [
+      {
+        "Name": "Console"
+      },
+      {
+        "Name": "File",
+        "Args": {
+          "path": "Logs/orderapi-log.txt",
+          "rollingInterval": "Day"
+        }
+      }
+    ]
   }
 }

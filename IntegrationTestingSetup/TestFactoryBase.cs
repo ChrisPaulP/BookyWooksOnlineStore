@@ -32,9 +32,13 @@ public abstract class TestFactoryBase<TEntryPoint>
     : WebApplicationFactory<TEntryPoint>, IAsyncLifetime where TEntryPoint : class
 {
     // ✅ Shared static containers (parallel tests across classes use same instances)
-    private static readonly MsSqlContainer SqlContainer = IntegrationTestingSetupExtensions.CreateMsSqlContainer();
-    private static readonly RabbitMqContainer RabbitMqContainer = IntegrationTestingSetupExtensions.CreateRabbitMqContainer();
-    private static readonly RedisContainer RedisContainer = IntegrationTestingSetupExtensions.CreateRedisContainer();
+    //public static readonly MsSqlContainer SqlContainer = IntegrationTestingSetupExtensions.CreateMsSqlContainer();
+    //private static readonly RabbitMqContainer RabbitMqContainer = IntegrationTestingSetupExtensions.CreateRabbitMqContainer();
+    //private static readonly RedisContainer RedisContainer = IntegrationTestingSetupExtensions.CreateRedisContainer();
+
+    public readonly MsSqlContainer SqlContainer;
+    private readonly RabbitMqContainer RabbitMqContainer;
+    private readonly RedisContainer RedisContainer;
 
     private const string RabbitMqUsername = "guest";
     private const string RabbitMqPassword = "guest";
@@ -42,30 +46,50 @@ public abstract class TestFactoryBase<TEntryPoint>
 
     protected IConfiguration Configuration { get; private set; } = default!;
 
+    protected TestFactoryBase()
+    {
+        // ✅ SQL Server
+        SqlContainer = new MsSqlBuilder()
+            .WithPassword("Your_password123")
+            .Build();
+
+        // ✅ RabbitMQ (specialized container)
+        RabbitMqContainer = new RabbitMqBuilder()
+            .WithUsername("guest")
+            .WithPassword("guest")
+            .Build();
+
+        // ✅ Redis (no specialized container, so use generic)
+        RedisContainer = new RedisBuilder()
+            .WithImage("redis:7")
+            .WithPortBinding(6379, true)
+            .Build();
+    }
+
     public async Task InitializeAsync()
     {
         // ✅ Start containers only once across all test classes (parallel-safe)
-        if (!_containersStarted)
-        {
+        //if (!_containersStarted)
+        //{
             await SqlContainer.StartAsync();
             await RabbitMqContainer.StartAsync();
             await RedisContainer.StartAsync();
-            _containersStarted = true;
+            //_containersStarted = true;
 
             Console.WriteLine($"[DEBUG] SQL running at: {SqlContainer.GetConnectionString()}");
             Console.WriteLine($"[DEBUG] RabbitMQ running at: {RabbitMqContainer.Hostname}:{RabbitMqContainer.GetMappedPublicPort(5672)}");
             Console.WriteLine($"[DEBUG] Redis running at: {RedisContainer.Hostname}:{RedisContainer.GetMappedPublicPort(6379)}");
-        }
+        //}
 
         // ✅ Auto-seed DB once per test suite run (fast in CI)
-        using var scope = Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<BookyWooksOrderDbContext>();
+        //using var scope = Services.CreateScope();
+        //var dbContext = scope.ServiceProvider.GetRequiredService<BookyWooksOrderDbContext>();
 
-        await dbContext.Database.MigrateAsync();
-        await DatabaseExtentions.ClearData(dbContext);
-        await DatabaseExtentions.SeedAsync(dbContext);
+        //await dbContext.Database.MigrateAsync();
+        //await DatabaseExtentions.ClearData(dbContext);
+        //await DatabaseExtentions.SeedAsync(dbContext);
 
-        Console.WriteLine($"[DEBUG] EF Core seeded using connection: {dbContext.Database.GetConnectionString()}");
+        //Console.WriteLine($"[DEBUG] EF Core seeded using connection: {dbContext.Database.GetConnectionString()}");
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -80,11 +104,12 @@ public abstract class TestFactoryBase<TEntryPoint>
             Console.WriteLine($"[DEBUG] RabbitMQ connection: {RabbitMqContainer.Hostname}:{rabbitPort}");
             Console.WriteLine($"[DEBUG] Redis connection: {redisConn}");
 
-            Configuration = new ConfigurationBuilder()
+            Configuration = new ConfigurationBuilder().AddJsonFile("testcontainersappsettings.json", optional: true)
             .AddEnvironmentVariables()
                 .AddInMemoryCollection(new Dictionary<string, string>
                 {
                     ["ConnectionStrings:DefaultConnection"] = sqlConn,
+                    ["ConnectionStrings:TestConnection"] = sqlConn,
                     ["ConnectionStrings:OrderDatabase"] = sqlConn,
                     ["ConnectionStrings:SagaOrchestrationDatabase"] = sqlConn,
                     ["RabbitMQConfiguration:Config:HostName"] = RabbitMqContainer.Hostname,
@@ -99,10 +124,10 @@ public abstract class TestFactoryBase<TEntryPoint>
         builder.ConfigureTestServices(services =>
         {
             // ✅ Override DbContext with Testcontainers connection
-            OverrideDbContext(services, Configuration);
+            //OverrideDbContext(services, Configuration);
 
-            // ✅ Override Redis
-            OverrideRedis(services, Configuration);
+            //// ✅ Override Redis
+            //OverrideRedis(services, Configuration);
 
             // ✅ Override MassTransit (RabbitMQ)
             services.AddMassTransitTestHarness(cfg =>
