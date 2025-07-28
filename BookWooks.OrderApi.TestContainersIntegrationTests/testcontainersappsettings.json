@@ -12,7 +12,7 @@
       "UserName": "guest",
       "Password": "guest",
       "VirtualHost": "/",
-      "Port": 0
+      "Port": 5672
     }
   },
   "ElasticConfiguration": {
