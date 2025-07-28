@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BookWooks.OrderApi.TestContainersIntegrationTests.CreateOrderTests;
+﻿namespace BookWooks.OrderApi.TestContainersIntegrationTests.CreateOrderTests;
 
 [Collection("Order Test Collection")]
 public class CreateOrder_SuccessfullyCreateOrder

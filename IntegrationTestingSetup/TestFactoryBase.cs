@@ -1,32 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Hosting;
-
-
-
-namespace IntegrationTestingSetup;
-
-using BookWooks.OrderApi.Infrastructure.Data;
-using BookWooks.OrderApi.Infrastructure.Data.Extensions;
-using MassTransit;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.StackExchangeRedis;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using StackExchange.Redis;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Testcontainers.MsSql;
-using Testcontainers.RabbitMq;
-using Testcontainers.Redis;
-using Xunit; // Needed for IAsyncLifetime (xUnit)
-
+﻿namespace IntegrationTestingSetup;
 public abstract class TestFactoryBase<TEntryPoint>: WebApplicationFactory<TEntryPoint>, IAsyncLifetime where TEntryPoint : class
 {
     public readonly MsSqlContainer SqlContainer;

@@ -1,10 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Linq.Expressions;
-
-namespace IntegrationTestingSetup;
+﻿namespace IntegrationTestingSetup;
 
 public class ApiTestBase<TProgram, TDbContext> : IAsyncLifetime
         where TProgram : class // Ensure the TProgram is a class (e.g. Startup or Program)

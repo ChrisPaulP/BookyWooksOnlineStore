@@ -1,14 +1,4 @@
-﻿using DotNet.Testcontainers.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Testcontainers.MsSql;
-using Testcontainers.RabbitMq;
-using Testcontainers.Redis;
-
-namespace IntegrationTestingSetup;
+﻿namespace IntegrationTestingSetup;
 
 //public static class IntegrationTestingSetupExtensions
 //{

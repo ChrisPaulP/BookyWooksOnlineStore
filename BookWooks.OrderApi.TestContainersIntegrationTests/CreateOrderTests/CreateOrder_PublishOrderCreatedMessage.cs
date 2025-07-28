@@ -1,26 +1,16 @@
-﻿using BookWooks.OrderApi.TestContainersIntegrationTests;
-using Microsoft.Extensions.DependencyInjection;
-namespace BookWooks.OrderApi.TestContainersIntegrationTests.CreateOrderTests;
+﻿namespace BookWooks.OrderApi.TestContainersIntegrationTests.CreateOrderTests;
 [Collection("Order Test Collection")]
 public class CreateOrder_PublishOrderCreatedMessage
     : ApiTestBase<Program, BookyWooksOrderDbContext>
 {
-    private readonly ITestHarness Harness;
-    private readonly TestFactoryBase<Program> _apiFactory;
+    private readonly ITestHarness _testHarness;
     public CreateOrder_PublishOrderCreatedMessage(CustomOrderTestFactory<Program> apiFactory)
-        : base(apiFactory, apiFactory.DisposeAsync)
-    {
-        Harness = apiFactory.Services.GetTestHarness();
-        _apiFactory = apiFactory;
-    }
+        : base(apiFactory, apiFactory.DisposeAsync) => _testHarness = apiFactory.Services.GetTestHarness();
 
     [Fact]
     public async Task PublishOrderCreatedMessage()
     {
-        using var scope = _apiFactory.Services.CreateScope();
-        var harness = scope.ServiceProvider.GetRequiredService<ITestHarness>();
-
-        await harness.Start();
+        await _testHarness.Start();
 
         var orderItems = new List<OrderItemEventDto>
         {
@@ -34,13 +24,13 @@ public class CreateOrder_PublishOrderCreatedMessage
             orderItems: orderItems
         );
 
-        await Harness.Bus.Publish(message);
+        await _testHarness.Bus.Publish(message);
 
-        var consumerHarness = Harness.GetConsumerHarness<OrderCreatedConsumer>();
+        var consumerHarness = _testHarness.GetConsumerHarness<OrderCreatedConsumer>();
         var isEventConsumed = await consumerHarness.Consumed.Any<OrderCreatedMessage>(x =>
             x.Context.Message.customerId == message.customerId);
 
         isEventConsumed.Should().BeTrue();
-        await harness.Stop();
+        await _testHarness.Stop();
     }
 }
