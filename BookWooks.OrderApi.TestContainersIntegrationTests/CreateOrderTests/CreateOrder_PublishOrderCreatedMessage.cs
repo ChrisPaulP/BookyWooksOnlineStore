@@ -12,8 +12,7 @@ public class CreateOrder_PublishOrderCreatedMessage
     [Fact]
     public async Task PublishOrderCreatedMessage()
     {
-        using var scope = _apiFactory.Services.CreateScope();
-        var _testHarness = scope.ServiceProvider.GetRequiredService<ITestHarness>();
+        var _testHarness = _apiFactory.Services.GetRequiredService<ITestHarness>();
         await _testHarness.Start();
 
         var orderItems = new List<OrderItemEventDto>

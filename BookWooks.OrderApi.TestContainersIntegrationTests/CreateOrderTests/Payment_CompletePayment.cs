@@ -11,8 +11,7 @@ public class Payment_CompletePayment : ApiTestBase<Program, BookyWooksOrderDbCon
         [Fact]
         public async Task CompletePayment()
         {
-        using var scope = _apiFactory.Services.CreateScope();
-        var _testHarness = scope.ServiceProvider.GetRequiredService<ITestHarness>();
+        var _testHarness = _apiFactory.Services.GetRequiredService<ITestHarness>();
         await _testHarness.Start();
 
             var command = new CompletePaymentCommand(
@@ -38,8 +37,7 @@ public class Payment_CompletePayment : ApiTestBase<Program, BookyWooksOrderDbCon
         [Fact]
         public async Task CompletePayment2()
         {
-        using var scope = _apiFactory.Services.CreateScope();
-        var _testHarness = scope.ServiceProvider.GetRequiredService<ITestHarness>();
+        var _testHarness = _apiFactory.Services.GetRequiredService<ITestHarness>();
         await _testHarness.Start();
 
             var endPointName = _testHarness.EndpointNameFormatter.Consumer<CompletePaymentCommandConsumer>();
