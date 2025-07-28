@@ -12,8 +12,8 @@ public class CreateOrder_PublishOrderCreatedMessage
     [Fact]
     public async Task PublishOrderCreatedMessage()
     {
-        var _testHarness = _apiFactory.Services.GetRequiredService<ITestHarness>();
-        await _testHarness.Start();
+        using var scope = _apiFactory.Services.CreateScope();
+        var testHarness = scope.ServiceProvider.GetRequiredService<ITestHarness>();
 
         var orderItems = new List<OrderItemEventDto>
         {
@@ -27,13 +27,13 @@ public class CreateOrder_PublishOrderCreatedMessage
             orderItems: orderItems
         );
 
-        await _testHarness.Bus.Publish(message);
+        await testHarness.Bus.Publish(message);
 
-        var consumerHarness = _testHarness.GetConsumerHarness<OrderCreatedConsumer>();
+        var consumerHarness = testHarness.GetConsumerHarness<OrderCreatedConsumer>();
         var isEventConsumed = await consumerHarness.Consumed.Any<OrderCreatedMessage>(x =>
             x.Context.Message.customerId == message.customerId);
 
         isEventConsumed.Should().BeTrue();
-        await _testHarness.Stop();
+        await testHarness.Stop();
     }
 }
