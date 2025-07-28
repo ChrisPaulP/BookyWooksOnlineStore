@@ -1,44 +1,10 @@
-//{
-//  "ConnectionStrings": {
-//    "DefaultConnection": "Server=5CG131BX19;Database=TestContainersDb;Trusted_Connection=True;MultipleActiveResultSets=true; TrustServerCertificate=Yes;",
-//    "TestConnection": "MyTest",
-//    "Redis": "localhost:6379"
-//  },
-//  "RabbitMQConfiguration": {
-//    "Config": {
-//      "HostName": "amqp://localhost:5672",
-//      "UserName": "guest",
-//      "Password": "guest",
-//      "VirtualHost": "/",
-//      "Port": 5672
-//    },
-//    "Serilog": {
-//      "MinimumLevel": {
-//        "Default": "Information"
-//      },
-//      "WriteTo": [
-//        {
-//          "Name": "Console"
-//        },
-//        {
-//          "Name": "File",
-//          "Args": {
-//            "path": "Logs/tests-log.txt",
-//            "rollingInterval": "Day"
-//          }
-//        }
-//      ]
-//    }
-//  }
-//}
-
 {
   "IdentityServerURL": "",
   "ConnectionStrings": {
     "OrderDatabase": "",
     "TestConnection": "",
     "SqliteConnection": "Data Source=database.sqlite",
-    "Redis": "localhost:6379"
+    "Redis": "localhost:0000"
   },
   "RabbitMQConfiguration": {
     "Config": {
@@ -46,11 +12,11 @@
       "UserName": "guest",
       "Password": "guest",
       "VirtualHost": "/",
-      "Port": 5672
+      "Port": 0
     }
   },
   "ElasticConfiguration": {
-    "Url": "http://localhost:9200"
+    "Url": "http://testurl:0000"
   },
   "OpenTelemetry": {
     "Enabled": true,
@@ -63,7 +29,7 @@
   "Jaeger": {
     "Protocol": "http",
     "Host": "localhost",
-    "Port": 4317
+    "Port": 0
   },
   "OpenAIOptions": {
     "OpenAiApiKey": "This is a test",

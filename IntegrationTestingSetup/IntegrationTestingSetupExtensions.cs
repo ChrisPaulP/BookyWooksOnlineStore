@@ -62,7 +62,6 @@ public static class IntegrationTestingSetupExtensions
        .WithWaitStrategy(
            Wait.ForUnixContainer()
                .UntilPortIsAvailable(1433)
-               .AddCustomWaitStrategy(new WaitUntilSqlServerIsReady())
        )
        .WithCleanUp(true)
        .Build();
@@ -78,7 +77,6 @@ public static class IntegrationTestingSetupExtensions
         .WithWaitStrategy(
             Wait.ForUnixContainer()
                 .UntilPortIsAvailable(5672)
-                .AddCustomWaitStrategy(new WaitUntilRabbitMqIsReady())
         )
         .WithCleanUp(true)
         .Build();

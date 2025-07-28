@@ -1,17 +1,17 @@
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=5CG131BX19;Database=TestContainersDb;Trusted_Connection=True;MultipleActiveResultSets=true; TrustServerCertificate=Yes;",
-    "SagaOrchestrationDatabase": "Server=5CG131BX19;Database=TestContainersDb;Trusted_Connection=True;MultipleActiveResultSets=true; TrustServerCertificate=Yes;", //"Server=127.0.0.1,65089;Database=master;User Id=sa;Password=yourStrong(!)Password;TrustServerCertificate=True",
+    "DefaultConnection": "",
+    "SagaOrchestrationDatabase": "", //"Server=127.0.0.1,65089;Database=master;User Id=sa;Password=yourStrong(!)Password;TrustServerCertificate=True",
     "TestConnection": "MyTest",
-    "Redis": "localhost:6379"
+    "Redis": "localhost:0000"
   },
   "RabbitMQConfiguration": {
     "Config": {
-      "HostName": "amqp://localhost:5672",
+      "HostName": "amqp://localhost:0000",
       "UserName": "guest",
       "Password": "guest",
       "VirtualHost": "/",
-      "Port": 5672
+      "Port": 0
     },
     "Serilog": {
       "MinimumLevel": {
