@@ -1,4 +1,6 @@
-﻿namespace IntegrationTestingSetup;
+﻿using BookWooks.OrderApi.Infrastructure.Data.Extensions;
+
+namespace IntegrationTestingSetup;
 public abstract class TestFactoryBase<TEntryPoint>: WebApplicationFactory<TEntryPoint>, IAsyncLifetime where TEntryPoint : class
 {
     public readonly MsSqlContainer SqlContainer;
@@ -55,6 +57,14 @@ public abstract class TestFactoryBase<TEntryPoint>: WebApplicationFactory<TEntry
         }
 
         await EnsureDatabaseCreatedAsync(SqlContainer.GetConnectionString());
+
+        //// ✅ Auto-seed DB once per test suite run (optional)
+        using var scope = Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<BookyWooksOrderDbContext>();
+        await dbContext.Database.MigrateAsync();
+        await DatabaseExtentions.ClearData(dbContext);
+        await DatabaseExtentions.SeedAsync(dbContext);
+        Console.WriteLine($"[DEBUG] EF Core seeded using connection: {dbContext.Database.GetConnectionString()}");
 
     }
 
