@@ -4,7 +4,7 @@
     "OrderDatabase": "",
     "TestConnection": "",
     "SqliteConnection": "Data Source=database.sqlite",
-    "Redis": "localhost:6379"
+    "Redis": ""
   },
   "RabbitMQConfiguration": {
     "Config": {
@@ -16,7 +16,7 @@
     }
   },
   "ElasticConfiguration": {
-    "Url": "http://localhost:9200"
+    "Url": ""
   },
   "OpenTelemetry": {
     "Enabled": true,
@@ -29,7 +29,7 @@
   "Jaeger": {
     "Protocol": "http",
     "Host": "localhost",
-    "Port": 4317
+    "Port": 0
   },
   "OpenAIOptions": {
     "OpenAiApiKey": "This is a test",
