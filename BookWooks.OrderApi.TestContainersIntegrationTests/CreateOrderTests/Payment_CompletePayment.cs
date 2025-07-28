@@ -1,15 +1,19 @@
-﻿namespace BookWooks.OrderApi.TestContainersIntegrationTests.CreateOrderTests;
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace BookWooks.OrderApi.TestContainersIntegrationTests.CreateOrderTests;
 [Collection("Order Test Collection")]
 public class Payment_CompletePayment : ApiTestBase<Program, BookyWooksOrderDbContext>
 {
-    private readonly ITestHarness _testHarness;
+    private readonly TestFactoryBase<Program> _apiFactory;
     public Payment_CompletePayment(CustomOrderTestFactory<Program> apiFactory)
-            : base(apiFactory, apiFactory.DisposeAsync) => _testHarness = apiFactory.Services.GetTestHarness();
+            : base(apiFactory, apiFactory.DisposeAsync) => _apiFactory = apiFactory;
 
         [Fact]
         public async Task CompletePayment()
         {
-            await _testHarness.Start();
+        using var scope = _apiFactory.Services.CreateScope();
+        var _testHarness = scope.ServiceProvider.GetRequiredService<ITestHarness>();
+        await _testHarness.Start();
 
             var command = new CompletePaymentCommand(
                 CorrelationId: Guid.NewGuid(),
@@ -34,6 +38,8 @@ public class Payment_CompletePayment : ApiTestBase<Program, BookyWooksOrderDbCon
         [Fact]
         public async Task CompletePayment2()
         {
+        using var scope = _apiFactory.Services.CreateScope();
+        var _testHarness = scope.ServiceProvider.GetRequiredService<ITestHarness>();
         await _testHarness.Start();
 
             var endPointName = _testHarness.EndpointNameFormatter.Consumer<CompletePaymentCommandConsumer>();

@@ -1,15 +1,19 @@
-﻿namespace BookWooks.OrderApi.TestContainersIntegrationTests.CreateOrderTests;
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace BookWooks.OrderApi.TestContainersIntegrationTests.CreateOrderTests;
 [Collection("Order Test Collection")]
 public class CreateOrder_PublishOrderCreatedMessage
     : ApiTestBase<Program, BookyWooksOrderDbContext>
 {
-    private readonly ITestHarness _testHarness;
+    private readonly TestFactoryBase<Program> _apiFactory;
     public CreateOrder_PublishOrderCreatedMessage(CustomOrderTestFactory<Program> apiFactory)
-        : base(apiFactory, apiFactory.DisposeAsync) => _testHarness = apiFactory.Services.GetTestHarness();
+        : base(apiFactory, apiFactory.DisposeAsync) => _apiFactory = apiFactory;
 
     [Fact]
     public async Task PublishOrderCreatedMessage()
     {
+        using var scope = _apiFactory.Services.CreateScope();
+        var _testHarness = scope.ServiceProvider.GetRequiredService<ITestHarness>();
         await _testHarness.Start();
 
         var orderItems = new List<OrderItemEventDto>
