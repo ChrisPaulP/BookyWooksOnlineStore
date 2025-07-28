@@ -27,9 +27,7 @@ using Testcontainers.RabbitMq;
 using Testcontainers.Redis;
 using Xunit; // Needed for IAsyncLifetime (xUnit)
 
-
-public abstract class TestFactoryBase<TEntryPoint>
-    : WebApplicationFactory<TEntryPoint>, IAsyncLifetime where TEntryPoint : class
+public abstract class TestFactoryBase<TEntryPoint>: WebApplicationFactory<TEntryPoint>, IAsyncLifetime where TEntryPoint : class
 {
     public readonly MsSqlContainer SqlContainer;
     private readonly RabbitMqContainer RabbitMqContainer;
@@ -40,22 +38,23 @@ public abstract class TestFactoryBase<TEntryPoint>
     private static bool _containersStarted = false;
     private static readonly object _lock = new();
 
+    private string _testDatabaseConnectionString = default!;
     protected IConfiguration Configuration { get; private set; } = default!;
 
+    public string RabbitMqHost => RabbitMqContainer.Hostname;
+    public ushort RabbitMqPort => RabbitMqContainer.GetMappedPublicPort(5672);
+    public ushort RedisPort => RedisContainer.GetMappedPublicPort(6379);
     protected TestFactoryBase()
     {
-        // ✅ SQL Server (Testcontainers)
         SqlContainer = new MsSqlBuilder()
             .WithPassword("Your_password123")
             .Build();
 
-        // ✅ RabbitMQ (specialized container)
         RabbitMqContainer = new RabbitMqBuilder()
             .WithUsername(RabbitMqUsername)
             .WithPassword(RabbitMqPassword)
             .Build();
 
-        // ✅ Redis
         RedisContainer = new RedisBuilder()
             .WithImage("redis:7")
             .WithPortBinding(6379, true)
@@ -64,7 +63,6 @@ public abstract class TestFactoryBase<TEntryPoint>
 
     public async Task InitializeAsync()
     {
-        // ✅ Start containers only once across all test classes (parallel-safe)
         if (!_containersStarted)
         {
             lock (_lock)
@@ -79,21 +77,13 @@ public abstract class TestFactoryBase<TEntryPoint>
             await RabbitMqContainer.StartAsync();
             await RedisContainer.StartAsync();
 
-            Console.WriteLine($"[DEBUG] SQL running at: {SqlContainer.GetConnectionString()}");
-            Console.WriteLine($"[DEBUG] RabbitMQ running at: {RabbitMqContainer.Hostname}:{RabbitMqContainer.GetMappedPublicPort(5672)}");
-            Console.WriteLine($"[DEBUG] Redis running at: {RedisContainer.Hostname}:{RedisContainer.GetMappedPublicPort(6379)}");
+            Console.WriteLine($"[DEBUG] SQL: {SqlContainer.GetConnectionString()}");
+            Console.WriteLine($"[DEBUG] RabbitMQ: {RabbitMqHost}:{RabbitMqPort}");
+            Console.WriteLine($"[DEBUG] Redis: {RedisContainer.Hostname}:{RedisPort}");
         }
 
-        // ✅ Ensure database exists (EF migrations expect it)
         await EnsureDatabaseCreatedAsync(SqlContainer.GetConnectionString());
 
-        //// ✅ Auto-seed DB once per test suite run (optional)
-        //using var scope = Services.CreateScope();
-        //var dbContext = scope.ServiceProvider.GetRequiredService<BookyWooksOrderDbContext>();
-        //await dbContext.Database.MigrateAsync();
-        //await DatabaseExtentions.ClearData(dbContext);
-        //await DatabaseExtentions.SeedAsync(dbContext);
-        //Console.WriteLine($"[DEBUG] EF Core seeded using connection: {dbContext.Database.GetConnectionString()}");
     }
 
     private async Task EnsureDatabaseCreatedAsync(string masterConnection)
@@ -102,8 +92,6 @@ public abstract class TestFactoryBase<TEntryPoint>
         {
             InitialCatalog = "BookyWooksOrderDbContext"
         };
-
-        var databaseConnectionString = builder.ConnectionString;
 
         using var masterSqlConnection = new SqlConnection(masterConnection);
         await masterSqlConnection.OpenAsync();
@@ -117,36 +105,24 @@ public abstract class TestFactoryBase<TEntryPoint>
             END";
         await cmd.ExecuteNonQueryAsync();
 
-        Console.WriteLine($"[DEBUG] Created test database: {dbName}");
-
-        // ✅ Replace SqlContainer.GetConnectionString() with our new DB name
-        _testDatabaseConnectionString = databaseConnectionString;
+        _testDatabaseConnectionString = builder.ConnectionString;
     }
-
-    private string _testDatabaseConnectionString = default!;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureAppConfiguration(_ =>
         {
             var sqlConn = _testDatabaseConnectionString ?? SqlContainer.GetConnectionString();
-            var rabbitPort = RabbitMqContainer.GetMappedPublicPort(5672);
+            var rabbitPort = RabbitMqPort;
             var redisConn = $"{RedisContainer.Hostname}:{RedisContainer.GetMappedPublicPort(6379)}";
-
-            Console.WriteLine($"[DEBUG] SQL connection: {sqlConn}");
-            Console.WriteLine($"[DEBUG] RabbitMQ connection: {RabbitMqContainer.Hostname}:{rabbitPort}");
-            Console.WriteLine($"[DEBUG] Redis connection: {redisConn}");
 
             Configuration = new ConfigurationBuilder()
                 .AddJsonFile("testcontainersappsettings.json", optional: false)
                 .AddInMemoryCollection(new Dictionary<string, string>
                 {
-                    ["ConnectionStrings:DefaultConnection"] = sqlConn,
                     ["ConnectionStrings:OrderDatabase"] = sqlConn,
-                    ["ConnectionStrings:SagaOrchestrationDatabase"] = sqlConn,
                     ["ConnectionStrings:Redis"] = redisConn,
-
-                    ["RabbitMQConfiguration:Config:HostName"] = RabbitMqContainer.Hostname,
+                    ["RabbitMQConfiguration:Config:HostName"] = RabbitMqHost,
                     ["RabbitMQConfiguration:Config:Port"] = rabbitPort.ToString(),
                     ["RabbitMQConfiguration:Config:UserName"] = RabbitMqUsername,
                     ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword
@@ -157,26 +133,23 @@ public abstract class TestFactoryBase<TEntryPoint>
         builder.ConfigureTestServices(services =>
         {
             var descriptor = services.SingleOrDefault(
-       d => d.ServiceType == typeof(DbContextOptions<BookyWooksOrderDbContext>));
+                d => d.ServiceType == typeof(DbContextOptions<BookyWooksOrderDbContext>));
             if (descriptor != null)
             {
                 services.Remove(descriptor);
             }
-            // ✅ Override EF Core DbContext to use Testcontainers SQL connection
+
             services.AddDbContext<BookyWooksOrderDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("OrderDatabase")));
 
-            // ✅ Override MassTransit (RabbitMQ)
+            // ✅ Replace MassTransit with Test Harness
             services.AddMassTransitTestHarness(cfg =>
             {
                 ConfigureMassTransit(cfg);
 
                 cfg.UsingRabbitMq((context, rabbitCfg) =>
                 {
-                    var host = RabbitMqContainer.Hostname;
-                    var port = RabbitMqContainer.GetMappedPublicPort(5672);
-
-                    rabbitCfg.Host(host, port, "/", h =>
+                    rabbitCfg.Host(RabbitMqHost, RabbitMqPort, "/", h =>
                     {
                         h.Username(RabbitMqUsername);
                         h.Password(RabbitMqPassword);
@@ -185,20 +158,10 @@ public abstract class TestFactoryBase<TEntryPoint>
                     ConfigureEndpoints(context, rabbitCfg);
                 });
             });
-
-            // ✅ Optionally override Redis (if needed)
-            //services.AddStackExchangeRedisCache(options =>
-            //{
-            //    options.Configuration = Configuration.GetConnectionString("Redis");
-            //});
         });
     }
 
-    public Task DisposeAsync()
-    {
-        // We do not dispose containers after each test class to speed up test runs
-        return Task.CompletedTask;
-    }
+    public Task DisposeAsync() => Task.CompletedTask;
 
     protected abstract void ConfigureMassTransit(IBusRegistrationConfigurator cfg);
 
@@ -207,186 +170,6 @@ public abstract class TestFactoryBase<TEntryPoint>
         cfg.ConfigureEndpoints(ctx);
     }
 }
-//public abstract class TestFactoryBase<TEntryPoint>
-//    : WebApplicationFactory<TEntryPoint>, IAsyncLifetime where TEntryPoint : class
-//{
-//    // ✅ Shared static containers (parallel tests across classes use same instances)
-//    //public static readonly MsSqlContainer SqlContainer = IntegrationTestingSetupExtensions.CreateMsSqlContainer();
-//    //private static readonly RabbitMqContainer RabbitMqContainer = IntegrationTestingSetupExtensions.CreateRabbitMqContainer();
-//    //private static readonly RedisContainer RedisContainer = IntegrationTestingSetupExtensions.CreateRedisContainer();
-
-//    public readonly MsSqlContainer SqlContainer;
-//    private readonly RabbitMqContainer RabbitMqContainer;
-//    private readonly RedisContainer RedisContainer;
-
-//    private const string RabbitMqUsername = "guest";
-//    private const string RabbitMqPassword = "guest";
-//    private static bool _containersStarted = false;
-
-//    protected IConfiguration Configuration { get; private set; } = default!;
-
-//    protected TestFactoryBase()
-//    {
-//        // ✅ SQL Server
-//        SqlContainer = new MsSqlBuilder()
-//            .WithPassword("Your_password123")
-//            .Build();
-
-//        // ✅ RabbitMQ (specialized container)
-//        RabbitMqContainer = new RabbitMqBuilder()
-//            .WithUsername("guest")
-//            .WithPassword("guest")
-//            .Build();
-
-//        // ✅ Redis (no specialized container, so use generic)
-//        RedisContainer = new RedisBuilder()
-//            .WithImage("redis:7")
-//            .WithPortBinding(6379, true)
-//            .Build();
-//    }
-
-//    public async Task InitializeAsync()
-//    {
-//        // ✅ Start containers only once across all test classes (parallel-safe)
-//        //if (!_containersStarted)
-//        //{
-//            await SqlContainer.StartAsync();
-//            await RabbitMqContainer.StartAsync();
-//            await RedisContainer.StartAsync();
-//            //_containersStarted = true;
-
-//            Console.WriteLine($"[DEBUG] SQL running at: {SqlContainer.GetConnectionString()}");
-//            Console.WriteLine($"[DEBUG] RabbitMQ running at: {RabbitMqContainer.Hostname}:{RabbitMqContainer.GetMappedPublicPort(5672)}");
-//            Console.WriteLine($"[DEBUG] Redis running at: {RedisContainer.Hostname}:{RedisContainer.GetMappedPublicPort(6379)}");
-//        //}
-
-//        // ✅ Auto-seed DB once per test suite run (fast in CI)
-//        //using var scope = Services.CreateScope();
-//        //var dbContext = scope.ServiceProvider.GetRequiredService<BookyWooksOrderDbContext>();
-
-//        //await dbContext.Database.MigrateAsync();
-//        //await DatabaseExtentions.ClearData(dbContext);
-//        //await DatabaseExtentions.SeedAsync(dbContext);
-
-//        //Console.WriteLine($"[DEBUG] EF Core seeded using connection: {dbContext.Database.GetConnectionString()}");
-//    }
-
-//    protected override void ConfigureWebHost(IWebHostBuilder builder)
-//    {
-//        builder.ConfigureAppConfiguration(_ =>
-//        {
-//            var sqlConn = SqlContainer.GetConnectionString();
-//            var rabbitPort = RabbitMqContainer.GetMappedPublicPort(5672);
-//            var redisConn = $"{RedisContainer.Hostname}:{RedisContainer.GetMappedPublicPort(6379)}";
-
-//            Console.WriteLine($"[DEBUG] SQL connection: {sqlConn}");
-//            Console.WriteLine($"[DEBUG] RabbitMQ connection: {RabbitMqContainer.Hostname}:{rabbitPort}");
-//            Console.WriteLine($"[DEBUG] Redis connection: {redisConn}");
-
-//            Configuration = new ConfigurationBuilder()
-//                .AddJsonFile("testcontainersappsettings.json", optional: false) // <-- set optional: false
-//                //.AddEnvironmentVariables()
-//                .AddInMemoryCollection(new Dictionary<string, string>
-//                {
-//                    ["ConnectionStrings:DefaultConnection"] = sqlConn,
-//                    ["ConnectionStrings:TestConnection"] = sqlConn,
-//                    ["ConnectionStrings:OrderDatabase"] = sqlConn,
-//                    ["ConnectionStrings:SagaOrchestrationDatabase"] = sqlConn,
-//                    ["RabbitMQConfiguration:Config:HostName"] = RabbitMqContainer.Hostname,
-//                    ["RabbitMQConfiguration:Config:Port"] = rabbitPort.ToString(),
-//                    ["RabbitMQConfiguration:Config:UserName"] = RabbitMqUsername,
-//                    ["RabbitMQConfiguration:Config:Password"] = RabbitMqPassword,
-//                    ["ConnectionStrings:Redis"] = redisConn
-//                })
-//                .Build();
-//                    });
-
-//        builder.ConfigureTestServices(services =>
-//        {
-//            // ✅ Override DbContext with Testcontainers connection
-//            //OverrideDbContext(services, Configuration);
-
-//            //// ✅ Override Redis
-//            //OverrideRedis(services, Configuration);
-
-//            // ✅ Override MassTransit (RabbitMQ)
-//            services.AddMassTransitTestHarness(cfg =>
-//            {
-//                ConfigureMassTransit(cfg);
-
-//                cfg.UsingRabbitMq((context, rabbitCfg) =>
-//                {
-//                    var host = RabbitMqContainer.Hostname;
-//                    var port = RabbitMqContainer.GetMappedPublicPort(5672);
-
-//                    rabbitCfg.Host(host, port, "/", h =>
-//                    {
-//                        h.Username(RabbitMqUsername);
-//                        h.Password(RabbitMqPassword);
-//                    });
-
-//                    ConfigureEndpoints(context, rabbitCfg);
-//                });
-//            });
-//        });
-//    }
-
-//    private static void OverrideDbContext(IServiceCollection services, IConfiguration configuration)
-//    {
-//        var descriptors = services
-//            .Where(s => s.ServiceType == typeof(DbContextOptions<BookyWooksOrderDbContext>))
-//            .ToList();
-
-//        foreach (var d in descriptors)
-//            services.Remove(d);
-
-//        services.AddDbContext<BookyWooksOrderDbContext>(options =>
-//            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-//    }
-
-//    private static void OverrideRedis(IServiceCollection services, IConfiguration configuration)
-//    {
-//        var redisConn = configuration.GetValue<string>("ConnectionStrings:Redis")
-//            ?? throw new ArgumentNullException("Redis connection string not configured");
-
-//        Console.WriteLine($"[DEBUG] Overriding Redis with: {redisConn}");
-
-//        // Remove existing registrations
-//        var descriptors = services
-//            .Where(s => s.ServiceType == typeof(IDistributedCache) || s.ServiceType == typeof(RedisCacheOptions))
-//            .ToList();
-//        foreach (var d in descriptors)
-//            services.Remove(d);
-
-//        // Re-register
-//        var redisConfiguration = new RedisCacheOptions
-//        {
-//            ConfigurationOptions = new ConfigurationOptions
-//            {
-//                AbortOnConnectFail = true,
-//                EndPoints = { redisConn }
-//            }
-//        };
-
-//        services.AddSingleton(redisConfiguration);
-//        services.AddSingleton<IDistributedCache>(_ => new RedisCache(redisConfiguration));
-//    }
-
-//    protected abstract void ConfigureMassTransit(IBusRegistrationConfigurator cfg);
-
-//    protected virtual void ConfigureEndpoints(IBusRegistrationContext ctx, IRabbitMqBusFactoryConfigurator cfg)
-//    {
-//        cfg.ConfigureEndpoints(ctx);
-//    }
-
-//    public new Task DisposeAsync()
-//    {
-//        // ✅ DO NOT stop containers – keep them alive for entire test run
-//        return Task.CompletedTask;
-//    }
-//}
-
-
 
 // Register the endpoint convention for OrderCreatedMessage
 //EndpointConvention.Map<OrderCreatedMessage>(new Uri("queue:order-created")); // Ensure Queue Names Match: Ensure that the queue name specified in EndpointConvention.Map<OrderCreatedMessage> matches the one that MassTransit is generating automatically for the consumer.

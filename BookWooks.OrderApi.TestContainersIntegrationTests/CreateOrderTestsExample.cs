@@ -1,15 +1,16 @@
 ﻿namespace BookWooks.OrderApi.TestContainersIntegrationTests;
 
 [Collection("Order Test Collection")]
-public class CreateOrderTests : ApiTestBase<Program, BookyWooksOrderDbContext>
+public class CreateOrderTestsExample : ApiTestBase<Program, BookyWooksOrderDbContext>
 {
     private readonly HttpClient _client;
-    private readonly ITestHarness _harness;
-
-    public CreateOrderTests(CustomOrderTestFactory<Program> apiFactory) : base(apiFactory, apiFactory.DisposeAsync)
+    //private readonly ITestHarness _harness;
+    private readonly ITestHarness Harness;
+    public CreateOrderTestsExample(CustomOrderTestFactory<Program> apiFactory) : base(apiFactory, apiFactory.DisposeAsync)
     {
         _client = apiFactory.CreateClient();
-        _harness = apiFactory.Services.GetTestHarness();
+        Harness = apiFactory.Services.GetTestHarness();
+        // _harness = apiFactory.Services.GetTestHarness();
     }
 
     [Fact]
@@ -64,7 +65,7 @@ public class CreateOrderTests : ApiTestBase<Program, BookyWooksOrderDbContext>
     //[Fact]
     //public async Task PublishOrderCreated()
     //{
-    //    await _harness.Start();
+    //    //await _harness.Start();
 
     //    var (customerResult, productResult) = await OrderTestHelper.SetupCustomerAndProductAsync(AddAsync<Customer>, AddAsync<Product>);
 
@@ -87,22 +88,23 @@ public class CreateOrderTests : ApiTestBase<Program, BookyWooksOrderDbContext>
 
     //    var commandResult = await SendAsync(createOrderCommand);
 
-    //    var isEventPublished = await _harness.Sent.Any<OrderCreatedMessage>();
+    //    var isEventPublished = await Harness.Sent.Any<OrderCreatedMessage>();
     //    isEventPublished.Should().BeTrue();
 
-    //    var messageSent = await _harness.Sent.SelectAsync<OrderCreatedMessage>()
+    //    var messageSent = await Harness.Sent.SelectAsync<OrderCreatedMessage>()
     //    .FirstOrDefault();
 
     //    Assert.Equal(createOrderCommand.CustomerId, messageSent?.Context.Message.customerId);
 
-    //    await _harness.Stop();
+    //    await Harness.Stop();
     //}
     [Fact]
     public async Task CompletePayment()
     {
-        await _harness.Start();
+        
+        //await Harness.Start();
 
-        var endPointName = _harness.EndpointNameFormatter.Consumer<CompletePaymentCommandConsumer>();
+        var endPointName = Harness.EndpointNameFormatter.Consumer<CompletePaymentCommandConsumer>();
 
         var command = new CompletePaymentCommand(
             CorrelationId: Guid.NewGuid(),
@@ -110,12 +112,12 @@ public class CreateOrderTests : ApiTestBase<Program, BookyWooksOrderDbContext>
             OrderTotal: 9.99M
         );
 
-        await _harness.Bus.Publish(command);
+        await Harness.Bus.Publish(command);
 
-        var isEventPublished = await _harness.Published.Any<CompletePaymentCommand>();
+        var isEventPublished = await Harness.Published.Any<CompletePaymentCommand>();
         isEventPublished.Should().BeTrue();
 
-        var consumerHarness = _harness.GetConsumerHarness<CompletePaymentCommandConsumer>();
+        var consumerHarness = Harness.GetConsumerHarness<CompletePaymentCommandConsumer>();
 
         var isEventConsumed = await consumerHarness.Consumed.Any<CompletePaymentCommand>(x =>
         {
@@ -125,15 +127,15 @@ public class CreateOrderTests : ApiTestBase<Program, BookyWooksOrderDbContext>
 
         isEventConsumed.Should().BeTrue();
 
-        await _harness.Stop();
+       // await Harness.Stop();
     }
 
     [Fact]
     public async Task PublishOrderCreatedMessage()
     {
         EndpointConvention.Map<OrderCreatedMessage>(new Uri("queue:order-created"));
-        await _harness.Start();
-        var x = _harness.GetConsumerEndpoint<OrderCreatedConsumer>();
+        //await Harness.Start();
+        var x = Harness.GetConsumerEndpoint<OrderCreatedConsumer>();
 
         var orderItems = new List<OrderItemEventDto>
                     {
@@ -147,11 +149,11 @@ public class CreateOrderTests : ApiTestBase<Program, BookyWooksOrderDbContext>
             orderItems: orderItems
         );
 
-        var endPointName = _harness.EndpointNameFormatter.Consumer<OrderCreatedConsumer>();
+        var endPointName = Harness.EndpointNameFormatter.Consumer<OrderCreatedConsumer>();
 
 
 
-        await _harness.Bus.Send(message);
+        await Harness.Bus.Send(message);
 
         //var sendEndpoint = await _harness.Bus.GetSendEndpoint(new Uri("queue:order-created"));
         //await sendEndpoint.Send(message);
@@ -159,10 +161,10 @@ public class CreateOrderTests : ApiTestBase<Program, BookyWooksOrderDbContext>
         //Assert.True(await _harness.Consumed.Any<OrderCreatedMessage>());
         //Assert.True(await _harness.Consumed.Any<OrderCreatedConsumer>());
 
-        var isEventPublished = await _harness.Sent.Any<OrderCreatedMessage>();
+        var isEventPublished = await Harness.Sent.Any<OrderCreatedMessage>();
         isEventPublished.Should().BeTrue();
 
-        var consumerHarness = _harness.GetConsumerHarness<OrderCreatedConsumer>();
+        var consumerHarness = Harness.GetConsumerHarness<OrderCreatedConsumer>();
 
         var isEventConsumed = await consumerHarness.Consumed.Any<OrderCreatedMessage>(x =>
         {
@@ -172,6 +174,6 @@ public class CreateOrderTests : ApiTestBase<Program, BookyWooksOrderDbContext>
 
         isEventConsumed.Should().BeTrue();
 
-        await _harness.Stop();
+        //await Harness.Stop();
     }
 }
