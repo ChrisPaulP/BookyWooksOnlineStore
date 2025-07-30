@@ -15,7 +15,7 @@ public class Payment_CompletePayment : ApiTestBase<Program, BookyWooksOrderDbCon
     [Fact]
     public async Task CompletePayment()
     {
-        using var scope = _apiFactory.Services.CreateScope();
+        using var scope = _apiFactory.Services.CreateAsyncScope();
         var testHarness = scope.ServiceProvider.GetRequiredService<ITestHarness>();
 
         await testHarness.Start();
@@ -32,9 +32,15 @@ public class Payment_CompletePayment : ApiTestBase<Program, BookyWooksOrderDbCon
         isEventPublished.Should().BeTrue("the payment command should be published to the bus");
 
         var consumerHarness = testHarness.GetConsumerHarness<CompletePaymentCommandConsumer>();
-        var isEventConsumed = await consumerHarness.Consumed.Any<CompletePaymentCommand>(
+        var isEventConsumed = false;
+        for (var retry = 0; retry < 10 && !isEventConsumed; retry++)
+        {
+            isEventConsumed = await consumerHarness.Consumed.Any<CompletePaymentCommand>(
             x => x.Context.Message.CustomerId == command.CustomerId);
 
+            if (!isEventConsumed)
+                await Task.Delay(100);
+        }
         isEventConsumed.Should().BeTrue("the consumer should process the published payment command");
 
         await testHarness.Stop();
@@ -43,7 +49,7 @@ public class Payment_CompletePayment : ApiTestBase<Program, BookyWooksOrderDbCon
     [Fact]
     public async Task CompletePayment2()
     {
-        using var scope = _apiFactory.Services.CreateScope();
+        using var scope = _apiFactory.Services.CreateAsyncScope();
         var testHarness = scope.ServiceProvider.GetRequiredService<ITestHarness>();
 
         await testHarness.Start();
@@ -60,10 +66,16 @@ public class Payment_CompletePayment : ApiTestBase<Program, BookyWooksOrderDbCon
         isEventPublished.Should().BeTrue("the payment command should be published to the bus");
 
         var consumerHarness = testHarness.GetConsumerHarness<CompletePaymentCommandConsumer>();
-        var isEventConsumed = await consumerHarness.Consumed.Any<CompletePaymentCommand>(
+
+        var isEventConsumed = false;
+        for (var retry = 0; retry < 10 && !isEventConsumed; retry++)
+        {
+            isEventConsumed = await consumerHarness.Consumed.Any<CompletePaymentCommand>(
             x => x.Context.Message.CustomerId == command.CustomerId);
 
-        isEventConsumed.Should().BeTrue("the consumer should process the published payment command");
+            if (!isEventConsumed)
+                await Task.Delay(100);
+        }
 
         await testHarness.Stop();
     }

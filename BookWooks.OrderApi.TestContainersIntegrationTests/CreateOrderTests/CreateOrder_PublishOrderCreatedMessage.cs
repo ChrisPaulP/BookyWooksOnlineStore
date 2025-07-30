@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using BookWooks.OrderApi.UseCases.InternalCommands;
+using BookyWooks.SharedKernel.InternalCommands;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BookWooks.OrderApi.TestContainersIntegrationTests.CreateOrderTests;
 [Collection("Order Test Collection")]
@@ -12,8 +15,10 @@ public class CreateOrder_PublishOrderCreatedMessage
     [Fact]
     public async Task PublishOrderCreatedMessage()
     {
-        using var scope = _apiFactory.Services.CreateScope();
+        await using var scope = _apiFactory.Services.CreateAsyncScope();
         var testHarness = scope.ServiceProvider.GetRequiredService<ITestHarness>();
+
+        await testHarness.Start(); 
 
         var orderItems = new List<OrderItemEventDto>
         {
@@ -30,10 +35,18 @@ public class CreateOrder_PublishOrderCreatedMessage
         await testHarness.Bus.Publish(message);
 
         var consumerHarness = testHarness.GetConsumerHarness<OrderCreatedConsumer>();
-        var isEventConsumed = await consumerHarness.Consumed.Any<OrderCreatedMessage>(x =>
-            x.Context.Message.customerId == message.customerId);
 
-        isEventConsumed.Should().BeTrue();
-        await testHarness.Stop();
+        var isEventConsumed = false;
+        for (var retry = 0; retry < 10 && !isEventConsumed; retry++)
+        {
+            isEventConsumed = await consumerHarness.Consumed
+                .Any<OrderCreatedMessage>(x => x.Context.Message.customerId == message.customerId);
+
+            if (!isEventConsumed)
+                await Task.Delay(100);
+        }
+        isEventConsumed.Should().BeTrue("the OrderCreatedMessage should be consumed");
+
+        await testHarness.Stop(); 
     }
 }
