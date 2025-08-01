@@ -63,7 +63,6 @@ public abstract class TestFactoryBase<TEntryPoint>: WebApplicationFactory<TEntry
         var dbContext = scope.ServiceProvider.GetRequiredService<BookyWooksOrderDbContext>();
         await dbContext.Database.MigrateAsync();
         await DatabaseExtentions.ClearData(dbContext);
-        await DatabaseExtentions.SeedAsync(dbContext);
         Console.WriteLine($"[DEBUG] EF Core seeded using connection: {dbContext.Database.GetConnectionString()}");
 
     }
