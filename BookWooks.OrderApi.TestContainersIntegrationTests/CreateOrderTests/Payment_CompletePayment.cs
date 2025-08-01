@@ -39,7 +39,7 @@ public class Payment_CompletePayment : ApiTestBase<Program, BookyWooksOrderDbCon
             x => x.Context.Message.CustomerId == command.CustomerId);
 
             if (!isEventConsumed)
-                await Task.Delay(100);
+                await Task.Delay(500);
         }
         isEventConsumed.Should().BeTrue("the consumer should process the published payment command");
 

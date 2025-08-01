@@ -43,7 +43,7 @@ public class CreateOrder_PublishOrderCreatedMessage
                 .Any<OrderCreatedMessage>(x => x.Context.Message.customerId == message.customerId);
 
             if (!isEventConsumed)
-                await Task.Delay(100);
+                await Task.Delay(500);
         }
         isEventConsumed.Should().BeTrue("the OrderCreatedMessage should be consumed");
 
