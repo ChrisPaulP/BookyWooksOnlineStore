@@ -27,7 +27,6 @@ public abstract class TestFactoryBase<TEntryPoint>: WebApplicationFactory<TEntry
         RabbitMqContainer = new RabbitMqBuilder()
             .WithUsername(RabbitMqUsername)
             .WithPassword(RabbitMqPassword)
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(RabbitMqPort))
             .Build();
 
         RedisContainer = new RedisBuilder()
