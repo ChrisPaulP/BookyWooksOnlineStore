@@ -8,16 +8,16 @@ DELETE FROM Products;
 IF NOT EXISTS (SELECT 1 FROM Customers)
 BEGIN
 INSERT INTO Customers (CustomerId, Name, Email) VALUES
-    ('3b69db6f-11f0-493c-b8d2-6a9a8a046796', 'Customer 1', 'customer1@example.com'),
-    ('9d2f65af-33d0-4243-bce3-355ed541fb03', 'Customer 2', 'customer2@example.com'),
-    ('b8557ba6-22a8-456b-b3dc-99e7fed84e20', 'Customer 3', 'customer3@example.com'),
-    ('fca368fd-88c7-4d82-a201-168f89b5b6d5', 'Customer 4', 'customer4@example.com'),
-    ('40aab34a-d0af-49cd-886b-22c52ac773e2', 'Customer 5', 'customer5@example.com'),
-    ('b2d51bba-faed-4f69-b3c4-ca2307d910a8', 'Customer 6', 'customer6@example.com'),
-    ('50240871-3b69-4fd7-b20f-53c987d5fbee', 'Customer 7', 'customer7@example.com'),
-    ('ac5d7836-ab31-45d8-ba2a-88fa9e053537', 'Customer 8', 'customer8@example.com'),
-    ('09a2944e-7db3-4658-a52b-c1725a8b8ec7', 'Customer 9', 'customer9@example.com'),
-    ('fb50726a-be60-4e11-bb8e-51f81235f0e2', 'Customer 10', 'customer10@example.com');
+    ('3b69db6f-11f0-493c-b8d2-6a9a8a046796', 'Customer 1', 'customer1@gmail.com'),
+    ('9d2f65af-33d0-4243-bce3-355ed541fb03', 'Customer 2', 'customer2@gmail.com'),
+    ('b8557ba6-22a8-456b-b3dc-99e7fed84e20', 'Customer 3', 'customer3@gmail.com'),
+    ('fca368fd-88c7-4d82-a201-168f89b5b6d5', 'Customer 4', 'customer4@gmail.com'),
+    ('40aab34a-d0af-49cd-886b-22c52ac773e2', 'Customer 5', 'customer5@gmail.com'),
+    ('b2d51bba-faed-4f69-b3c4-ca2307d910a8', 'Customer 6', 'customer6@gmail.com'),
+    ('50240871-3b69-4fd7-b20f-53c987d5fbee', 'Customer 7', 'customer7@gmail.com'),
+    ('ac5d7836-ab31-45d8-ba2a-88fa9e053537', 'Customer 8', 'customer8@gmail.com'),
+    ('09a2944e-7db3-4658-a52b-c1725a8b8ec7', 'Customer 9', 'customer9@gmail.com'),
+    ('fb50726a-be60-4e11-bb8e-51f81235f0e2', 'Customer 10', 'customer10@gmail.com');
 END
 IF NOT EXISTS (SELECT 1 FROM Products)
 BEGIN
