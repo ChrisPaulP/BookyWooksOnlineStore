@@ -68,6 +68,7 @@ public abstract class OrderStatus
       "Order Checking Book Stock" => OrderCheckingBookStock,
       "Book Stock Confirmed" => BookStockConfirmed,
       "Fulfilled" => Fulfilled,
+      "Shipped" => Shipped,
       "Delivered" => Delivered,
       _ => throw new ArgumentException($"Unknown status: {label}")
     };
