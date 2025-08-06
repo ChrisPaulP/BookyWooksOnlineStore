@@ -9,6 +9,11 @@
     <Compile Remove="Data\Repositories\OrderRepository.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Data/SeedDatabaseScripts/Orders.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\..\BookyWooks.SharedKernel\BookyWooks.SharedKernel.csproj" />
     <ProjectReference Include="..\BookWooks.OrderApi.Core\BookWooks.OrderApi.Core.csproj" />
     <ProjectReference Include="..\BookWooks.OrderApi.UseCases\BookWooks.OrderApi.UseCases.csproj" />

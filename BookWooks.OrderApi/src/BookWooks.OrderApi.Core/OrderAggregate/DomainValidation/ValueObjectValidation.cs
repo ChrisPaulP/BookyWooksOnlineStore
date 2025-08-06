@@ -2,7 +2,7 @@
 
 public static class ValueObjectValidation
 {
-  public static Validation Validate(Guid id, string fieldName)
+  public static Validation ValidateGuid(Guid id, string fieldName)
   {
     var result = Validation.Invalid(string.Format(ValidationMessages.DoesNotMeetRequirements, fieldName));
     if (id == Guid.Empty)
@@ -11,7 +11,7 @@ public static class ValueObjectValidation
     return result.Data is { Count: > 0 } ? result : Validation.Ok;
   }
 
-  public static Validation Validate(string input,string fieldName,int minLength,int maxLength,Func<string, bool>? customRule = null,string? customRuleError = null,Func<string, bool>? customRule2 = null,string? customRuleError2 = null, bool mustBeExactLength = false)
+  public static Validation ValidateString(string input,string fieldName,int minLength,int maxLength,Func<string, bool>? customRule = null,string? customRuleError = null,Func<string, bool>? customRule2 = null,string? customRuleError2 = null, bool mustBeExactLength = false)
   {
     var result = Validation.Invalid(string.Format(ValidationMessages.DoesNotMeetRequirements, fieldName));
 
@@ -36,7 +36,7 @@ public static class ValueObjectValidation
     return result.Data is { Count: > 0 } ? result : Validation.Ok;
   }
 
-  public static Validation Validate(decimal input, string fieldName, int minValue)
+  public static Validation ValidateDecimal(decimal input, string fieldName, int minValue)
   {
     var result = Validation.Invalid(string.Format(ValidationMessages.DoesNotMeetRequirements, fieldName));
 
@@ -46,7 +46,7 @@ public static class ValueObjectValidation
     return result.Data is { Count: > 0 } ? result : Validation.Ok;
   }
 
-  public static Validation Validate(int input, string fieldName, int minValue)
+  public static Validation ValidateInt(int input, string fieldName, int minValue)
   {
     var result = Validation.Invalid(string.Format(ValidationMessages.DoesNotMeetRequirements, fieldName));
 
@@ -55,7 +55,7 @@ public static class ValueObjectValidation
 
     return result.Data is { Count: > 0 } ? result : Validation.Ok;
   }
-  public static Validation Validate(DateTimeOffset dateTime, string fieldName)
+  public static Validation ValidateDateTime(DateTimeOffset dateTime, string fieldName)
   {
     var result = Validation.Invalid(string.Format(ValidationMessages.DoesNotMeetRequirements, fieldName));
     if (dateTime > DateTimeOffset.UtcNow)

@@ -14,8 +14,26 @@ public static class DatabaseExtentions
     //  await context.Database.EnsureDeletedAsync();
     //}
     await context.Database.MigrateAsync();
-    await ClearData(context);
-    await SeedAsync(context);
+    await SeedFromSqlFileAsync(context);
+    //await ClearData(context);
+    //await SeedAsync(context);
+  }
+  private static async Task SeedFromSqlFileAsync(BookyWooksOrderDbContext context)
+  {
+    var sqlFilePath = Path.Combine(
+        AppContext.BaseDirectory,
+        "Data",
+        "SeedDatabaseScripts",
+        "Orders.sql"
+    );
+
+    if (!File.Exists(sqlFilePath))
+      throw new FileNotFoundException($"Seed file not found: {sqlFilePath}");
+
+    var sqlScript = await File.ReadAllTextAsync(sqlFilePath);
+
+    // Split on "GO" if your SQL Server script uses it, otherwise execute as one batch
+    await context.Database.ExecuteSqlRawAsync(sqlScript);
   }
   public static async Task ClearData(BookyWooksOrderDbContext context)
   {

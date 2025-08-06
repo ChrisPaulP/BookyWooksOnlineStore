@@ -1,0 +1,156 @@
+﻿BEGIN TRANSACTION;
+
+DELETE FROM OrderItems;
+DELETE FROM Orders;
+DELETE FROM Customers;
+DELETE FROM Products;
+
+IF NOT EXISTS (SELECT 1 FROM Customers)
+BEGIN
+INSERT INTO Customers (CustomerId, Name, Email) VALUES
+    ('3b69db6f-11f0-493c-b8d2-6a9a8a046796', 'Customer 1', 'customer1@example.com'),
+    ('9d2f65af-33d0-4243-bce3-355ed541fb03', 'Customer 2', 'customer2@example.com'),
+    ('b8557ba6-22a8-456b-b3dc-99e7fed84e20', 'Customer 3', 'customer3@example.com'),
+    ('fca368fd-88c7-4d82-a201-168f89b5b6d5', 'Customer 4', 'customer4@example.com'),
+    ('40aab34a-d0af-49cd-886b-22c52ac773e2', 'Customer 5', 'customer5@example.com'),
+    ('b2d51bba-faed-4f69-b3c4-ca2307d910a8', 'Customer 6', 'customer6@example.com'),
+    ('50240871-3b69-4fd7-b20f-53c987d5fbee', 'Customer 7', 'customer7@example.com'),
+    ('ac5d7836-ab31-45d8-ba2a-88fa9e053537', 'Customer 8', 'customer8@example.com'),
+    ('09a2944e-7db3-4658-a52b-c1725a8b8ec7', 'Customer 9', 'customer9@example.com'),
+    ('fb50726a-be60-4e11-bb8e-51f81235f0e2', 'Customer 10', 'customer10@example.com');
+END
+IF NOT EXISTS (SELECT 1 FROM Products)
+BEGIN
+INSERT INTO Products (ProductId, Name, Description, Price, Quantity) VALUES
+    ('65852361-5b34-4fa4-9ef5-fd3a20ea617c', 'The Silent Patient', 'A thrilling adventure through love, war, and discovery.', 22.16, 24),
+    ('c5ef1548-fff0-4232-89a5-76d8df971889', 'Where the Crawdads Sing', 'An emotional journey that explores the depth of human connection.', 24.97, 81),
+    ('25bf8fb6-6502-4336-924b-a7b83cad4cb8', 'The Night Circus', 'An unforgettable fantasy filled with magic and betrayal.', 13.4, 78),
+    ('d3bc37d3-9b8c-4997-9612-6ef44c77c818', 'The Midnight Library', 'A suspenseful mystery with twists at every turn.', 14.34, 46),
+    ('70fd7dce-4280-4767-997b-83f6b605c2e7', 'Project Hail Mary', 'A heartbreaking story of resilience and redemption.', 20.99, 95),
+    ('35180b73-32d2-4b4d-a44f-a30abce578c7', 'The Song of Achilles', 'A powerful narrative of courage in the face of adversity.', 18.32, 45),
+    ('eb4c0147-a2ed-4b6b-901d-e79889b40acc', 'Circe', 'A gripping dystopian tale of rebellion and sacrifice.', 24.12, 22),
+    ('9543ff73-d2a4-42f7-a34f-4f1e151e6ec2', 'The Paris Library', 'A contemporary romance that challenges expectations.', 14.48, 58),
+    ('87c72652-51fd-4b27-8138-b5d82f904106', 'Lessons in Chemistry', 'A richly woven tale of family, secrets, and survival.', 10.73, 14),
+    ('bdd917d6-bec0-4d74-bf19-e1c6fec7dc10', 'The Lincoln Highway', 'A sci-fi epic that questions the future of humanity.', 21.65, 20),
+    ('12f228c3-8ebb-4138-a078-4ae7c28a2bcf', 'The Paper Palace', 'A thrilling adventure through love, war, and discovery.', 13.99, 89),
+    ('20224dd5-e777-4734-b195-e7638ed4c5f6', 'Malibu Rising', 'An emotional journey that explores the depth of human connection.', 11.5, 29),
+    ('83fd40bf-b8a9-4b8b-aa18-7591b77f5dea', 'Verity', 'An unforgettable fantasy filled with magic and betrayal.', 10.95, 98),
+    ('07b4b27d-e0bd-4008-a1a9-0198253843e1', 'The Last Thing He Told Me', 'A suspenseful mystery with twists at every turn.', 23.91, 87),
+    ('1282d8cb-c5fa-43d8-afa6-a310c7e8049b', 'The Seven Husbands of Evelyn Hugo', 'A heartbreaking story of resilience and redemption.', 23.99, 98),
+    ('5a5d7046-2c3c-4a4b-9c88-65b19910982b', 'Daisy Jones & The Six', 'A powerful narrative of courage in the face of adversity.', 22.66, 41),
+    ('43f6336d-a28f-4197-b4d0-ca3939928e68', 'Book Lovers', 'A gripping dystopian tale of rebellion and sacrifice.', 20.64, 92),
+    ('a2417e2d-c371-4ee0-857d-4377f99b50d0', 'Beach Read', 'A contemporary romance that challenges expectations.', 22.9, 68),
+    ('04284b4b-7f0f-4392-ae95-21a5372addac', 'It Ends With Us', 'A richly woven tale of family, secrets, and survival.', 15.27, 33),
+    ('d6199668-e21a-4240-9d9c-3f23362001a6', 'Ugly Love', 'A sci-fi epic that questions the future of humanity.', 18.02, 60),
+    ('32b48bf3-06fe-40e5-88a9-41004112d6db', 'Reminders of Him', 'A thrilling adventure through love, war, and discovery.', 22.01, 86),
+    ('2ff5c8da-52da-4e11-84cc-f9c0d7d192e3', 'November 9', 'An emotional journey that explores the depth of human connection.', 12.44, 13),
+    ('746f2110-3964-4f73-a594-2f5f670f2827', 'Confess', 'An unforgettable fantasy filled with magic and betrayal.', 22.56, 43),
+    ('e35eca37-e0fb-45c0-ac38-e8bfb0833093', 'Hopeless', 'A suspenseful mystery with twists at every turn.', 24.48, 69),
+    ('9c46cb7b-34dc-4ee4-afa2-13e144e31cab', 'Regretting You', 'A heartbreaking story of resilience and redemption.', 24.59, 100),
+    ('760fa036-03b2-4c48-a299-3e58321ad8fe', 'The House in the Cerulean Sea', 'A powerful narrative of courage in the face of adversity.', 15.1, 47),
+    ('4069121f-b625-40f6-8855-490ddf06b08b', 'Under the Whispering Door', 'A gripping dystopian tale of rebellion and sacrifice.', 10.66, 44),
+    ('7dba7014-804f-417c-a38f-a2d27c68ebd8', 'Fourth Wing', 'A contemporary romance that challenges expectations.', 14.35, 43),
+    ('b64ba38d-1104-470a-bf16-5f59098cbeb9', 'Iron Flame', 'A richly woven tale of family, secrets, and survival.', 16.44, 27),
+    ('35e0e43f-552e-452a-a2af-ecf525a7eea1', 'Throne of Glass', 'A sci-fi epic that questions the future of humanity.', 21.53, 29),
+    ('84521b6a-45ff-4ce3-9d3e-ed1552063e85', 'Crescent City', 'A thrilling adventure through love, war, and discovery.', 23.92, 88),
+    ('c2f66e77-4821-4db1-92bd-8885bacda57e', 'House of Earth and Blood', 'An emotional journey that explores the depth of human connection.', 14.07, 39),
+    ('96206402-eefd-4997-a474-be9c1c1804aa', 'House of Sky and Breath', 'An unforgettable fantasy filled with magic and betrayal.', 12.72, 87),
+    ('76e46a0c-4371-4ee5-92b8-4ab952343e8e', 'A Court of Thorns and Roses', 'A suspenseful mystery with twists at every turn.', 23.56, 35),
+    ('d33e8c3d-27bc-4d06-abf6-915caae2be19', 'A Court of Mist and Fury', 'A heartbreaking story of resilience and redemption.', 19.9, 63),
+    ('13971acf-9689-4101-9634-c96565cf86cc', 'A Court of Wings and Ruin', 'A powerful narrative of courage in the face of adversity.', 17.16, 84),
+    ('3e7bd1f4-5672-4992-b572-8a93f60c563a', 'A Court of Frost and Starlight', 'A gripping dystopian tale of rebellion and sacrifice.', 20.41, 47),
+    ('8ad08940-7493-4769-ac33-33437a5d3615', 'A Court of Silver Flames', 'A contemporary romance that challenges expectations.', 20.82, 83),
+    ('3cee5245-7323-49e9-83b4-4555fc672a64', 'Shadow and Bone', 'A richly woven tale of family, secrets, and survival.', 18.89, 46),
+    ('6aa4fc10-311a-45f1-b4c2-d2e996c0972e', 'Siege and Storm', 'A sci-fi epic that questions the future of humanity.', 14.46, 81),
+    ('a03d8ff7-b40f-4751-bcf9-79aa2ec63f0f', 'Ruin and Rising', 'A thrilling adventure through love, war, and discovery.', 18.79, 69),
+    ('0c28565d-7d6a-4749-9455-ebcfaf9ae6ae', 'King of Scars', 'An emotional journey that explores the depth of human connection.', 16.56, 42),
+    ('eb5dd6c9-95ce-48a8-9360-fd624c40f585', 'Rule of Wolves', 'An unforgettable fantasy filled with magic and betrayal.', 24.97, 39),
+    ('859a339f-d229-4546-97d1-0cc19eb53318', 'Six of Crows', 'A suspenseful mystery with twists at every turn.', 18.6, 90),
+    ('709eafc9-667f-40e5-8bb3-19a6f594aa1f', 'Crooked Kingdom', 'A heartbreaking story of resilience and redemption.', 21.19, 26),
+    ('f8174f87-8839-40ab-b273-6c1ec7d09fa8', 'The Ballad of Never After', 'A powerful narrative of courage in the face of adversity.', 22.97, 48),
+    ('dcc1a57f-231f-4bdf-a5a7-b93d9866f484', 'Once Upon a Broken Heart', 'A gripping dystopian tale of rebellion and sacrifice.', 17.23, 85),
+    ('13d3afbb-4d9d-4db1-8495-4fab5c260b5d', 'Caraval', 'A contemporary romance that challenges expectations.', 17.19, 13),
+    ('3e628f9f-09ce-48c7-9c59-0b63ac1a2ee8', 'Legendary', 'A richly woven tale of family, secrets, and survival.', 18.76, 72),
+    ('b36ed2f9-0ddd-4e53-9ed8-169a34f8a059', 'Finale', 'A sci-fi epic that questions the future of humanity.', 23.81, 36),
+    ('ad603b62-0558-4df7-acba-bcba8ff9308c', 'The Inheritance Games', 'A thrilling adventure through love, war, and discovery.', 11.05, 51),
+    ('92102792-e6c2-4531-a9b8-eb2daf84d410', 'The Hawthorne Legacy', 'An emotional journey that explores the depth of human connection.', 23.06, 66),
+    ('ebb0b869-a2a4-43b3-86bc-0d9fdb3dbe61', 'The Final Gambit', 'An unforgettable fantasy filled with magic and betrayal.', 16.82, 40),
+    ('8509268d-5c02-4f04-9bc8-36e907949504', 'The Brothers Hawthorne', 'A suspenseful mystery with twists at every turn.', 23.17, 11),
+    ('e79b5168-b711-44db-8d92-710726be5f65', 'The Atlas Six', 'A heartbreaking story of resilience and redemption.', 21.96, 14),
+    ('c94700dd-a80a-4c55-a529-c875c6867f37', 'The Atlas Paradox', 'A powerful narrative of courage in the face of adversity.', 12.69, 94),
+    ('81bc2df0-bc8b-4e14-8f26-9f8409a5f490', 'The Atlas Complex', 'A gripping dystopian tale of rebellion and sacrifice.', 22.98, 27),
+    ('378d2683-46a3-460c-9edb-c1553268d1dd', 'Babel', 'A contemporary romance that challenges expectations.', 21.13, 59),
+    ('61901875-b7e4-44d3-884f-6421f48e257e', 'Piranesi', 'A richly woven tale of family, secrets, and survival.', 23.52, 53),
+    ('5ee39377-da4c-40da-a609-f636afb41363', 'The Priory of the Orange Tree', 'A sci-fi epic that questions the future of humanity.', 10.12, 70),
+    ('5cac0fec-9b57-4e24-933c-3eb56b0bfa3d', 'To Sleep in a Sea of Stars', 'A thrilling adventure through love, war, and discovery.', 24.14, 94),
+    ('5e661f29-816e-45ae-a822-951e74e3feca', 'Tress of the Emerald Sea', 'An emotional journey that explores the depth of human connection.', 16.47, 35),
+    ('3797d333-64b2-449d-9a19-e6c32632feb7', 'The Frugal Wizard’s Handbook', 'An unforgettable fantasy filled with magic and betrayal.', 12.19, 67),
+    ('0f07824f-bbf5-41cb-b263-40e2524ced36', 'The Way of Kings', 'A suspenseful mystery with twists at every turn.', 23.32, 95),
+    ('7b260fa7-014a-4465-a63c-e670fb257069', 'Words of Radiance', 'A heartbreaking story of resilience and redemption.', 23.79, 16),
+    ('17aef194-da99-4fbf-a0da-4ff5ca38a45f', 'Oathbringer', 'A powerful narrative of courage in the face of adversity.', 13.71, 18),
+    ('82f1cf67-2c20-4356-926e-b5573a5ee990', 'Rhythm of War', 'A gripping dystopian tale of rebellion and sacrifice.', 11.86, 66),
+    ('e6ca33d6-b311-484e-a5ee-9c1f93f149b6', 'The Name of the Wind', 'A contemporary romance that challenges expectations.', 20.43, 30),
+    ('da1a1398-79a2-40f4-953a-fd593890e7b3', 'The Wise Man’s Fear', 'A richly woven tale of family, secrets, and survival.', 20.7, 49),
+    ('fe8b403a-c4d2-4bf6-9f91-e22bb6ad6b10', 'Elantris', 'A sci-fi epic that questions the future of humanity.', 18.14, 95),
+    ('e46ff5be-1bde-46ec-953b-3e634820524e', 'Mistborn', 'A thrilling adventure through love, war, and discovery.', 12.9, 27),
+    ('185a694f-1d85-4fdd-a2f1-d9f6acd44c9c', 'The Well of Ascension', 'An emotional journey that explores the depth of human connection.', 18.34, 77),
+    ('3c32cd35-bf05-4f78-a9a5-28419fc67f80', 'The Hero of Ages', 'An unforgettable fantasy filled with magic and betrayal.', 19.65, 79),
+    ('d54207ae-b898-415d-9394-526462d91efe', 'Warbreaker', 'A suspenseful mystery with twists at every turn.', 23.35, 100),
+    ('8510ebcc-1b50-4620-a746-6a91e8c2b477', 'Skyward', 'A heartbreaking story of resilience and redemption.', 16.72, 60),
+    ('c0b12826-29e8-46c3-976a-61ca826aa70e', 'Starsight', 'A powerful narrative of courage in the face of adversity.', 18.75, 34),
+    ('d7b37b81-6e00-438e-9d9c-502c6f23cc85', 'Cytonic', 'A gripping dystopian tale of rebellion and sacrifice.', 23.16, 75),
+    ('8b205297-e4fc-4b97-ba72-4d63b5dd3f2d', 'Defiant', 'A contemporary romance that challenges expectations.', 10.56, 78),
+    ('3aa46603-f33e-4261-8f47-b5dc0e3c23b1', 'The Martian', 'A richly woven tale of family, secrets, and survival.', 17.92, 100),
+    ('64a3a94f-af83-46ba-bc07-fbce8fb4c6a1', 'Artemis', 'A sci-fi epic that questions the future of humanity.', 21.71, 11),
+    ('fa18a752-9237-4661-997c-5ae6f51197de', 'Hail Mary 2', 'A thrilling adventure through love, war, and discovery.', 17.76, 45),
+    ('9f9fa014-322d-4940-a2ef-e6383fe1670d', 'Children of Time', 'An emotional journey that explores the depth of human connection.', 15.87, 11),
+    ('ee238847-cb16-45aa-92d8-a2efa6635fc3', 'Children of Ruin', 'An unforgettable fantasy filled with magic and betrayal.', 22.92, 65),
+    ('15bf6a83-9599-4570-8ba1-c88df0c9d710', 'Children of Memory', 'A suspenseful mystery with twists at every turn.', 20.62, 28),
+    ('a352953a-a8f2-4a27-a6e7-20dd997565fe', 'Leviathan Wakes', 'A heartbreaking story of resilience and redemption.', 16.38, 97),
+    ('5779f9c9-2da0-4ded-8914-ec7361e83aee', 'Caliban''s War', 'A powerful narrative of courage in the face of adversity.', 16.09, 46),
+    ('18e16a5a-caa9-4f54-bb14-8bdafd355550', 'Abaddon''s Gate', 'A gripping dystopian tale of rebellion and sacrifice.', 18.36, 92),
+    ('536c7ba9-63f3-4c08-a2a3-966d2d1782e3', 'Cibola Burn', 'A contemporary romance that challenges expectations.', 15.52, 90),
+    ('0166288f-e00b-4bc1-a5b4-dd0039f1433c', 'Nemesis Games', 'A richly woven tale of family, secrets, and survival.', 10.23, 47),
+    ('f093df59-2204-4e7b-a634-f5fa8a17db2d', 'Babylon''s Ashes', 'A sci-fi epic that questions the future of humanity.', 24.61, 61),
+    ('7b31c89d-92f3-4bfe-b15e-b84b6cf7c345', 'Persepolis Rising', 'A thrilling adventure through love, war, and discovery.', 20.59, 32),
+    ('c48cc9f6-be34-4c20-b0f4-302a22c680e8', 'Tiamat''s Wrath', 'An emotional journey that explores the depth of human connection.', 20.44, 30),
+    ('6fac1a51-b244-45fc-9f84-3bf18ad3da97', 'Leviathan Falls', 'An unforgettable fantasy filled with magic and betrayal.', 13.06, 95),
+    ('d477a007-a5ab-43ce-aaa1-88701e17e1b4', 'Red Rising', 'A suspenseful mystery with twists at every turn.', 16.31, 80),
+    ('32e054d6-54b8-481d-8bc6-9c1cf95a624e', 'Golden Son', 'A heartbreaking story of resilience and redemption.', 18.87, 44),
+    ('2db8db1d-8923-4a38-a743-605fa3e69720', 'Morning Star', 'A powerful narrative of courage in the face of adversity.', 11.53, 15),
+    ('9f7bbddc-9548-482d-98c1-73212c4337e8', 'Iron Gold', 'A gripping dystopian tale of rebellion and sacrifice.', 23.75, 81),
+    ('2779a76c-6767-4f4d-99f1-b23863a66ccf', 'Dark Age', 'A contemporary romance that challenges expectations.', 14.58, 92),
+    ('7fa39025-b91f-4cd5-8cce-deac02c45bfd', 'Light Bringer', 'A richly woven tale of family, secrets, and survival.', 11.06, 82),
+    ('0af95ce9-621d-4352-bc2d-87c2f1291b3b', 'The Blade Itself', 'A sci-fi epic that questions the future of humanity.', 10.46, 67);
+END
+
+IF NOT EXISTS (SELECT 1 FROM Orders)
+BEGIN
+INSERT INTO Orders (OrderId, CustomerId, Message, IsCancelled, OrderPlaced, Status, Street, City, Country, Postcode, Payment_CardName, Payment_CardNumber, Payment_Expiration, Payment_PaymentMethod) VALUES
+    ('c3119dea-bb7a-42d9-a373-4f2f6e0d0b21', '3b69db6f-11f0-493c-b8d2-6a9a8a046796', 'Order note 1', 1, '2025-08-01 15:45:17', 'Placed', '123 Main St', 'Dublin', 'Ireland', 'D01XY12', 'Customer 1', '4111111111111000', '12/26', 1),
+    ('5e0890dd-8efb-4f5f-b50c-ee741d11121a', '9d2f65af-33d0-4243-bce3-355ed541fb03', 'Order note 2', 0, '2025-07-31 15:45:17', 'Shipped', '456 Elm St', 'Cork', 'Ireland', 'T12EF34', 'Customer 2', '4111111111111001', '12/26', 1),
+    ('76b24b0c-d8f0-4f1a-b8b2-f3c006cb414d', 'b8557ba6-22a8-456b-b3dc-99e7fed84e20', 'Order note 3', 0, '2025-07-30 15:45:17', 'Delivered', '789 Oak St', 'Galway', 'Ireland', 'H91GH56', 'Customer 3', '4111111111111002', '12/26', 1),
+    ('623ac43f-7e65-483f-b2e7-10fa6e9d8a37', 'fca368fd-88c7-4d82-a201-168f89b5b6d5', 'Order note 4', 0, '2025-07-29 15:45:17', 'Cancelled', '123 Main St', 'Limerick', 'Ireland', 'D01XY12', 'Customer 4', '4111111111111003', '12/26', 1),
+    ('11046f2f-7042-4da4-8d9e-863d5dd0e3be', '40aab34a-d0af-49cd-886b-22c52ac773e2', 'Order note 5', 1, '2025-07-28 15:45:17', 'Placed', '456 Elm St', 'Dublin', 'Ireland', 'T12EF34', 'Customer 5', '4111111111111004', '12/26', 1),
+    ('734cd95f-7803-4ed3-be96-9b4946f36a66', 'b2d51bba-faed-4f69-b3c4-ca2307d910a8', 'Order note 6', 0, '2025-07-27 15:45:17', 'Shipped', '789 Oak St', 'Cork', 'Ireland', 'H91GH56', 'Customer 6', '4111111111111005', '12/26', 1),
+    ('8152d622-ff5a-44fe-b3a3-ea36d2ef23c5', '50240871-3b69-4fd7-b20f-53c987d5fbee', 'Order note 7', 0, '2025-07-26 15:45:17', 'Delivered', '123 Main St', 'Galway', 'Ireland', 'D01XY12', 'Customer 7', '4111111111111006', '12/26', 1),
+    ('88f9a522-048b-49ff-8dd6-f4c4041df62e', 'ac5d7836-ab31-45d8-ba2a-88fa9e053537', 'Order note 8', 0, '2025-07-25 15:45:17', 'Cancelled', '456 Elm St', 'Limerick', 'Ireland', 'T12EF34', 'Customer 8', '4111111111111007', '12/26', 1),
+    ('882315ac-3e15-4cf4-86da-78cfc0e292bb', '09a2944e-7db3-4658-a52b-c1725a8b8ec7', 'Order note 9', 1, '2025-07-24 15:45:17', 'Placed', '789 Oak St', 'Dublin', 'Ireland', 'H91GH56', 'Customer 9', '4111111111111008', '12/26', 1),
+    ('2a2723da-adc5-4404-ab52-674d816cb7b9', 'fb50726a-be60-4e11-bb8e-51f81235f0e2', 'Order note 10', 0, '2025-07-23 15:45:17', 'Shipped', '123 Main St', 'Cork', 'Ireland', 'D01XY12', 'Customer 10', '4111111111111009', '12/26', 1);
+END
+
+IF NOT EXISTS (SELECT 1 FROM OrderItems)
+BEGIN
+INSERT INTO OrderItems (OrderItemId, OrderId, ProductId, Quantity, ProductName, ProductDescription, Price) VALUES
+    ('0fd2c0a8-ac2e-4434-ba74-c47b9140a33f', 'c3119dea-bb7a-42d9-a373-4f2f6e0d0b21', '65852361-5b34-4fa4-9ef5-fd3a20ea617c', 3, 'The Silent Patient', 'A thrilling adventure through love, war, and discovery.', 22.16),
+    ('4f8f913b-f45a-4899-9ba7-7ad502116413', '5e0890dd-8efb-4f5f-b50c-ee741d11121a', 'c5ef1548-fff0-4232-89a5-76d8df971889', 2, 'Where the Crawdads Sing', 'An emotional journey that explores the depth of human connection.', 24.97),
+    ('42d3d999-9104-4ff9-a843-20453d62fda1', '76b24b0c-d8f0-4f1a-b8b2-f3c006cb414d', '25bf8fb6-6502-4336-924b-a7b83cad4cb8', 5, 'The Night Circus', 'An unforgettable fantasy filled with magic and betrayal.', 13.4),
+    ('8cc6cd2f-a74c-4bee-b550-8d9456597dda', '623ac43f-7e65-483f-b2e7-10fa6e9d8a37', 'd3bc37d3-9b8c-4997-9612-6ef44c77c818', 5, 'The Midnight Library', 'A suspenseful mystery with twists at every turn.', 14.34),
+    ('38345615-5e24-4949-9130-b8a814427592', '11046f2f-7042-4da4-8d9e-863d5dd0e3be', '70fd7dce-4280-4767-997b-83f6b605c2e7', 5, 'Project Hail Mary', 'A heartbreaking story of resilience and redemption.', 20.99),
+    ('b45fef53-c487-484a-bcdc-14b97d7355ca', '734cd95f-7803-4ed3-be96-9b4946f36a66', '35180b73-32d2-4b4d-a44f-a30abce578c7', 5, 'The Song of Achilles', 'A powerful narrative of courage in the face of adversity.', 18.32),
+    ('80e0b5b3-6386-4b66-9d40-7895e58b5f93', '8152d622-ff5a-44fe-b3a3-ea36d2ef23c5', 'eb4c0147-a2ed-4b6b-901d-e79889b40acc', 2, 'Circe', 'A gripping dystopian tale of rebellion and sacrifice.', 24.12),
+    ('72e2c8f7-aa3c-4b42-b65d-c9ddf500af49', '88f9a522-048b-49ff-8dd6-f4c4041df62e', '9543ff73-d2a4-42f7-a34f-4f1e151e6ec2', 3, 'The Paris Library', 'A contemporary romance that challenges expectations.', 14.48),
+    ('2cc4bd83-2c10-4a56-9431-6a131b0be46d', '882315ac-3e15-4cf4-86da-78cfc0e292bb', '87c72652-51fd-4b27-8138-b5d82f904106', 2, 'Lessons in Chemistry', 'A richly woven tale of family, secrets, and survival.', 10.73),
+    ('5bc5c498-c0d6-4f08-b527-00fe555fe17b', '2a2723da-adc5-4404-ab52-674d816cb7b9', 'bdd917d6-bec0-4d74-bf19-e1c6fec7dc10', 3, 'The Lincoln Highway', 'A sci-fi epic that questions the future of humanity.', 21.65);
+END
+COMMIT TRANSACTION;
