@@ -10,6 +10,7 @@ public abstract class OrderStatus
   public static readonly OrderStatus BookStockConfirmed = new BookStockConfirmedStatus();
   public static readonly OrderStatus Fulfilled = new FulfilledStatus();
   public static readonly OrderStatus Delivered = new DeliveredStatus();
+  public static readonly OrderStatus Shipped = new ShippedStatus();
 
   public abstract string Label { get; }
 
@@ -45,6 +46,10 @@ public abstract class OrderStatus
   private class FulfilledStatus : OrderStatus
   {
     public override string Label => "Fulfilled";
+  }
+  private class ShippedStatus : OrderStatus
+  {
+    public override string Label => "Shipped";
   }
 
   private class DeliveredStatus : OrderStatus

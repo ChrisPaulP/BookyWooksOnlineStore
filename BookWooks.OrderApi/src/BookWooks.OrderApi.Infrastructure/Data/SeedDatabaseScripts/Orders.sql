@@ -127,15 +127,15 @@ END
 IF NOT EXISTS (SELECT 1 FROM Orders)
 BEGIN
 INSERT INTO Orders (OrderId, CustomerId, Message, IsCancelled, OrderPlaced, Status, Street, City, Country, Postcode, Payment_CardName, Payment_CardNumber, Payment_Expiration, Payment_PaymentMethod) VALUES
-    ('c3119dea-bb7a-42d9-a373-4f2f6e0d0b21', '3b69db6f-11f0-493c-b8d2-6a9a8a046796', 'Order note 1', 1, '2025-08-01 15:45:17', 'Placed', '123 Main St', 'Dublin', 'Ireland', 'D01XY12', 'Customer 1', '4111111111111000', '12/26', 1),
+    ('c3119dea-bb7a-42d9-a373-4f2f6e0d0b21', '3b69db6f-11f0-493c-b8d2-6a9a8a046796', 'Order note 1', 1, '2025-08-01 15:45:17', 'Pending', '123 Main St', 'Dublin', 'Ireland', 'D01XY12', 'Customer 1', '4111111111111000', '12/26', 1),
     ('5e0890dd-8efb-4f5f-b50c-ee741d11121a', '9d2f65af-33d0-4243-bce3-355ed541fb03', 'Order note 2', 0, '2025-07-31 15:45:17', 'Shipped', '456 Elm St', 'Cork', 'Ireland', 'T12EF34', 'Customer 2', '4111111111111001', '12/26', 1),
     ('76b24b0c-d8f0-4f1a-b8b2-f3c006cb414d', 'b8557ba6-22a8-456b-b3dc-99e7fed84e20', 'Order note 3', 0, '2025-07-30 15:45:17', 'Delivered', '789 Oak St', 'Galway', 'Ireland', 'H91GH56', 'Customer 3', '4111111111111002', '12/26', 1),
     ('623ac43f-7e65-483f-b2e7-10fa6e9d8a37', 'fca368fd-88c7-4d82-a201-168f89b5b6d5', 'Order note 4', 0, '2025-07-29 15:45:17', 'Cancelled', '123 Main St', 'Limerick', 'Ireland', 'D01XY12', 'Customer 4', '4111111111111003', '12/26', 1),
-    ('11046f2f-7042-4da4-8d9e-863d5dd0e3be', '40aab34a-d0af-49cd-886b-22c52ac773e2', 'Order note 5', 1, '2025-07-28 15:45:17', 'Placed', '456 Elm St', 'Dublin', 'Ireland', 'T12EF34', 'Customer 5', '4111111111111004', '12/26', 1),
+    ('11046f2f-7042-4da4-8d9e-863d5dd0e3be', '40aab34a-d0af-49cd-886b-22c52ac773e2', 'Order note 5', 1, '2025-07-28 15:45:17', 'Pending', '456 Elm St', 'Dublin', 'Ireland', 'T12EF34', 'Customer 5', '4111111111111004', '12/26', 1),
     ('734cd95f-7803-4ed3-be96-9b4946f36a66', 'b2d51bba-faed-4f69-b3c4-ca2307d910a8', 'Order note 6', 0, '2025-07-27 15:45:17', 'Shipped', '789 Oak St', 'Cork', 'Ireland', 'H91GH56', 'Customer 6', '4111111111111005', '12/26', 1),
     ('8152d622-ff5a-44fe-b3a3-ea36d2ef23c5', '50240871-3b69-4fd7-b20f-53c987d5fbee', 'Order note 7', 0, '2025-07-26 15:45:17', 'Delivered', '123 Main St', 'Galway', 'Ireland', 'D01XY12', 'Customer 7', '4111111111111006', '12/26', 1),
     ('88f9a522-048b-49ff-8dd6-f4c4041df62e', 'ac5d7836-ab31-45d8-ba2a-88fa9e053537', 'Order note 8', 0, '2025-07-25 15:45:17', 'Cancelled', '456 Elm St', 'Limerick', 'Ireland', 'T12EF34', 'Customer 8', '4111111111111007', '12/26', 1),
-    ('882315ac-3e15-4cf4-86da-78cfc0e292bb', '09a2944e-7db3-4658-a52b-c1725a8b8ec7', 'Order note 9', 1, '2025-07-24 15:45:17', 'Placed', '789 Oak St', 'Dublin', 'Ireland', 'H91GH56', 'Customer 9', '4111111111111008', '12/26', 1),
+    ('882315ac-3e15-4cf4-86da-78cfc0e292bb', '09a2944e-7db3-4658-a52b-c1725a8b8ec7', 'Order note 9', 1, '2025-07-24 15:45:17', 'Pending', '789 Oak St', 'Dublin', 'Ireland', 'H91GH56', 'Customer 9', '4111111111111008', '12/26', 1),
     ('2a2723da-adc5-4404-ab52-674d816cb7b9', 'fb50726a-be60-4e11-bb8e-51f81235f0e2', 'Order note 10', 0, '2025-07-23 15:45:17', 'Shipped', '123 Main St', 'Cork', 'Ireland', 'D01XY12', 'Customer 10', '4111111111111009', '12/26', 1);
 END
 
