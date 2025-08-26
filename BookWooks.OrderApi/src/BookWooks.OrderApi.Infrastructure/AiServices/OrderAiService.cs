@@ -1,80 +1,103 @@
 ﻿#pragma warning disable SKEXP0001 
 
-internal class OrderAiService : BaseClient, IOrderAiService<ProductDto>
+using System.Text.RegularExpressions;
+using BookWooks.OrderApi.Infrastructure.AiMcpSetUp;
+using BookWooks.OrderApi.Infrastructure.AiServices.Interfaces;
+
+internal class OrderAiService : ICustomerSupportService, IProductSearchService
 {
-  private readonly OpenAIOptions _options;
-
-  public OrderAiService(IOptions<OpenAIOptions> options)
+  private readonly IMcpFactory _mcpFactory;
+  private readonly IAiOperations _aiOperations;
+  public OrderAiService(IMcpFactory mcpFactory, IAiOperations aiOperations)
   {
-    _options = options.Value;
-  }
-
-  private async Task<(IMcpClient mcpClient, Kernel kernel)> CreateClientAndKernelAsync()
-  {
-    var mcpClient = await CreateMcpClientAsync();
-    var tools = await mcpClient.ListToolsAsync();
-    DisplayTools(tools);
-
-    var kernel = CreateKernelWithChatCompletionService(_options.OpenAiApiKey, _options.ChatModelId);
-    kernel.Plugins.AddFromFunctions("Tools", tools.Select(aiFunction => aiFunction.AsKernelFunction()));
-    return (mcpClient, kernel);
+    _mcpFactory = mcpFactory;
+    _aiOperations = aiOperations;
   }
 
   public async Task<string> CustomerSupportAsync(string query)
   {
-    var (mcpClient, kernel) = await CreateClientAndKernelAsync();
-    await using (mcpClient)
-    {
-      var executionSettings = new OpenAIPromptExecutionSettings
-      {
-        Temperature = 0,
-        FunctionChoiceBehavior = FunctionChoiceBehavior.Auto(options: new() { RetainArgumentTypes = true })
-      };
+    await using var context = await _mcpFactory.CreateClientAndKernelAsync();
 
-      ReadResourceResult resource = await mcpClient.ReadResourceAsync($"vectorStore://support/{query}");
+    var resource = await _aiOperations.GetResourceAsync(context, query);
+    var chatHistory = new ChatHistory();
+    chatHistory.AddUserMessage(resource.ToChatMessageContentItemCollection());
+    chatHistory.AddUserMessage(query);
 
-      ChatHistory chatHistory = [];
-      chatHistory.AddUserMessage(resource.ToChatMessageContentItemCollection());
-      chatHistory.AddUserMessage(query);
-
-      var chatCompletion = kernel.GetRequiredService<IChatCompletionService>();
-      var result = await chatCompletion.GetChatMessageContentAsync(chatHistory, executionSettings, kernel);
-
-      return result.Content ?? string.Empty;
-    }
+    return await _aiOperations.GetCompletionAsync(context, chatHistory);
   }
-
   public async Task<IEnumerable<ProductDto>> SearchProductsAsync(string query)
   {
-    var (mcpClient, kernel) = await CreateClientAndKernelAsync();
-    await using (mcpClient)
+    await using var context = await _mcpFactory.CreateClientAndKernelAsync();
+
+    var count = ExtractCount(query, fallback: 5);
+
+    var products = await DeserializeAsync<IEnumerable<ProductDto>>(
+        context.Kernel,
+        AiServiceConstants.ToolsPluginName,
+        "ProductSearchTool_Search",
+        new KernelArguments
+        {
+          ["prompt"] = $"The user is asking for a single product or a number of products. Please fulfill this request. Take into account the number of products they have asked for :\n<input>\n{query}\n</input>",
+          ["collection"] = AiServiceConstants.ProductsCollection
+        });
+
+    return products?.Take(count) ?? [];
+  }
+  public int ExtractCount(string prompt, int fallback = AiServiceConstants.DefaultProductCount)
+  {
+    var numericMatch = Regex.Match(prompt, @"\b\d+\b");
+    if (numericMatch.Success && int.TryParse(numericMatch.Value, out var num) && num > 0)
+      return num;
+
+    return new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase) 
     {
-      var arguments = new KernelArguments
-      {
-        ["prompt"] = query,
-        ["collection"] = "products"
-      };
+      ["one"] = 1,
+      ["two"] = 2,
+      ["three"] = 3,
+      ["four"] = 4,
+      ["five"] = 5,
+      ["six"] = 6,
+      ["seven"] = 7,
+      ["eight"] = 8,
+      ["nine"] = 9,
+      ["ten"] = 10,
+      ["dozen"] = 12,
+      ["couple"] = 2,
+      ["few"] = 3
+    }
+        .Where(x => Regex.IsMatch(prompt, $@"\b{x.Key}\b", RegexOptions.IgnoreCase))
+        .Select(x => x.Value)
+        .FirstOrDefault(fallback);
+  }
 
-      var result = await kernel.InvokeAsync(
-          pluginName: "Tools",
-          functionName: "ProductSearchTool_Search",
-          arguments: arguments
-      );
+  private static async Task<T?> DeserializeAsync<T>(Kernel kernel, string pluginName, string functionName, KernelArguments arguments)
+  {
+      var result = await kernel.InvokeAsync(pluginName, functionName, arguments);
+      Console.WriteLine($"[DEBUG] Kernel result: {JsonSerializer.Serialize(result.GetValue<object>())}");
 
-      if (result.GetValue<object>() is not JsonElement jsonElement)
-        return Enumerable.Empty<ProductDto>();
+      if (result.GetValue<object>() is JsonElement json)
+      {    
+        if (!JsonHelpers.TryGetNonEmptyArrayProperty(json, "content", out var contentArray))
+        {
+          Console.WriteLine("[ERROR] No content array found in response");
+          return default;
+        }
 
-      if (!jsonElement.TryGetProperty("content", out var contentArray) ||
-          contentArray.ValueKind != JsonValueKind.Array ||
-          contentArray.GetArrayLength() == 0)
-        return Enumerable.Empty<ProductDto>();
+        var texts = contentArray.EnumerateArray()
+            .Where(item => item.TryGetProperty("text", out var textProp))
+            .Select(item => item.GetProperty("text").GetString())
+            .Where(text => !string.IsNullOrWhiteSpace(text))
+            .Select(text => text!.Trim());
 
-      var text = contentArray[0].GetProperty("text").GetString();
-
-      if (string.IsNullOrWhiteSpace(text))
-        return Enumerable.Empty<ProductDto>();
-
-      return JsonSerializer.Deserialize<IEnumerable<ProductDto>>(text) ?? Enumerable.Empty<ProductDto>();
+        var combinedText = string.Join(Environment.NewLine, texts);
+        if (string.IsNullOrWhiteSpace(combinedText))
+        {
+          Console.WriteLine("[ERROR] No valid text content found");
+          return default;
+        }
+          return JsonSerializer.Deserialize<T>(combinedText);
+      }
+      return default;
     }
   }
-}
+

@@ -35,17 +35,32 @@ builder.Services.AddOpenAIEmbeddingGenerator(openAiOptions.EmbeddingModelId, ope
 builder.Services
        .AddMcpServer()
        .WithHttpTransport()
-       //.WithStdioServerTransport()
        .WithTools(sp =>
        {
            var kernel = sp.GetRequiredService<Kernel>();
            return kernel;
        })
-       // .WithPrompt(PromptDefinition.Create(EmbeddedResource.ReadAsString("BookRecommendations.json")))
        .WithPrompt(PromptDefinition.Create(EmbeddedResource.ReadAsString("ReserveStock.json")))
-       .WithResourceTemplate(VectorStoreSearchResourceTemplates.Create("customer-support.txt"));
+        .WithResourceTemplate(VectorStoreSearchResourceTemplates.Create("customer-support.txt"));
+       //.WithResourceTemplate(VectorStoreSearchResourceTemplates.Create("BookWooks.MCPServer.ProjectResources.customer-support.txt"));
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+builder.Services.AddHealthChecks();
+
 var host = builder.Build();
+// Map the health check endpoint
+host.MapHealthChecks("/health");
 host.MapMcp();
+host.UseCors();
 host.Run();
 
 

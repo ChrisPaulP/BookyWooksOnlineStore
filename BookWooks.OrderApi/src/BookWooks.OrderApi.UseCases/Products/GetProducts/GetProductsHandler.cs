@@ -9,11 +9,11 @@ using BookWooks.OrderApi.UseCases.Orders.Get;
 namespace BookWooks.OrderApi.UseCases.Products.GetProducts;
 internal class GetProductsHandler : IQueryHandler<GetProductsQuery, ProductSearchResult>
 {
-  private readonly IOrderAiService<ProductDto> _orderAiService;
+  private readonly IProductSearchService _productSearchAiService;
 
-    public GetProductsHandler(IOrderAiService<ProductDto> orderAiService) => _orderAiService = orderAiService;
+    public GetProductsHandler(IProductSearchService productSearchAiService) => _productSearchAiService = productSearchAiService;
 
   public async Task<ProductSearchResult> Handle(GetProductsQuery request, CancellationToken cancellationToken) =>
-      (await _orderAiService.SearchProductsAsync(request.Prompt))
-             .ToEither(() => new ProductNotFound());
+      (await _productSearchAiService.SearchProductsAsync(request.Prompt))
+             .ToEither<ProductErrors, ProductDto>(() => new ProductNotFound());
 }

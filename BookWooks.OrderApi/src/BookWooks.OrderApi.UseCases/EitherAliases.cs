@@ -6,4 +6,4 @@ global using OrderDetailsResult = LanguageExt.Either<BookWooks.OrderApi.UseCases
 global using CreateOrderResult = LanguageExt.Either<BookWooks.OrderApi.UseCases.Errors.CreateOrderErrors, BookWooks.OrderApi.Core.OrderAggregate.ValueObjects.OrderId>;
 global using BookRecommendationResult = LanguageExt.Either<string, string>;
 
-global using ProductSearchResult = LanguageExt.Either<BookWooks.OrderApi.UseCases.Errors.ProductNotFound, System.Collections.Generic.IEnumerable<BookWooks.OrderApi.UseCases.Products.ProductDto>>;
+global using ProductSearchResult = LanguageExt.Either<BookWooks.OrderApi.UseCases.Errors.ProductErrors, System.Collections.Generic.IEnumerable<BookWooks.OrderApi.UseCases.Products.ProductDto>>;

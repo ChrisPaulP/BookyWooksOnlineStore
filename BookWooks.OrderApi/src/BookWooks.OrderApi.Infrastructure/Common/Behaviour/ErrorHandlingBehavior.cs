@@ -66,7 +66,11 @@ public class ErrorHandlingBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
         { (typeof(DbUpdateException), typeof(OrderErrors)), ex => new OrderErrors(new NetworkErrors(new DatabaseError())) },
         { (typeof(DbUpdateException), typeof(CreateOrderErrors)), ex => new CreateOrderErrors(new NetworkErrors(new DatabaseError())) },
         { (typeof(TimeoutException), typeof(OrderErrors)), ex => new OrderErrors(new NetworkErrors(new TimeoutError())) },
-        { (typeof(TimeoutException), typeof(CreateOrderErrors)), ex => new CreateOrderErrors(new NetworkErrors(new TimeoutError())) }
+        { (typeof(TimeoutException), typeof(CreateOrderErrors)), ex => new CreateOrderErrors(new NetworkErrors(new TimeoutError())) },
+   
+        { (typeof(TimeoutException), typeof(ProductErrors)), ex =>  new ProductErrors(new NetworkErrors(new TimeoutError())) },
+        { (typeof(InvalidOperationException), typeof(ProductErrors)), ex =>  new ProductErrors(new NetworkErrors(new UnexpectedError())) },
+        { (typeof(Exception), typeof(ProductErrors)), ex =>  new ProductErrors(new NetworkErrors(new UnexpectedError())) },
     };
 
     public static IError Map(Exception ex, Type errorType)

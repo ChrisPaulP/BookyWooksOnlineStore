@@ -10,6 +10,8 @@ namespace BookWooks.OrderApi.UseCases.Errors;
 
 [GenerateOneOf]
 public partial class OrderErrors: OneOfBase<OrderNotFound, NetworkErrors>, IError;
+[GenerateOneOf]
+public partial class ProductErrors : OneOfBase<ProductNotFound, NetworkErrors>, IError;
 
 [GenerateOneOf]
 public partial class NetworkErrors : OneOfBase<TimeoutError, UnexpectedError, DatabaseError, UnhandledError>, IError;

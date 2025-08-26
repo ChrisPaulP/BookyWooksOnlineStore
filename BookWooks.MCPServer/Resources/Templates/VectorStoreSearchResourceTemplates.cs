@@ -70,7 +70,7 @@ public static class VectorStoreSearchResourceTemplates
                         MimeType = "text/plain"
                     },
                     3,
-                     0.3f, // Minimum similarity threshold
+                     //0.3f, // Minimum similarity threshold
                     cancellationToken
                 );
 

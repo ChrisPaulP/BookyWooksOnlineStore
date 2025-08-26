@@ -1,4 +1,6 @@
-﻿using BookWooks.OrderApi.Infrastructure.Common.Behaviour;
+﻿using BookWooks.OrderApi.Infrastructure.AiMcpSetUp;
+using BookWooks.OrderApi.Infrastructure.AiServices.Interfaces;
+using BookWooks.OrderApi.Infrastructure.Common.Behaviour;
 using BookWooks.OrderApi.UseCases.Create;
 
 namespace BookWooks.OrderApi.Infrastructure;
@@ -25,16 +27,33 @@ public static class InfrastructureDependencyInjection
         RegisterRedisDistributedCache(services, configuration);
         RegisterEnvironmentSpecificDependencies(services, isDevelopment);
         RegisterQuartz(services);
+        RegisterMcpFctory(services);
         RegisterAIOptions(services);
+        RegisterAIOperations(services);
         RegisterAIService(services);
 
         return services;
     }
 
-  private static void RegisterAIService(IServiceCollection services)
+  private static void RegisterAIOperations(IServiceCollection services)
   {
-    services.AddScoped<IOrderAiService<ProductDto>, OrderAiService>();
+    services.AddScoped<IAiOperations, AiOperations>();
   }
+
+  private static void RegisterMcpFctory(IServiceCollection services)
+    {
+        services.AddSingleton<IMcpFactory>(sp =>
+        {
+          var options = sp.GetRequiredService<IOptions<OpenAIOptions>>().Value;
+          return McpFactory.Create(options);
+        });
+  }
+  private static void RegisterAIService(IServiceCollection services)
+    {
+      //services.AddScoped<IOrderAiService<ProductDto>, OrderAiService>();
+      services.AddScoped<IProductSearchService, OrderAiService>();
+      services.AddScoped<ICustomerSupportService, OrderAiService>();
+    }
 
   private static void RegisterQuartz(IServiceCollection services)
   {

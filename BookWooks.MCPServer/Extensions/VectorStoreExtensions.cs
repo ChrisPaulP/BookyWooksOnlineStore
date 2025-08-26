@@ -33,7 +33,7 @@ public static class VectorStoreExtensions
         ReadOnlyMemory<float> embedding,
         Func<TModel, TResult> map,
         int top = 3,
-        float minScore = 1f, // Add a minimum similarity threshold parameter
+        //float minScore = 1f, // Add a minimum similarity threshold parameter
         CancellationToken cancellationToken = default)
         where TModel : class
         where TKey : notnull
@@ -44,10 +44,10 @@ public static class VectorStoreExtensions
         await foreach (var result in results.WithCancellation(cancellationToken))
         {
             // Only include results above the threshold
-            if (result.Score >= minScore)
-            {
+            //if (result.Score >= minScore)
+            //{
                 list.Add(map(result.Record));
-            }
+            //}
         }
         return list;
     }

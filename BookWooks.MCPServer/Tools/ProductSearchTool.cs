@@ -63,8 +63,8 @@ public async Task<IEnumerable<ProductDto>> SearchAsync(
             Description = record.Description,
             Price = record.Price
         },
-        1,
-        0.3f, // Minimum similarity threshold
+        100,
+        //0.3f, // Minimum similarity threshold
         cancellationToken
     );
 }

@@ -37,6 +37,10 @@
     "EmbeddingModelId": "This is a test",
     "DisabledForIntegrationTests": false
   },
+  "McpServer": {
+    "MCPSERVER__HOST": "",
+    "MCPSERVER__PORT": ""
+  },
   "Serilog": {
     "MinimumLevel": {
       "Default": "Information"
