@@ -5,7 +5,9 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  buildConfiguration: 'Release'
+  group: BookyWooks-Secrets   # <-- variable group containing OpenAI__OpenAiApiKey
+  name: buildConfiguration
+  value: 'Release'
   BuildParameters.RestoreBuildProjects: '**/*.csproj'
   BuildParameters.UnitTestProjects: |
     $(BuildParameters.RestoreBuildProjects)
