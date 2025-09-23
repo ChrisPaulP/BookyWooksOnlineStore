@@ -6,6 +6,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  DOCKER_AUTH_ENABLED: 'true'  # Enable Docker authentication
   BuildParameters.RestoreBuildProjects: '**/*.csproj'
   BuildParameters.UnitTestProjects: |
     $(BuildParameters.RestoreBuildProjects)
@@ -36,6 +37,14 @@ jobs:
         docker info
       displayName: Ensure Docker is ready
 
+    # Add this new Docker login step
+    - task: Docker@2
+      displayName: Docker Login
+      inputs:
+       command: login
+       containerRegistry: bookwooks-docker-registry  # Name of your service connection
+      env:
+       DOCKER_AUTH_ENABLED: $(DOCKER_AUTH_ENABLED)
     # ✅ Restore NuGet Packages
     - task: DotNetCoreCLI@2
       displayName: Restore NuGet Packages
@@ -76,6 +85,7 @@ jobs:
         TESTCONTAINERS_HOST_OVERRIDE: 'localhost'
         TESTCONTAINERS_RYUK_DISABLED: 'true'   # ✅ Disables Ryuk for CI reliability
         DOCKER_HOST: 'unix:///var/run/docker.sock'
+        DOCKER_AUTH_ENABLED: $(DOCKER_AUTH_ENABLED)
 
     # ✅ Publish All Test Results
     - task: PublishTestResults@2
