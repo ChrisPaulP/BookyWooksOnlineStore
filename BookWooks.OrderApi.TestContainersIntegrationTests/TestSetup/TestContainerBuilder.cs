@@ -73,7 +73,7 @@ public class TestContainerBuilder
     public IContainer BuildMcpServerContainer(QdrantContainer qdrantContainer) =>
         new ContainerBuilder()
             .WithImage("bookwooks/mcpserver:latest")
-            .WithImagePullPolicy(PullPolicy.Always)
+            .WithImagePullPolicy(PullPolicy.Never)
             .WithPortBinding(8181, true)
             .WithName("mcp-test-server")
             .WithHostname("mcp-test-server")
