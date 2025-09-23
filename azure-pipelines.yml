@@ -6,7 +6,6 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  DOCKER_AUTH_ENABLED: 'true'  # Enable Docker authentication
   BuildParameters.RestoreBuildProjects: '**/*.csproj'
   BuildParameters.UnitTestProjects: |
     $(BuildParameters.RestoreBuildProjects)
@@ -26,7 +25,7 @@ jobs:
   displayName: Build and Test with Testcontainers
 
   steps:
-    # ✅ Ensure Docker is running and stable before Testcontainers starts
+    # ✅ Ensure Docker is running and stable
     - script: |
         sudo service docker start
         echo "Waiting for Docker to be ready..."
@@ -37,14 +36,17 @@ jobs:
         docker info
       displayName: Ensure Docker is ready
 
-    # Add this new Docker login step
-    - task: Docker@2
-      displayName: Docker Login
-      inputs:
-       command: login
-       containerRegistry: bookwooks-docker-registry  # Name of your service connection
-      env:
-       DOCKER_AUTH_ENABLED: $(DOCKER_AUTH_ENABLED)
+    # ✅ Build MCPServer Docker Image
+    - script: |
+        cd $(Build.SourcesDirectory)
+        docker build -t bookwooks/mcpserver:latest -f BookWooks.MCPServer/Dockerfile .
+      displayName: Build MCPServer Docker Image
+      
+    # ✅ Verify Docker Image
+    - script: |
+        docker images bookwooks/mcpserver:latest
+      displayName: Verify Docker Image
+
     # ✅ Restore NuGet Packages
     - task: DotNetCoreCLI@2
       displayName: Restore NuGet Packages
@@ -73,7 +75,7 @@ jobs:
       env:
         ASPNETCORE_ENVIRONMENT: Test
 
-    # ✅ Run Integration Tests (Testcontainers with CI optimizations)
+    # ✅ Run Integration Tests
     - task: DotNetCoreCLI@2
       displayName: Run Integration Tests (Testcontainers)
       inputs:
@@ -81,13 +83,11 @@ jobs:
         projects: $(BuildParameters.IntegrationTestProjects)
         arguments: --configuration $(buildConfiguration) --no-build --logger trx
       env:
-        # ASPNETCORE_ENVIRONMENT: Test
         TESTCONTAINERS_HOST_OVERRIDE: 'localhost'
-        TESTCONTAINERS_RYUK_DISABLED: 'true'   # ✅ Disables Ryuk for CI reliability
+        TESTCONTAINERS_RYUK_DISABLED: 'true'
         DOCKER_HOST: 'unix:///var/run/docker.sock'
-        DOCKER_AUTH_ENABLED: $(DOCKER_AUTH_ENABLED)
 
-    # ✅ Publish All Test Results
+    # ✅ Publish Test Results
     - task: PublishTestResults@2
       displayName: Publish Test Results
       condition: succeededOrFailed()
@@ -96,7 +96,7 @@ jobs:
         testResultsFiles: '**/TestResults/*.trx'
         mergeTestResults: true
 
-    # ✅ Publish App Artifacts (Optional)
+    # ✅ Publish App Artifacts
     - task: DotNetCoreCLI@2
       displayName: Publish App
       inputs:
@@ -106,7 +106,7 @@ jobs:
         arguments: --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)
         zipAfterPublish: true
 
-    # ✅ Publish Build Artifacts (Optional)
+    # ✅ Publish Build Artifacts
     - task: PublishBuildArtifacts@1
       displayName: Publish Artifact
       condition: succeededOrFailed()
