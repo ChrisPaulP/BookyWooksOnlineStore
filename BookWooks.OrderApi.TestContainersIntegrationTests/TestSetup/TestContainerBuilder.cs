@@ -24,7 +24,7 @@ public class TestContainerBuilder
     {
         _config = config;
         _network = network;
-        // Load secrets from JSON file
+        // Loading secrets from JSON file
         _configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("secrets.json", optional: true, reloadOnChange: true)
