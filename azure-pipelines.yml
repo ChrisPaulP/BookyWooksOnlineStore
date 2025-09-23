@@ -4,10 +4,15 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+# 🔑 Pull in secrets from Azure DevOps Library
 variables:
-  buildConfiguration: 'Release'
-  BuildParameters.RestoreBuildProjects: '**/*.csproj'
-  BuildParameters.UnitTestProjects: |
+- group: BookyWooksSecrets   # <-- variable group containing OpenAI__OpenAiApiKey
+- name: buildConfiguration
+  value: 'Release'
+- name: BuildParameters.RestoreBuildProjects
+  value: '**/*.csproj'
+- name: BuildParameters.UnitTestProjects
+  value: |
     $(BuildParameters.RestoreBuildProjects)
     !**/*FunctionalTests*.csproj
     !**/*IntegrationTests*.csproj
@@ -15,7 +20,8 @@ variables:
     !**/BookyWooks.OrderApi.IntegrationTests.csproj
     !**/BookWooks.OrderApi.TestContainersIntegrationTests.csproj
     !**/SagaOrchestration.IntegrationTests.csproj
-  BuildParameters.IntegrationTestProjects: |
+- name: BuildParameters.IntegrationTestProjects
+  value: |
     **/*IntegrationTests*.csproj
     **/BookWooks.OrderApi.TestContainersIntegrationTests.csproj
     !**/SagaOrchestration.IntegrationTests.csproj
@@ -75,7 +81,7 @@ jobs:
       env:
         ASPNETCORE_ENVIRONMENT: Test
 
-    # ✅ Run Integration Tests
+    # ✅ Run Integration Tests (Testcontainers)
     - task: DotNetCoreCLI@2
       displayName: Run Integration Tests (Testcontainers)
       inputs:
@@ -86,6 +92,8 @@ jobs:
         TESTCONTAINERS_HOST_OVERRIDE: 'localhost'
         TESTCONTAINERS_RYUK_DISABLED: 'true'
         DOCKER_HOST: 'unix:///var/run/docker.sock'
+        # 👇 OpenAI secret from Library is auto-injected into container
+        OpenAI__OpenAiApiKey: $(OpenAI__OpenAiApiKey)
 
     # ✅ Publish Test Results
     - task: PublishTestResults@2
