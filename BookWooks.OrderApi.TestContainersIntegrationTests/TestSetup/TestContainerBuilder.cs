@@ -84,7 +84,7 @@ public class TestContainerBuilder
             .WithEnvironment("OpenAI__EmbeddingModelId", "text-embedding-3-small")
             .WithEnvironment("OpenAI__ModelId", "gpt-4o-mini")
             .WithEnvironment("MCP__BasePath", "/mcp")
-            .WithEnvironment("ConnectionStrings__OrderDatabase", $"Server=sql-server;Database=BookyWooksOrderDbContext;User Id=sa;Password={ContainerConfiguration.SqlPassword};TrustServerCertificate=True")
+            //.WithEnvironment("ConnectionStrings__OrderDatabase", $"Server=sql-server;Database=BookyWooksOrderDbContext;User Id=sa;Password={ContainerConfiguration.SqlPassword};TrustServerCertificate=True")
             .WithEnvironment("QdrantOptions__QdrantHost", qdrantContainer.Hostname)
             .WithEnvironment("QdrantOptions__QdrantPort", qdrantContainer.GetMappedPublicPort(6334).ToString())
             //.WithBindMount(_config.DataProtectionPath, "/home/app/.aspnet/DataProtection-Keys")
