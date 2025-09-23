@@ -1,6 +1,6 @@
-﻿using BookyWooks.Messaging.Contracts.Commands;
+﻿using BookWooks.OrderApi.TestContainersIntegrationTests.TestSetup;
+using BookyWooks.Messaging.Contracts.Commands;
 using BookyWooks.Messaging.Messages.InitialMessage;
-using IntegrationTestingSetup;
 using MassTransit;
 using System;
 using System.Collections.Generic;

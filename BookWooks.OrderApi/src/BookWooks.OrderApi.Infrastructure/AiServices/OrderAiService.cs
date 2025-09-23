@@ -1,6 +1,7 @@
 ﻿#pragma warning disable SKEXP0001 
 
 using System.Text.RegularExpressions;
+using BookWooks.OrderApi.Core.OrderAggregate.Specifications;
 using BookWooks.OrderApi.Infrastructure.AiMcpSetUp;
 using BookWooks.OrderApi.Infrastructure.AiServices.Interfaces;
 
@@ -8,10 +9,12 @@ internal class OrderAiService : ICustomerSupportService, IProductSearchService
 {
   private readonly IMcpFactory _mcpFactory;
   private readonly IAiOperations _aiOperations;
-  public OrderAiService(IMcpFactory mcpFactory, IAiOperations aiOperations)
+  private readonly IReadRepository<Product> _productRepository;
+  public OrderAiService(IMcpFactory mcpFactory, IAiOperations aiOperations, IReadRepository<Product> productRepository)
   {
     _mcpFactory = mcpFactory;
     _aiOperations = aiOperations;
+    _productRepository = productRepository;
   }
 
   public async Task<string> CustomerSupportAsync(string query)
@@ -31,17 +34,37 @@ internal class OrderAiService : ICustomerSupportService, IProductSearchService
 
     var count = ExtractCount(query, fallback: 5);
 
-    var products = await DeserializeAsync<IEnumerable<ProductDto>>(
+    var productIds = await DeserializeAsync<IEnumerable<Guid>>(
         context.Kernel,
         AiServiceConstants.ToolsPluginName,
         "ProductSearchTool_Search",
         new KernelArguments
         {
-          ["prompt"] = $"The user is asking for a single product or a number of products. Please fulfill this request. Take into account the number of products they have asked for :\n<input>\n{query}\n</input>",
-          ["collection"] = AiServiceConstants.ProductsCollection
+          ["prompt"] = query,
+          ["collection"] = AiServiceConstants.ProductsCollection,
+          ["topN"] = count
         });
 
-    return products?.Take(count) ?? [];
+    if (productIds == null || !productIds.Any())
+      return [];
+
+    var products = await _productRepository.FindAllAsync(
+       new ProductsByIdsSpecification(productIds));
+
+    var dtoResults = products.Select(p => new ProductDto
+    {
+      Id = p.ProductId.Value,
+      Name = p.Name.Value,
+      Description = p.Description.Value,
+      Price = p.Price.Value
+    });
+
+    // Maintain MCP order (vector ranking)
+    var ordered = productIds
+        .Join(dtoResults, id => id, dto => dto.Id, (_, dto) => dto)
+        .Take(count);
+
+    return ordered;
   }
   public int ExtractCount(string prompt, int fallback = AiServiceConstants.DefaultProductCount)
   {

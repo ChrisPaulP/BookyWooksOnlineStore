@@ -16,10 +16,10 @@ namespace BookWooks.MCPServer.Resources;
     [VectorStoreData]
     public string Description { get; set; } = default!;
     [VectorStoreData]
-    public decimal Price { get; set; }
+    public double Price { get; set; }
 
     [NotMapped]
-    [VectorStoreVector(384)]
+    [VectorStoreVector(1536)]
     public ReadOnlyMemory<float> Vector { get; set; }
 }
 

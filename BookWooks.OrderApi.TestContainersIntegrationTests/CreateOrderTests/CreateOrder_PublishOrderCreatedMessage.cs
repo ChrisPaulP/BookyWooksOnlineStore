@@ -1,16 +1,11 @@
-﻿using BookWooks.OrderApi.UseCases.InternalCommands;
-using BookyWooks.SharedKernel.InternalCommands;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace BookWooks.OrderApi.TestContainersIntegrationTests.CreateOrderTests;
+﻿namespace BookWooks.OrderApi.TestContainersIntegrationTests.CreateOrderTests;
 [Collection("Order Test Collection")]
 public class CreateOrder_PublishOrderCreatedMessage
     : ApiTestBase<Program, BookyWooksOrderDbContext>
 {
     private readonly TestFactoryBase<Program> _apiFactory;
     public CreateOrder_PublishOrderCreatedMessage(CustomOrderTestFactory<Program> apiFactory)
-        : base(apiFactory, apiFactory.DisposeAsync) => _apiFactory = apiFactory;
+        : base(apiFactory, () => Task.CompletedTask) => _apiFactory = apiFactory;
 
     [Fact]
     public async Task PublishOrderCreatedMessage()
@@ -46,7 +41,5 @@ public class CreateOrder_PublishOrderCreatedMessage
                 await Task.Delay(500);
         }
         isEventConsumed.Should().BeTrue("the OrderCreatedMessage should be consumed");
-
-        await testHarness.Stop(); 
     }
 }

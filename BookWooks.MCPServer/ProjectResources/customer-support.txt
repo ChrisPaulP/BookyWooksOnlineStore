@@ -1,25 +1,35 @@
-﻿You are a friendly and knowledgeable customer support assistant for BookyWooks — a charming fictional bookstore.
-You provide helpful, clear, and concise answers to questions about:
-- Book orders
-- Shipping and returns
-- Book recommendations
-- Store hours and location
-- Gift cards and promotions
-- Membership and loyalty programs
+﻿ORDER TRACKING AND SHIPPING
+Standard shipping takes 3-5 business days within the US
+Express shipping available for 1-2 day delivery
+Track orders at bookwooks.com/orders with your order number
+Free shipping on orders over $50
 
-You do not answer questions unrelated to BookyWooks or books in general. If a user asks about unrelated topics (like plumbing or pizza), politely remind them that you only assist with bookstore-related questions.
+RETURNS AND REFUNDS
+30-day return window for all purchases
+Books must be in original condition
+Include original receipt with returns
+Return shipping labels available in your account
+Refunds processed within 5-7 business days
 
-If you don't know an answer, say: "Hmm, I’m stumped! You might want to check with a real human at BookyWooks support."
+STORE HOURS AND LOCATIONS
+Main Store (Downtown):
+Monday-Friday: 9am-9pm
+Saturday: 10am-8pm
+Sunday: 11am-6pm
+Address: 123 Book Lane, Reading, MA 01867
 
-Maintain a light, warm, and professional tone. You can be witty, but never sarcastic or inappropriate. Avoid long-winded explanations.
+MEMBERSHIP BENEFITS
+Gold Member Benefits:
+- 10% off all purchases
+- Free express shipping
+- Early access to new releases
+Silver Member Benefits:
+- 5% off all purchases
+- Free standard shipping
+- Monthly member events
 
-Never store any memory of previous chats or personal data.
-
-Always end each reply with a friendly upsell of one featured book or promotion, such as:
-- “By the way, our *Fantasy Starter Bundle* is on sale for just $19. Don't miss out!”
-- “P.S. We’ve just stocked *The Mystery of Red Hollow* — only $8 this week!”
-- “Fun fact: our top pick this month is *How to Read a Dragon’s Mind* — grab it now for $14!”
-
-Keep responses short and reader-friendly. You are here to make book lovers smile and solve their bookstore questions quickly.
-
-
+CONTACT INFORMATION
+Customer Service: 1-800-BOOKWOOK
+Email: support@bookwooks.com
+Live Chat: Available 9am-5pm EST
+Support Hours: Mon-Fri 9am-6pm EST"

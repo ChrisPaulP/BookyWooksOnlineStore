@@ -1,13 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-namespace BookWooks.OrderApi.TestContainersIntegrationTests.CreateOrderTests;
+﻿namespace BookWooks.OrderApi.TestContainersIntegrationTests.CreateOrderTests;
 [Collection("Order Test Collection")]
 public class Payment_CompletePayment : ApiTestBase<Program, BookyWooksOrderDbContext>
 {
     private readonly CustomOrderTestFactory<Program> _apiFactory;
 
     public Payment_CompletePayment(CustomOrderTestFactory<Program> apiFactory)
-        : base(apiFactory, apiFactory.DisposeAsync)
+        : base(apiFactory, () => Task.CompletedTask)
     {
         _apiFactory = apiFactory;
     }
@@ -42,8 +40,6 @@ public class Payment_CompletePayment : ApiTestBase<Program, BookyWooksOrderDbCon
                 await Task.Delay(500);
         }
         isEventConsumed.Should().BeTrue("the consumer should process the published payment command");
-
-        await testHarness.Stop();
     }
 }
 

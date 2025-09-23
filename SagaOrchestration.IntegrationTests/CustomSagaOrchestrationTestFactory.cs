@@ -1,6 +1,7 @@
-﻿using BookyWooks.Messaging.Constants;
+﻿using BookWooks.OrderApi.TestContainersIntegrationTests.TestSetup;
+using BookyWooks.Messaging.Constants;
 using BookyWooks.Messaging.Contracts.Commands;
-using IntegrationTestingSetup;
+
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using SagaOrchestration.Data;

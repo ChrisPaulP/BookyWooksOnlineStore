@@ -66,6 +66,8 @@ public class AiOperations : IAiOperations
 
   //    try
   //    {
+  //      //var prompt = Uri.EscapeDataString("How do I track my order?");
+  //       //resourceUri = $"vectorStore://support/{prompt}";
   //      var result = await context.Client.ReadResourceAsync(resourceUri);
   //      Console.WriteLine($"[DEBUG] Successfully read resource:");
   //      Console.WriteLine($"[DEBUG] - Content count: {result.Contents?.Count ?? 0}");
@@ -117,7 +119,7 @@ public class AiOperations : IAiOperations
   //    Console.WriteLine($"[ERROR] Stack trace: {ex.StackTrace}");
   //    throw;
   //  }
-  //  }
+  //}
   public async Task<string> GetCompletionAsync(McpContext context, ChatHistory history)
   {
     var result = await context.Kernel.GetRequiredService<IChatCompletionService>()

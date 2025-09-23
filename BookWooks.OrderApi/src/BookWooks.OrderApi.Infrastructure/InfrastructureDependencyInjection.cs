@@ -2,6 +2,12 @@
 using BookWooks.OrderApi.Infrastructure.AiServices.Interfaces;
 using BookWooks.OrderApi.Infrastructure.Common.Behaviour;
 using BookWooks.OrderApi.UseCases.Create;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.VectorData;
+using Microsoft.SemanticKernel.Connectors.InMemory;
+using Microsoft.SemanticKernel.Connectors.Qdrant;
+using Qdrant.Client;
+#pragma warning disable SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
 namespace BookWooks.OrderApi.Infrastructure;
 public static class InfrastructureDependencyInjection
@@ -29,11 +35,39 @@ public static class InfrastructureDependencyInjection
         RegisterQuartz(services);
         RegisterMcpFctory(services);
         RegisterAIOptions(services);
+        RegisterQdrantOptions(services);
         RegisterAIOperations(services);
         RegisterAIService(services);
-
-        return services;
+        RegisterOpenAIEmbeddingGenerator(services, configuration);
+        RegisterVectorStore(services, configuration); 
+    return services;
     }
+
+  private static void RegisterVectorStore(IServiceCollection services, IConfiguration configuration)
+  {
+    var qdrantOptions = configuration
+    .GetSection(QdrantOptions.Key)
+    .Get<QdrantOptions>();
+    //services.AddSingleton<VectorStore, InMemoryVectorStore>();
+
+    services.AddSingleton<VectorStore>(sp =>
+    {
+      var qdrantClient = new QdrantClient(
+          host: qdrantOptions!.QdrantHost, //"localhost",      // Qdrant host (without http/https)
+          port: qdrantOptions!.QdrantPort,//,             // Qdrant port
+          apiKey: qdrantOptions!.ApiKey            //apiKey: "your-qdrant-api-key" // or null/empty if not required
+      );
+      return new QdrantVectorStore(qdrantClient, ownsClient: true);
+    });
+  }
+
+  private static void RegisterOpenAIEmbeddingGenerator(IServiceCollection services, IConfiguration configuration)
+  {
+    var openAiOptions = configuration
+     .GetSection(OpenAIOptions.Key)
+     .Get<OpenAIOptions>();
+    services.AddOpenAIEmbeddingGenerator(openAiOptions!.EmbeddingModelId, openAiOptions!.OpenAiApiKey);
+  }
 
   private static void RegisterAIOperations(IServiceCollection services)
   {
@@ -53,7 +87,9 @@ public static class InfrastructureDependencyInjection
       //services.AddScoped<IOrderAiService<ProductDto>, OrderAiService>();
       services.AddScoped<IProductSearchService, OrderAiService>();
       services.AddScoped<ICustomerSupportService, OrderAiService>();
-    }
+      services.AddScoped<ProductEmbeddingSyncService>();
+      services.AddHostedService<ProductVectorSyncService>();
+  }
 
   private static void RegisterQuartz(IServiceCollection services)
   {
@@ -101,6 +137,13 @@ public static class InfrastructureDependencyInjection
             .BindConfiguration(OpenAIOptions.Key);
             //.ValidateDataAnnotations()  
             //.ValidateOnStart();
+  }
+  private static void RegisterQdrantOptions(IServiceCollection services)
+  {
+    services.AddOptions<QdrantOptions>()
+            .BindConfiguration(QdrantOptions.Key);
+    //.ValidateDataAnnotations()  
+    //.ValidateOnStart();
   }
 
   private static void RegisterDomainEventsDispatcherNotificationHandlerDecorator(IServiceCollection services)
@@ -250,14 +293,5 @@ public static class InfrastructureDependencyInjection
             throw new ApplicationException($"Internal Commands {string.Join(",", notMappedInternalCommands.Select(x => x.FullName))} not mapped");
         }
     }
-  public static IServiceCollection AddInfrastructureServicesForMCPServer(this IServiceCollection services,IConfiguration configuration,bool isDevelopment)
-  {
-    RegisterDbContext(services, configuration);
-    RegisterEfRepositories(services);
-    RegisterSerializer(services);
-    RegisterDistributedCacheService(services);
-    RegisterRedisDistributedCache(services, configuration);
-    return services;
-  }
 }
 

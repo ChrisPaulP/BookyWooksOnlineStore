@@ -11,6 +11,7 @@ services:
       - sqldata
       - rabbitmq
       - jaeger
+      - qdrant
       # - otel-collector
     volumes:
       - ${USER_SECRETS_PATH}
@@ -167,3 +168,10 @@ services:
     depends_on:
       - sqldata
 
+  qdrant:
+    container_name: bookywooks.qdrantService
+    env_file:
+      - .env
+    ports:
+      - "6333:6333"  # REST API
+      - "6334:6334"  # gRPC

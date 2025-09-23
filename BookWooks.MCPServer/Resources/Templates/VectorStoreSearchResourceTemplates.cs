@@ -33,7 +33,12 @@ public static class VectorStoreSearchResourceTemplates
                 async Task<IEnumerable<VectorDataModel>> GetData()
                 {
                     string content = EmbeddedResource.ReadAsString(embeddedResource);
-                    var lines = content.Split('\n');
+
+                    var lines = content
+                        .Split('\n', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(l => l.Trim())
+                        .Where(l => !string.IsNullOrWhiteSpace(l));
+
                     var result = new List<VectorDataModel>();
                     foreach (var line in lines)
                     {
@@ -69,9 +74,8 @@ public static class VectorStoreSearchResourceTemplates
                         Uri = context.Params!.Uri!,
                         MimeType = "text/plain"
                     },
-                    3,
-                     //0.3f, // Minimum similarity threshold
-                    cancellationToken
+                    top: 3,
+                    cancellationToken: cancellationToken
                 );
 
                 return new ReadResourceResult { Contents = contents };

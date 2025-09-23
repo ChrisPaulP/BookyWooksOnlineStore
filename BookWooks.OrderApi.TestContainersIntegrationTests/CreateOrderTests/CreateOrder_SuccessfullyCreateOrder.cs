@@ -7,7 +7,7 @@ public class CreateOrder_SuccessfullyCreateOrder
     private readonly HttpClient _client;
 
     public CreateOrder_SuccessfullyCreateOrder(CustomOrderTestFactory<Program> apiFactory)
-        : base(apiFactory, apiFactory.DisposeAsync)
+        : base(apiFactory, () => Task.CompletedTask)
     {
         _client = apiFactory.CreateClient();
     }

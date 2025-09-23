@@ -1,10 +1,11 @@
+using BookWooks.OrderApi.TestContainersIntegrationTests.TestSetup;
 using BookyWooks.Messaging.Constants;
 using BookyWooks.Messaging.Contracts.Commands;
 using BookyWooks.Messaging.Contracts.Events;
 using BookyWooks.Messaging.MassTransit;
 using BookyWooks.Messaging.Messages.InitialMessage;
 using FluentAssertions;
-using IntegrationTestingSetup;
+
 using MassTransit;
 using MassTransit.EntityFrameworkCoreIntegration;
 using MassTransit.Internals;
@@ -26,11 +27,11 @@ using static MassTransit.Logging.OperationName;
 namespace SagaOrchestration.IntegrationTests
 {
     [Collection("Saga Orchestration Test Collection")]
-    public class UnitTest1 : ApiTestBase<Program, StateMachineDbContext>
+    public class UnitTest1 : ApiTestBase<SagaOrchestrationProgram, StateMachineDbContext>
     {
         private readonly HttpClient _client;
         private readonly ITestHarness _harness;
-        public UnitTest1(CustomSagaOrchestrationTestFactory<Program> apiFactory) : base(apiFactory, apiFactory.DisposeAsync)
+        public UnitTest1(CustomSagaOrchestrationTestFactory<SagaOrchestrationProgram> apiFactory) : base(apiFactory, apiFactory.DisposeAsync)
         {
             _client = apiFactory.CreateClient();
             _harness = apiFactory.Services.GetTestHarness();

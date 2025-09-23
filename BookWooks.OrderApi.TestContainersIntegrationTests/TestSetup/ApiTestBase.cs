@@ -1,4 +1,4 @@
-﻿namespace IntegrationTestingSetup;
+﻿namespace BookWooks.OrderApi.TestContainersIntegrationTests.TestSetup;
 
 public class ApiTestBase<TProgram, TDbContext> : IAsyncLifetime
         where TProgram : class // Ensure the TProgram is a class (e.g. Startup or Program)
@@ -62,4 +62,3 @@ public class ApiTestBase<TProgram, TDbContext> : IAsyncLifetime
     }
     public Task DisposeAsync() => _resetDatabase();
 }
-

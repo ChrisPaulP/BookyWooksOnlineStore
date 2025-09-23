@@ -1,9 +1,11 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
+using BookWooks.OrderApi.Core.OrderAggregate.Entities;
 using BookWooks.OrderApi.Infrastructure.AiMcpSetUp;
 using BookWooks.OrderApi.Infrastructure.AiServices;
 using BookWooks.OrderApi.Infrastructure.AiServices.Interfaces;
 using BookWooks.OrderApi.UseCases.Products;
+using BookyWooks.SharedKernel.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
@@ -24,6 +26,7 @@ public class OrderAiServiceTests
   private readonly Mock<IAiOperations> _aiOperationsMock;
   private readonly OrderAiService _sut;
   private readonly Kernel _kernel;
+  private readonly Mock<IReadRepository<Product>> _productRepositoryMock;
 
   public OrderAiServiceTests()
   {
@@ -31,6 +34,7 @@ public class OrderAiServiceTests
     _mcpClientMock = new Mock<IMcpClient>();
     _chatCompletionServiceMock = new Mock<IChatCompletionService>();
     _aiOperationsMock = new Mock<IAiOperations>();
+    _productRepositoryMock = new Mock<IReadRepository<Product>>();
     // Create a real Kernel instance for the context
     var kernelBuilder = Kernel.CreateBuilder();
 
@@ -45,7 +49,7 @@ public class OrderAiServiceTests
     .Setup(x => x.CreateClientAndKernelAsync())
     .ReturnsAsync(mcpContext);
 
-    _sut = new OrderAiService(_mcpFactoryMock.Object, _aiOperationsMock.Object);
+    _sut = new OrderAiService(_mcpFactoryMock.Object, _aiOperationsMock.Object, _productRepositoryMock.Object);
   }
 
   [Theory]

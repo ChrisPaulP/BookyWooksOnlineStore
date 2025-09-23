@@ -118,6 +118,14 @@ services:
     networks:
       - booky_wooks_network
 
+  qdrant:
+    image: qdrant/qdrant:latest
+    environment:
+      - QDRANT__STORAGE__STORAGE_PATH=/qdrant/storage
+    networks:
+      - booky_wooks_network
+    volumes:
+      - qdrant_storage:/qdrant/storage
  
 
 
@@ -126,7 +134,8 @@ volumes:
   elasticsearch-logs:
   booky_wooks_sql_data:
   booky_wooks_identityserver_data:
-  
+  qdrant_storage:
+
 networks:
   booky_wooks_network:
     external: true

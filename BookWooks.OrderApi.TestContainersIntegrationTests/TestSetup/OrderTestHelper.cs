@@ -1,4 +1,4 @@
-﻿namespace BookWooks.OrderApi.TestContainersIntegrationTests;
+﻿namespace BookWooks.OrderApi.TestContainersIntegrationTests.TestSetup;
 
 public static class OrderTestHelper
 {
