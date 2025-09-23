@@ -1,6 +1,7 @@
 ﻿using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
+using DotNet.Testcontainers.Images;
 using DotNet.Testcontainers.Networks;
 using System;
 using System.Collections.Generic;
@@ -72,6 +73,7 @@ public class TestContainerBuilder
     public IContainer BuildMcpServerContainer(QdrantContainer qdrantContainer) =>
         new ContainerBuilder()
             .WithImage("bookwooks/mcpserver:latest")
+            .WithImagePullPolicy(PullPolicy.Always)
             .WithPortBinding(8181, true)
             .WithName("mcp-test-server")
             .WithHostname("mcp-test-server")
