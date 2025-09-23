@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using BookWooks.OrderApi.Core.OrderAggregate.Entities;
+using BookWooks.OrderApi.Core.OrderAggregate.Specifications;
 using BookWooks.OrderApi.Infrastructure.AiMcpSetUp;
 using BookWooks.OrderApi.Infrastructure.AiServices;
 using BookWooks.OrderApi.Infrastructure.AiServices.Interfaces;
@@ -69,42 +70,80 @@ public class OrderAiServiceTests
   }
 
   [Fact]
-  public async Task SearchProductsAsync_ShouldReturnProducts()
+  public async Task SearchProductsAsync_ShouldReturnOrderedProducts()
   {
     // Arrange
-    var expectedProducts = new List<ProductDto>
+    var productIds = new List<Guid>
     {
-        new() { Id = Guid.NewGuid(), Name = "Book 1", Description = "Desc 1", Price = 10.99m },
-        new() { Id = Guid.NewGuid(), Name = "Book 2", Description = "Desc 2", Price = 15.99m }
+        Guid.NewGuid(),
+        Guid.NewGuid()
     };
 
-    var jsonResponse = new { content = new[] { new { text = JsonSerializer.Serialize(expectedProducts) } } };
+    // Setup kernel response with product IDs
+    var jsonResponse = new { content = new[] { new { text = JsonSerializer.Serialize(productIds) } } };
     var jsonElement = JsonSerializer.SerializeToElement(jsonResponse);
 
     // Create the function that will return our test data
-    var functionDelegate = (Kernel kernel) =>
-    {
-      return new FunctionResult(kernel.Plugins.GetFunction(AiServiceConstants.ToolsPluginName, "ProductSearchTool_Search"), jsonElement);
-    };
-
-    // Create a function first
-    var function = KernelFunctionFactory.CreateFromMethod(
-        functionDelegate,
+    var functionDefinition = KernelFunctionFactory.CreateFromMethod(
+        (Kernel kernel, KernelArguments arguments) =>
+        {
+          // Create FunctionResult with both the function and result data
+          var currentFunction = kernel.Plugins
+              .GetFunction(AiServiceConstants.ToolsPluginName, "ProductSearchTool_Search");
+          return new FunctionResult(currentFunction, jsonElement);
+        },
         "ProductSearchTool_Search");
 
-    // Add the function to the kernel's plugin collection
+    // Create and register the plugin
     var plugin = KernelPluginFactory.CreateFromFunctions(
         AiServiceConstants.ToolsPluginName,
-        new[] { function });
-
+        new[] { functionDefinition });
     _kernel.Plugins.Add(plugin);
+
+    // Setup repository to return products in a different order
+    // Create products list
+    var products = new List<Product>
+    {
+        Product.CreateProduct(productIds[1], "Book 2", "Desc 2", 15.99m, 10).Match(
+            product => product,
+            errors => throw new InvalidOperationException($"Failed to create product: {string.Join(", ", errors)}")),
+        Product.CreateProduct(productIds[0], "Book 1", "Desc 1", 10.99m, 10).Match(
+            product => product,
+            errors => throw new InvalidOperationException($"Failed to create product: {string.Join(", ", errors)}"))
+    };
+
+    _productRepositoryMock
+        .Setup(r => r.FindAllAsync(It.IsAny<ProductsByIdsSpecification>()))
+        .ReturnsAsync(products);
+
+    var mcpContext = new McpContext(_mcpClientMock.Object, _kernel);
+    _mcpFactoryMock.Setup(x => x.CreateClientAndKernelAsync())
+        .ReturnsAsync(mcpContext);
+
     // Act
-    var searchResult = await _sut.SearchProductsAsync("show me two books");
+    var result = await _sut.SearchProductsAsync("show me two books");
 
     // Assert
-    Assert.NotNull(searchResult);
-    Assert.Equal(2, searchResult.Count());
-    Assert.Equal(expectedProducts[0].Name, searchResult.First().Name);
+    var resultList = result.ToList();
+    Assert.NotNull(resultList);
+    Assert.Equal(2, resultList.Count);
+
+    // Verify order matches original productIds order
+    Assert.Equal(productIds[0], resultList[0].Id);
+    Assert.Equal(productIds[1], resultList[1].Id);
+
+    // Verify product details
+    Assert.Equal("Book 1", resultList[0].Name);
+    Assert.Equal(10.99m, resultList[0].Price);
+    Assert.Equal("Book 2", resultList[1].Name);
+    Assert.Equal(15.99m, resultList[1].Price);
+
+    // Verify repository was called with correct specification
+    //_productRepositoryMock.Verify(r =>
+    //    r.FindAllAsync(It.Is<ProductsByIdsSpecification>(s =>
+    //        s.Criteria.ToString().Contains(productIds[0].ToString()) &&
+    //        s.Criteria.ToString().Contains(productIds[1].ToString()))),
+    //    Times.Once);
   }
   [Fact]
   public async Task SearchProductsAsync_WhenDeserializationFails_ShouldReturnEmptyList()
