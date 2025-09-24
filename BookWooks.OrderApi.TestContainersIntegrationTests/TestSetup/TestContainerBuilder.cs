@@ -97,11 +97,11 @@ public class TestContainerBuilder
     //        .Build();
     public IContainer BuildMcpServerContainer(QdrantContainer qdrantContainer)
     {
-        var apiKey = Environment.GetEnvironmentVariable("OpenAI__OpenAiApiKey");
+        var apiKey = Environment.GetEnvironmentVariable("OpenAIOptions__OpenAiApiKey");
 
         if (string.IsNullOrEmpty(apiKey))
         {
-            throw new InvalidOperationException("Missing OpenAI__OpenAiApiKey in environment.");
+            throw new InvalidOperationException("Missing OpenAIOptions__OpenAiApiKey in environment.");
         }
 
         return new ContainerBuilder()
@@ -110,7 +110,7 @@ public class TestContainerBuilder
             .WithName("mcp-test-server")
             .WithHostname("mcp-test-server")
             .WithEnvironment("ASPNETCORE_URLS", "http://+:8181")
-            .WithEnvironment("OpenAI__OpenAiApiKey", apiKey) // inject secret
+            .WithEnvironment("OpenAIOptions__OpenAiApiKey", apiKey) // inject secret
             .WithEnvironment("OpenAI__EmbeddingModelId", "text-embedding-3-small")
             .WithEnvironment("OpenAI__ModelId", "gpt-4o-mini")
             .WithEnvironment("MCP__BasePath", "/mcp")
