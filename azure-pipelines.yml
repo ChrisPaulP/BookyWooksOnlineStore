@@ -53,23 +53,36 @@ jobs:
         docker images bookwooks/mcpserver:latest
       displayName: Verify Docker Image
 
-    # ✅ Debug MCPServer container startup
+    # ✅ Debug / verify MCPServer container
     - script: |
-        echo "Running MCPServer debug startup..."
+        echo "Starting MCPServer container..."
         docker run --name mcp-debug \
           -e OpenAI__OpenAiApiKey="${OPENAI_KEY}" \
           -e OpenAI__EmbeddingModelId="text-embedding-3-small" \
           -e OpenAI__ModelId="gpt-4o-mini" \
+          -e ASPNETCORE_URLS="http://+:8181" \
+          -p 8181:8181 \
           -d bookwooks/mcpserver:latest
 
-        echo "Container started. Listing env vars..."
+        echo "Checking environment variables inside container..."
         docker exec mcp-debug printenv | grep OpenAI__
 
-        echo "Checking logs..."
+        echo "Waiting for MCPServer health endpoint..."
+        for i in {1..15}; do
+          if docker exec mcp-debug curl -sf http://localhost:8181/health; then
+            echo "MCPServer is healthy!"
+            break
+          else
+            echo "Waiting for MCPServer to be ready..."
+            sleep 2
+          fi
+        done
+
+        echo "Container logs:"
         docker logs mcp-debug || true
 
         docker rm -f mcp-debug || true
-      displayName: Debug MCPServer container startup
+      displayName: Start and Verify MCPServer
       env:
         OPENAI_KEY: $(OpenAI__OpenAiApiKey)
 
@@ -112,7 +125,7 @@ jobs:
         TESTCONTAINERS_HOST_OVERRIDE: 'localhost'
         TESTCONTAINERS_RYUK_DISABLED: 'true'
         DOCKER_HOST: 'unix:///var/run/docker.sock'
-        OpenAI__OpenAiApiKey: $(OpenAI__OpenAiApiKey)
+        # OpenAI__OpenAiApiKey: $(OpenAI__OpenAiApiKey)
 
     # ✅ Publish Test Results
     - task: PublishTestResults@2
