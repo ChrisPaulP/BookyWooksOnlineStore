@@ -5,15 +5,9 @@ using Microsoft.SemanticKernel.Connectors.Qdrant;
 using Qdrant.Client;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddEnvironmentVariables(); // Ensure env vars are read
 builder.Services.Configure<OpenAIOptions>(
     builder.Configuration.GetSection(OpenAIOptions.Key));
-
-
-
-
-builder.Services.Configure<OpenAIOptions>(
-    builder.Configuration.GetSection(OpenAIOptions.Key));
-
 
 IKernelBuilder kernelBuilder = builder.Services.AddKernel();
 kernelBuilder.Plugins.AddFromType<OrderProcessingTool>();
