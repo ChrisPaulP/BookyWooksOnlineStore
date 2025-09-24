@@ -69,12 +69,12 @@ jobs:
 
         echo "Waiting for MCPServer health endpoint..."
         for i in {1..15}; do
-          if docker exec mcp-debug curl -sf http://localhost:8181/health; then
-            echo "MCPServer is healthy!"
-            break
+          if docker logs mcp-debug 2>&1 | grep -q "Application started"; then
+             echo "MCPServer is up!"
+             break
           else
-            echo "Waiting for MCPServer to be ready..."
-            sleep 2
+             echo "Waiting for MCPServer to start..."
+             sleep 2
           fi
         done
 
