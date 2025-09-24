@@ -125,7 +125,7 @@ jobs:
         TESTCONTAINERS_HOST_OVERRIDE: 'localhost'
         TESTCONTAINERS_RYUK_DISABLED: 'true'
         DOCKER_HOST: 'unix:///var/run/docker.sock'
-        # OpenAI__OpenAiApiKey: $(OpenAI__OpenAiApiKey)
+        OpenAI__OpenAiApiKey: $(OpenAI__OpenAiApiKey)
 
     # ✅ Publish Test Results
     - task: PublishTestResults@2
