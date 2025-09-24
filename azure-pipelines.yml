@@ -1,155 +1,139 @@
 trigger:
-- master
+  - master
 
 pool:
   vmImage: ubuntu-latest
 
-# 🔑 Pull in secrets from Azure DevOps Library
 variables:
-- group: BookyWooksSecrets   # <-- variable group containing OpenAI__OpenAiApiKey
-- name: buildConfiguration
-  value: 'Release'
-- name: BuildParameters.RestoreBuildProjects
-  value: '**/*.csproj'
-- name: BuildParameters.UnitTestProjects
-  value: |
-    $(BuildParameters.RestoreBuildProjects)
-    !**/*FunctionalTests*.csproj
-    !**/*IntegrationTests*.csproj
-    !**/BookWooks.OrderApi.FunctionalTests.csproj
-    !**/BookyWooks.OrderApi.IntegrationTests.csproj
-    !**/BookWooks.OrderApi.TestContainersIntegrationTests.csproj
-    !**/SagaOrchestration.IntegrationTests.csproj
-- name: BuildParameters.IntegrationTestProjects
-  value: |
-    **/*IntegrationTests*.csproj
-    **/BookWooks.OrderApi.TestContainersIntegrationTests.csproj
-    !**/SagaOrchestration.IntegrationTests.csproj
+  - group: BookyWooksSecrets
+  - name: buildConfiguration
+    value: 'Release'
+  - name: BuildParameters.RestoreBuildProjects
+    value: '**/*.csproj'
+  - name: BuildParameters.UnitTestProjects
+    value: |
+      $(BuildParameters.RestoreBuildProjects)
+      !**/*FunctionalTests*.csproj
+      !**/*IntegrationTests*.csproj
+      !**/BookWooks.OrderApi.FunctionalTests.csproj
+      !**/BookyWooks.OrderApi.IntegrationTests.csproj
+      !**/BookWooks.OrderApi.TestContainersIntegrationTests.csproj
+      !**/SagaOrchestration.IntegrationTests.csproj
+  - name: BuildParameters.IntegrationTestProjects
+    value: |
+      **/*IntegrationTests*.csproj
+      **/BookWooks.OrderApi.TestContainersIntegrationTests.csproj
+      !**/SagaOrchestration.IntegrationTests.csproj
 
 jobs:
-- job: BuildAndTest
-  displayName: Build and Test with Testcontainers
+  - job: BuildAndTest
+    displayName: Build and Test with Testcontainers
+    steps:
+      - script: |
+          sudo service docker start
+          echo "Waiting for Docker to be ready..."
+          until docker info >/dev/null 2>&1; do
+            echo "Docker not ready yet, retrying..."
+            sleep 2
+          done
+          docker info
+        displayName: Ensure Docker is ready
 
-  steps:
-    # ✅ Ensure Docker is running and stable
-    - script: |
-        sudo service docker start
-        echo "Waiting for Docker to be ready..."
-        until docker info >/dev/null 2>&1; do
-          echo "Docker not ready yet, retrying..."
-          sleep 2
-        done
-        docker info
-      displayName: Ensure Docker is ready
+      - script: |
+          cd $(Build.SourcesDirectory)
+          docker build -t bookwooks/mcpserver:latest -f BookWooks.MCPServer/Dockerfile .
+        displayName: Build MCPServer Docker Image
 
-    # ✅ Build MCPServer Docker Image
-    - script: |
-        cd $(Build.SourcesDirectory)
-        docker build -t bookwooks/mcpserver:latest -f BookWooks.MCPServer/Dockerfile .
-      displayName: Build MCPServer Docker Image
-      
-    # ✅ Verify Docker Image
-    - script: |
-        docker images bookwooks/mcpserver:latest
-      displayName: Verify Docker Image
+      - script: |
+          docker images bookwooks/mcpserver:latest
+        displayName: Verify Docker Image
 
-    # ✅ Debug / verify MCPServer container
-    - script: |
-        echo "Starting MCPServer container..."
-        docker run --name mcp-debug \
-          -e OpenAI__OpenAiApiKey="${OPENAI_KEY}" \
-          -e OpenAI__EmbeddingModelId="text-embedding-3-small" \
-          -e OpenAI__ModelId="gpt-4o-mini" \
-          -e ASPNETCORE_URLS="http://+:8181" \
-          -p 8181:8181 \
-          -d bookwooks/mcpserver:latest
+      - script: |
+          echo "Starting MCPServer container..."
+          docker run --name mcp-debug \
+            -e OpenAI__OpenAiApiKey="$(OpenAI__OpenAiApiKey)" \
+            -e OpenAI__EmbeddingModelId="text-embedding-3-small" \
+            -e OpenAI__ModelId="gpt-4o-mini" \
+            -e ASPNETCORE_URLS="http://+:8181" \
+            -d bookwooks/mcpserver:latest
 
-        echo "Checking environment variables inside container..."
-        docker exec mcp-debug printenv | grep OpenAI__
+          echo "Listing OpenAI env vars inside container..."
+          docker exec mcp-debug env | grep OpenAI__
 
-        echo "Waiting for MCPServer health endpoint..."
-        for i in {1..15}; do
-          if docker logs mcp-debug 2>&1 | grep -q "Application started"; then
-             echo "MCPServer is up!"
-             break
-          else
-             echo "Waiting for MCPServer to start..."
-             sleep 2
-          fi
-        done
+          echo "Waiting for 'Application started' in container logs..."
+          for i in {1..20}; do
+            if docker logs mcp-debug 2>&1 | grep -q "Application started"; then
+              echo "MCPServer is up!"
+              break
+            else
+              echo "Waiting for MCPServer to start..."
+              sleep 3
+            fi
+          done
 
-        echo "Container logs:"
-        docker logs mcp-debug || true
+          echo "Final container logs:"
+          docker logs mcp-debug
 
-        docker rm -f mcp-debug || true
-      displayName: Start and Verify MCPServer
-      env:
-        OPENAI_KEY: $(OpenAI__OpenAiApiKey)
+          docker rm -f mcp-debug || true
+        displayName: Debug MCPServer container startup
 
-    # ✅ Restore NuGet Packages
-    - task: DotNetCoreCLI@2
-      displayName: Restore NuGet Packages
-      inputs:
-        command: restore
-        projects: $(BuildParameters.RestoreBuildProjects)
-        configuration: $(buildConfiguration)
+      - task: DotNetCoreCLI@2
+        displayName: Restore NuGet Packages
+        inputs:
+          command: restore
+          projects: $(BuildParameters.RestoreBuildProjects)
+          configuration: $(buildConfiguration)
 
-    # ✅ Build Solution
-    - task: DotNetCoreCLI@2
-      displayName: Build Solution
-      inputs:
-        command: build
-        projects: |
-          **/*.csproj
-          !**/SagaOrchestration.IntegrationTests.csproj
-        arguments: '--configuration $(buildConfiguration)'
+      - task: DotNetCoreCLI@2
+        displayName: Build Solution
+        inputs:
+          command: build
+          projects: |
+            **/*.csproj
+            !**/SagaOrchestration.IntegrationTests.csproj
+          arguments: '--configuration $(buildConfiguration)'
 
-    # ✅ Run Unit Tests
-    - task: DotNetCoreCLI@2
-      displayName: Run Unit Tests
-      inputs:
-        command: test
-        projects: $(BuildParameters.UnitTestProjects)
-        arguments: --configuration $(buildConfiguration) --no-build --logger trx
-      env:
-        ASPNETCORE_ENVIRONMENT: Test
+      - task: DotNetCoreCLI@2
+        displayName: Run Unit Tests
+        inputs:
+          command: test
+          projects: $(BuildParameters.UnitTestProjects)
+          arguments: --configuration $(buildConfiguration) --no-build --logger trx
+        env:
+          ASPNETCORE_ENVIRONMENT: Test
 
-    # ✅ Run Integration Tests (Testcontainers)
-    - task: DotNetCoreCLI@2
-      displayName: Run Integration Tests (Testcontainers)
-      inputs:
-        command: test
-        projects: $(BuildParameters.IntegrationTestProjects)
-        arguments: --configuration $(buildConfiguration) --no-build --logger trx
-      env:
-        TESTCONTAINERS_HOST_OVERRIDE: 'localhost'
-        TESTCONTAINERS_RYUK_DISABLED: 'true'
-        DOCKER_HOST: 'unix:///var/run/docker.sock'
-        OpenAI__OpenAiApiKey: $(OpenAI__OpenAiApiKey)
+      - task: DotNetCoreCLI@2
+        displayName: Run Integration Tests (Testcontainers)
+        inputs:
+          command: test
+          projects: $(BuildParameters.IntegrationTestProjects)
+          arguments: --configuration $(buildConfiguration) --no-build --logger trx
+        env:
+          TESTCONTAINERS_HOST_OVERRIDE: 'localhost'
+          TESTCONTAINERS_RYUK_DISABLED: 'true'
+          DOCKER_HOST: 'unix:///var/run/docker.sock'
+          OpenAI__OpenAiApiKey: $(OpenAI__OpenAiApiKey)
 
-    # ✅ Publish Test Results
-    - task: PublishTestResults@2
-      displayName: Publish Test Results
-      condition: succeededOrFailed()
-      inputs:
-        testResultsFormat: VSTest
-        testResultsFiles: '**/TestResults/*.trx'
-        mergeTestResults: true
+      - task: PublishTestResults@2
+        displayName: Publish Test Results
+        condition: succeededOrFailed()
+        inputs:
+          testResultsFormat: VSTest
+          testResultsFiles: '**/TestResults/*.trx'
+          mergeTestResults: true
 
-    # ✅ Publish App Artifacts
-    - task: DotNetCoreCLI@2
-      displayName: Publish App
-      inputs:
-        command: publish
-        publishWebProjects: false
-        projects: $(BuildParameters.RestoreBuildProjects)
-        arguments: --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)
-        zipAfterPublish: true
+      - task: DotNetCoreCLI@2
+        displayName: Publish App
+        inputs:
+          command: publish
+          publishWebProjects: false
+          projects: $(BuildParameters.RestoreBuildProjects)
+          arguments: --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)
+          zipAfterPublish: true
 
-    # ✅ Publish Build Artifacts
-    - task: PublishBuildArtifacts@1
-      displayName: Publish Artifact
-      condition: succeededOrFailed()
-      inputs:
-        PathtoPublish: $(Build.ArtifactStagingDirectory)
-        TargetPath: '\\my\share\$(Build.DefinitionName)\$(Build.BuildNumber)'
+      - task: PublishBuildArtifacts@1
+        displayName: Publish Artifact
+        condition: succeededOrFailed()
+        inputs:
+          PathtoPublish: $(Build.ArtifactStagingDirectory)
+          TargetPath: '\\my\share\$(Build.DefinitionName)\$(Build.BuildNumber)'
