@@ -63,7 +63,8 @@ jobs:
           bookwooks/mcpserver:latest || true
 
         echo "Checking logs..."
-        docker logs $(docker ps -alq) || true
+        docker logs mcp-debug || true
+        docker rm -f mcp-debug || true
       displayName: Debug MCPServer container startup
 
     # ✅ Restore NuGet Packages
