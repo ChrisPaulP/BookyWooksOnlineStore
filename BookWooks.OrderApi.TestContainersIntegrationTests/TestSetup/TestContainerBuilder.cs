@@ -103,7 +103,7 @@ public class TestContainerBuilder
         {
             throw new InvalidOperationException("Missing OpenAIOptions__OpenAiApiKey in environment.");
         }
-
+        //var apiKey = Environment.GetEnvironmentVariable("OpenAIOptions__OpenAiApiKey");
         return new ContainerBuilder()
             .WithImage("bookwooks/mcpserver:latest")
             .WithPortBinding(8181, true)
@@ -111,8 +111,9 @@ public class TestContainerBuilder
             .WithHostname("mcp-test-server")
             .WithEnvironment("ASPNETCORE_URLS", "http://+:8181")
             .WithEnvironment("OpenAIOptions__OpenAiApiKey", apiKey) // inject secret
-            .WithEnvironment("OpenAI__EmbeddingModelId", "text-embedding-3-small")
-            .WithEnvironment("OpenAI__ModelId", "gpt-4o-mini")
+            //.WithEnvironment("OpenAI__OpenAiApiKey", _configuration["OpenAI:OpenAiApiKey"])
+            .WithEnvironment("OpenAIOptions__EmbeddingModelId", "text-embedding-3-small")
+            .WithEnvironment("OpenAIOptions__ModelId", "gpt-4o-mini")
             .WithEnvironment("MCP__BasePath", "/mcp")
             .WithEnvironment("QdrantOptions__QdrantHost", qdrantContainer.Hostname)
             .WithEnvironment("QdrantOptions__QdrantPort", qdrantContainer.GetMappedPublicPort(6334).ToString())
