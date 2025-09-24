@@ -70,29 +70,56 @@ public class TestContainerBuilder
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(6334))
             .Build();
 
-    public IContainer BuildMcpServerContainer(QdrantContainer qdrantContainer) =>
-        new ContainerBuilder()
+    //public IContainer BuildMcpServerContainer(QdrantContainer qdrantContainer) =>
+    //    new ContainerBuilder()
+    //        .WithImage("bookwooks/mcpserver:latest")
+    //        //.WithImagePullPolicy(PullPolicy.Never)
+    //        .WithPortBinding(8181, true)
+    //        .WithName("mcp-test-server")
+    //        .WithHostname("mcp-test-server")
+    //        .WithEnvironment("ASPNETCORE_URLS", "http://+:8181")
+    //          //.WithEnvironment("ASPNETCORE_DataProtection__Path", "/home/app/.aspnet/DataProtection-Keys")
+    //          //.WithEnvironment("ASPNETCORE_ENVIRONMENT", "Development")
+    //        .WithEnvironment("OpenAI__OpenAiApiKey", _configuration["OpenAI:OpenAiApiKey"])
+    //        .WithEnvironment("OpenAI__EmbeddingModelId", "text-embedding-3-small")
+    //        .WithEnvironment("OpenAI__ModelId", "gpt-4o-mini")
+    //        .WithEnvironment("MCP__BasePath", "/mcp")
+    //        //.WithEnvironment("ConnectionStrings__OrderDatabase", $"Server=sql-server;Database=BookyWooksOrderDbContext;User Id=sa;Password={ContainerConfiguration.SqlPassword};TrustServerCertificate=True")
+    //        .WithEnvironment("QdrantOptions__QdrantHost", qdrantContainer.Hostname)
+    //        .WithEnvironment("QdrantOptions__QdrantPort", qdrantContainer.GetMappedPublicPort(6334).ToString())
+    //        //.WithBindMount(_config.DataProtectionPath, "/home/app/.aspnet/DataProtection-Keys")
+    //        //.WithBindMount(_config.ProjectResourcesPath, "/app/ProjectResources", AccessMode.ReadWrite)
+    //        //.WithExposedPort(8181)
+    //        .WithNetwork(_network)
+    //        .WithWaitStrategy(Wait.ForUnixContainer()
+    //            .UntilPortIsAvailable(8181)
+    //            .UntilMessageIsLogged("Application started"))
+    //        .Build();
+    public IContainer BuildMcpServerContainer(QdrantContainer qdrantContainer)
+    {
+        var apiKey = Environment.GetEnvironmentVariable("OpenAI__OpenAiApiKey");
+
+        if (string.IsNullOrEmpty(apiKey))
+        {
+            throw new InvalidOperationException("Missing OpenAI__OpenAiApiKey in environment.");
+        }
+
+        return new ContainerBuilder()
             .WithImage("bookwooks/mcpserver:latest")
-            .WithImagePullPolicy(PullPolicy.Never)
             .WithPortBinding(8181, true)
             .WithName("mcp-test-server")
             .WithHostname("mcp-test-server")
             .WithEnvironment("ASPNETCORE_URLS", "http://+:8181")
-              //.WithEnvironment("ASPNETCORE_DataProtection__Path", "/home/app/.aspnet/DataProtection-Keys")
-              //.WithEnvironment("ASPNETCORE_ENVIRONMENT", "Development")
-            .WithEnvironment("OpenAI__OpenAiApiKey", _configuration["OpenAI:OpenAiApiKey"])
+            .WithEnvironment("OpenAI__OpenAiApiKey", apiKey) // inject secret
             .WithEnvironment("OpenAI__EmbeddingModelId", "text-embedding-3-small")
             .WithEnvironment("OpenAI__ModelId", "gpt-4o-mini")
             .WithEnvironment("MCP__BasePath", "/mcp")
-            //.WithEnvironment("ConnectionStrings__OrderDatabase", $"Server=sql-server;Database=BookyWooksOrderDbContext;User Id=sa;Password={ContainerConfiguration.SqlPassword};TrustServerCertificate=True")
             .WithEnvironment("QdrantOptions__QdrantHost", qdrantContainer.Hostname)
             .WithEnvironment("QdrantOptions__QdrantPort", qdrantContainer.GetMappedPublicPort(6334).ToString())
-            //.WithBindMount(_config.DataProtectionPath, "/home/app/.aspnet/DataProtection-Keys")
-            //.WithBindMount(_config.ProjectResourcesPath, "/app/ProjectResources", AccessMode.ReadWrite)
-            //.WithExposedPort(8181)
             .WithNetwork(_network)
             .WithWaitStrategy(Wait.ForUnixContainer()
                 .UntilPortIsAvailable(8181)
                 .UntilMessageIsLogged("Application started"))
             .Build();
+    }
 }
