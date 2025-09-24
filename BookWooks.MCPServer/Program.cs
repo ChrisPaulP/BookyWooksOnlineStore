@@ -35,6 +35,12 @@ builder.Services.AddSingleton<VectorStore>(sp =>
 var openAiOptions = builder.Configuration
     .GetSection(OpenAIOptions.Key)
     .Get<OpenAIOptions>();
+
+if (openAiOptions is null || string.IsNullOrWhiteSpace(openAiOptions.OpenAiApiKey))
+{
+    Console.Error.WriteLine("ERROR: Missing OpenAI__OpenAiApiKey in configuration.");
+    Environment.Exit(1); // fail fast with clear logs
+}
 builder.Services.AddOpenAIEmbeddingGenerator(openAiOptions.EmbeddingModelId, openAiOptions.OpenAiApiKey);
 
 builder.Services
