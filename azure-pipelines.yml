@@ -57,16 +57,21 @@ jobs:
     - script: |
         echo "Running MCPServer debug startup..."
         docker run --name mcp-debug \
-          -e OpenAI__OpenAiApiKey=$(OpenAI__OpenAiApiKey) \
-          -e OpenAI__EmbeddingModelId=text-embedding-3-small \
-          -e OpenAI__ModelId=gpt-4o-mini \
-          bookwooks/mcpserver:latest || true
+          -e OpenAI__OpenAiApiKey="${OPENAI_KEY}" \
+          -e OpenAI__EmbeddingModelId="text-embedding-3-small" \
+          -e OpenAI__ModelId="gpt-4o-mini" \
+          -d bookwooks/mcpserver:latest
+
+        echo "Container started. Listing env vars..."
+        docker exec mcp-debug printenv | grep OpenAI__
 
         echo "Checking logs..."
-        echo "OpenAI Key: $(OpenAI__OpenAiApiKey)"
         docker logs mcp-debug || true
+
         docker rm -f mcp-debug || true
       displayName: Debug MCPServer container startup
+      env:
+        OPENAI_KEY: $(OpenAI__OpenAiApiKey)
 
     # ✅ Restore NuGet Packages
     - task: DotNetCoreCLI@2
@@ -107,7 +112,6 @@ jobs:
         TESTCONTAINERS_HOST_OVERRIDE: 'localhost'
         TESTCONTAINERS_RYUK_DISABLED: 'true'
         DOCKER_HOST: 'unix:///var/run/docker.sock'
-        # 👇 OpenAI secret from Library is auto-injected into container
         OpenAI__OpenAiApiKey: $(OpenAI__OpenAiApiKey)
 
     # ✅ Publish Test Results
