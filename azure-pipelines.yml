@@ -53,19 +53,38 @@ jobs:
         docker images bookwooks/mcpserver:latest
       displayName: Verify Docker Image
 
-    # ✅ Debug MCPServer container startup
+    # ✅ Debug / verify MCPServer container
     - script: |
-        echo "Running MCPServer debug startup..."
-        docker run --rm \
-          -e OpenAI__OpenAiApiKey=$(OpenAI__OpenAiApiKey) \
-          -e OpenAI__EmbeddingModelId=text-embedding-3-small \
-          -e OpenAI__ModelId=gpt-4o-mini \
-          bookwooks/mcpserver:latest || true
+        echo "Starting MCPServer container..."
+        docker run --name mcp-debug \
+          -e OpenAI__OpenAiApiKey="${OPENAI_KEY}" \
+          -e OpenAI__EmbeddingModelId="text-embedding-3-small" \
+          -e OpenAI__ModelId="gpt-4o-mini" \
+          -e ASPNETCORE_URLS="http://+:8181" \
+          -p 8181:8181 \
+          -d bookwooks/mcpserver:latest
 
-        echo "Checking logs..."
+        echo "Checking environment variables inside container..."
+        docker exec mcp-debug printenv | grep OpenAI__
+
+        echo "Waiting for MCPServer health endpoint..."
+        for i in {1..15}; do
+          if docker logs mcp-debug 2>&1 | grep -q "Application started"; then
+             echo "MCPServer is up!"
+             break
+          else
+             echo "Waiting for MCPServer to start..."
+             sleep 2
+          fi
+        done
+
+        echo "Container logs:"
         docker logs mcp-debug || true
+
         docker rm -f mcp-debug || true
-      displayName: Debug MCPServer container startup
+      displayName: Start and Verify MCPServer
+      env:
+        OPENAI_KEY: $(OpenAI__OpenAiApiKey)
 
     # ✅ Restore NuGet Packages
     - task: DotNetCoreCLI@2
@@ -106,7 +125,6 @@ jobs:
         TESTCONTAINERS_HOST_OVERRIDE: 'localhost'
         TESTCONTAINERS_RYUK_DISABLED: 'true'
         DOCKER_HOST: 'unix:///var/run/docker.sock'
-        # 👇 OpenAI secret from Library is auto-injected into container
         OpenAI__OpenAiApiKey: $(OpenAI__OpenAiApiKey)
 
     # ✅ Publish Test Results
