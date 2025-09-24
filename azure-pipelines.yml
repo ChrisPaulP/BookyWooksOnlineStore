@@ -53,6 +53,19 @@ jobs:
         docker images bookwooks/mcpserver:latest
       displayName: Verify Docker Image
 
+    # ✅ Debug MCPServer container startup
+    - script: |
+        echo "Running MCPServer debug startup..."
+        docker run --rm \
+          -e OpenAI__OpenAiApiKey=$(OpenAI__OpenAiApiKey) \
+          -e OpenAI__EmbeddingModelId=text-embedding-3-small \
+          -e OpenAI__ModelId=gpt-4o-mini \
+          bookwooks/mcpserver:latest || true
+
+        echo "Checking logs..."
+        docker logs $(docker ps -alq) || true
+      displayName: Debug MCPServer container startup
+
     # ✅ Restore NuGet Packages
     - task: DotNetCoreCLI@2
       displayName: Restore NuGet Packages
