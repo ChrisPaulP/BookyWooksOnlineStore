@@ -51,23 +51,23 @@ jobs:
       - script: |
           echo "Starting MCPServer container..."
           docker run --name mcp-debug \
-            -e OpenAI__OpenAiApiKey="$(OpenAI__OpenAiApiKey)" \
-            -e OpenAI__EmbeddingModelId="text-embedding-3-small" \
-            -e OpenAI__ModelId="gpt-4o-mini" \
+            -e OpenAIOptions__OpenAiApiKey="${OPENAI_KEY}" \
+            -e OpenAIOptions__ChatModelId="gpt-4o-mini" \
+            -e OpenAIOptions__EmbeddingModelId="text-embedding-3-small" \
             -e ASPNETCORE_URLS="http://+:8181" \
             -d bookwooks/mcpserver:latest
 
           echo "Listing OpenAI env vars inside container..."
-          docker exec mcp-debug env | grep OpenAI__
+          docker exec mcp-debug printenv | grep OpenAIOptions__
 
           echo "Waiting for 'Application started' in container logs..."
-          for i in {1..20}; do
-            if docker logs mcp-debug 2>&1 | grep -q "Application started"; then
-              echo "MCPServer is up!"
+          for i in {1..30}; do
+            if docker logs mcp-debug 2>&1 | grep "Application started"; then
+              echo "MCPServer started!"
               break
             else
               echo "Waiting for MCPServer to start..."
-              sleep 3
+              sleep 2
             fi
           done
 
@@ -75,7 +75,9 @@ jobs:
           docker logs mcp-debug
 
           docker rm -f mcp-debug || true
-        displayName: Debug MCPServer container startup
+        displayName: Start and Verify MCPServer
+        env:
+          OPENAI_KEY: $(OpenAIOptions__OpenAiApiKey)
 
       - task: DotNetCoreCLI@2
         displayName: Restore NuGet Packages
@@ -112,7 +114,9 @@ jobs:
           TESTCONTAINERS_HOST_OVERRIDE: 'localhost'
           TESTCONTAINERS_RYUK_DISABLED: 'true'
           DOCKER_HOST: 'unix:///var/run/docker.sock'
-          OpenAI__OpenAiApiKey: $(OpenAI__OpenAiApiKey)
+          OpenAIOptions__OpenAiApiKey: $(OpenAIOptions__OpenAiApiKey)
+          OpenAIOptions__ChatModelId: "gpt-4o-mini"
+          OpenAIOptions__EmbeddingModelId: "text-embedding-3-small"
 
       - task: PublishTestResults@2
         displayName: Publish Test Results
