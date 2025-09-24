@@ -56,13 +56,14 @@ jobs:
     # ✅ Debug MCPServer container startup
     - script: |
         echo "Running MCPServer debug startup..."
-        docker run --rm \
+        docker run --name mcp-debug \
           -e OpenAI__OpenAiApiKey=$(OpenAI__OpenAiApiKey) \
           -e OpenAI__EmbeddingModelId=text-embedding-3-small \
           -e OpenAI__ModelId=gpt-4o-mini \
           bookwooks/mcpserver:latest || true
 
         echo "Checking logs..."
+        echo "OpenAI Key: $(OpenAI__OpenAiApiKey)"
         docker logs mcp-debug || true
         docker rm -f mcp-debug || true
       displayName: Debug MCPServer container startup
