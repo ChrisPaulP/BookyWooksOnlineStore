@@ -13,14 +13,16 @@
     <None Remove="appsettings.json" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <Content Include="testcontainersappsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+  </ItemGroup>-->
+  <ItemGroup>
+    <None Update="testcontainersappsettings.json" CopyToOutputDirectory="Never" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="FluentAssertions" Version="6.12.1" />
