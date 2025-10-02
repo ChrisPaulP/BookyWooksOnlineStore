@@ -9,7 +9,6 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
     where TEntryPoint : class
 {
     private readonly INetwork _network;
-    private readonly ContainerConfiguration _config;
     private readonly TestContainerBuilder _containerBuilder;
     private static readonly object _lock = new();
     private static bool _containersStarted;
@@ -37,8 +36,7 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
                 .WithName($"integration-tests")
                 .Build();
 
-            //_config = ContainerConfiguration.CreateDefault();
-            _containerBuilder = new TestContainerBuilder(_config, _network);
+            _containerBuilder = new TestContainerBuilder(_network);
 
             // Initialize containers
             SqlContainer = _containerBuilder.BuildSqlContainer();
@@ -94,7 +92,6 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
         };
 
         Configuration = new ConfigurationBuilder()
-            .AddJsonFile("testcontainersappsettings.json", optional: false)
             .AddInMemoryCollection(connectionStrings)
             .Build();
     }
@@ -228,67 +225,6 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
             }
         }
     }
-
-    protected virtual async Task WaitForMcpServerReadiness()
-    {
-        using var client = new HttpClient();
-        var start = DateTime.UtcNow;
-        var timeout = TimeSpan.FromSeconds(30);
-        var healthUrl = $"http://{McpServerContainer.Hostname}:{McpServerContainer.GetMappedPublicPort(8181)}/health";
-
-        while (DateTime.UtcNow - start < timeout)
-        {
-            try
-            {
-                var response = await client.GetAsync(healthUrl);
-
-                //if (response.IsSuccessStatusCode)
-                //{
-                Console.WriteLine($"[DEBUG] MCP server health check successful");
-
-                // Now verify the MCP endpoint
-                var mcpUrl = $"http://{McpServerContainer.Hostname}:{McpServerContainer.GetMappedPublicPort(8181)}/mcp";
-                var mcpRequest = new HttpRequestMessage(HttpMethod.Get, mcpUrl);
-                mcpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
-
-                var mcpResponse = await client.SendAsync(mcpRequest);
-                if (mcpResponse.IsSuccessStatusCode || mcpResponse.StatusCode == HttpStatusCode.NotFound)
-                {
-                    Console.WriteLine($"[DEBUG] MCP endpoint responding (Status: {mcpResponse.StatusCode})");
-
-                    // Now verify the file system and vector store setup
-                    var execResult = await McpServerContainer.ExecAsync(new[]
-                    {
-                        "/bin/sh",
-                        "-c",
-                        "cat /app/ProjectResources/customer-support.txt && " +
-                        "ls -la /app/ProjectResources"
-                    });
-
-                    if (!string.IsNullOrEmpty(execResult.Stdout))
-                    {
-                        Console.WriteLine("[DEBUG] Customer support content found:");
-                        Console.WriteLine(execResult.Stdout);
-                        return;
-                    }
-
-                    Console.WriteLine("[WARN] Customer support content not found");
-                }
-                else
-                {
-                    Console.WriteLine($"[WARN] MCP endpoint check failed: {mcpResponse.StatusCode}");
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.WriteLine($"[DEBUG] Connection attempt failed: {ex.Message}");
-            }
-            await Task.Delay(500);
-        }
-
-        throw new TimeoutException("MCP Server failed to become ready in time.");
-    }
-    //public Task DisposeAsync() => Task.CompletedTask;
     public async Task DisposeAsync()
     {
         

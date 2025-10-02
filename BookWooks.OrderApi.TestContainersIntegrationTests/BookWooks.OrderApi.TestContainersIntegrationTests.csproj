@@ -13,9 +13,7 @@
   <ItemGroup>
     <None Remove="appsettings.json" />
   </ItemGroup>
-  <ItemGroup>
-    <None Update="testcontainersappsettings.json" CopyToOutputDirectory="Never" />
-  </ItemGroup>
+
   <ItemGroup>
     <Content Include="testcontainersappsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
