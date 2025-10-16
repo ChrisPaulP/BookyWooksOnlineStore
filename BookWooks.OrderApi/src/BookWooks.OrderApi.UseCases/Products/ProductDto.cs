@@ -6,6 +6,11 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace BookWooks.OrderApi.UseCases.Products;
+public class ProductIdsSearchResult
+{
+  [JsonPropertyName("productIds")]
+  public IEnumerable<Guid> ProductIds { get; set; } = [];
+}
 public class ProductDto
 {
   [JsonPropertyName("id")]

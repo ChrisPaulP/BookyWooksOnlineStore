@@ -15,5 +15,5 @@ internal class GetProductsHandler : IQueryHandler<GetProductsQuery, ProductSearc
 
   public async Task<ProductSearchResult> Handle(GetProductsQuery request, CancellationToken cancellationToken) =>
       (await _productSearchAiService.SearchProductsAsync(request.Prompt))
-             .ToEither<ProductErrors, ProductDto>(() => new ProductNotFound());
+             .ToEither<ProductErrors, IEnumerable<ProductDto>>(() => new ProductNotFound());
 }
