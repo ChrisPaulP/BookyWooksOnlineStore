@@ -33,8 +33,9 @@ public static class InfrastructureDependencyInjection
         RegisterRedisDistributedCache(services, configuration);
         RegisterEnvironmentSpecificDependencies(services, isDevelopment);
         RegisterQuartz(services);
-        RegisterMcpFctory(services);
+        RegisterAIAgentFactory(services);
         RegisterAIOptions(services);
+        RegisterMcpOptions(services);
         RegisterQdrantOptions(services);
         RegisterAIOperations(services);
         RegisterAIService(services);
@@ -74,13 +75,9 @@ public static class InfrastructureDependencyInjection
     services.AddScoped<IAiOperations, AiOperations>();
   }
 
-  private static void RegisterMcpFctory(IServiceCollection services)
-    {
-        services.AddSingleton<IMcpFactory>(sp =>
-        {
-          var options = sp.GetRequiredService<IOptions<OpenAIOptions>>().Value;
-          return McpFactory.Create(options);
-        });
+  private static void RegisterAIAgentFactory(IServiceCollection services)
+  {
+    services.AddScoped<IAIAgentFactory, AIAgentFactory>();
   }
   private static void RegisterAIService(IServiceCollection services)
     {
@@ -135,8 +132,17 @@ public static class InfrastructureDependencyInjection
   {
     services.AddOptions<OpenAIOptions>()
             .BindConfiguration(OpenAIOptions.Key);
-            //.ValidateDataAnnotations()  
-            //.ValidateOnStart();
+    //.ValidateDataAnnotations()  
+    //.ValidateOnStart();
+    services.AddSingleton(sp => sp.GetRequiredService<IOptions<OpenAIOptions>>().Value);
+  }
+  private static void RegisterMcpOptions(IServiceCollection services)
+  {
+    services.AddOptions<McpServerOptions>()
+            .BindConfiguration(McpServerOptions.Key);
+    //.ValidateDataAnnotations()  
+    //.ValidateOnStart();
+    services.AddSingleton(sp => sp.GetRequiredService<IOptions<McpServerOptions>>().Value);
   }
   private static void RegisterQdrantOptions(IServiceCollection services)
   {

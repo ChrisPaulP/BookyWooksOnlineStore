@@ -8,6 +8,7 @@ using Microsoft.Extensions.VectorData;
 using Microsoft.SemanticKernel;
 using System.Collections;
 using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 
 public sealed class ProductSearchTool
@@ -20,9 +21,10 @@ public sealed class ProductSearchTool
         _vectorStore = vectorStore;
         _embeddingGenerator = embeddingGenerator;
     }
+    public record ProductIdsSearchResult([property: JsonPropertyName("productIds")] IEnumerable<Guid> ProductIds);
 
     [KernelFunction, Description("Searches product embeddings and returns top product IDs")]
-    public async Task<IEnumerable<Guid>> SearchAsync(
+    public async Task<ProductIdsSearchResult> SearchAsync(
         [Description("Search prompt")] string prompt,
         [Description("Collection name in vector store")] string collection,
         [Description("Max number of results")] int topN = 10,
@@ -33,13 +35,13 @@ public sealed class ProductSearchTool
         var vsCollection =  _vectorStore.GetCollection<Guid, ProductVectorModel>(collection);
 
         // Return only IDs (not stale product details)
-        var results = await vsCollection.SearchTopAsync(
+        var productIds = await vsCollection.SearchTopAsync(
             promptEmbedding,
             record => record.Id,
             topN,
             cancellationToken
         );
 
-        return results;
+        return new ProductIdsSearchResult(productIds);
     }
 }

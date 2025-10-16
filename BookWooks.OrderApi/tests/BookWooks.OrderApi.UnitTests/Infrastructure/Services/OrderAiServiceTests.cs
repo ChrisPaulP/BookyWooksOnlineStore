@@ -7,50 +7,41 @@ using BookWooks.OrderApi.Infrastructure.AiServices;
 using BookWooks.OrderApi.Infrastructure.AiServices.Interfaces;
 using BookWooks.OrderApi.UseCases.Products;
 using BookyWooks.SharedKernel.Repositories;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.ChatCompletion;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Microsoft.Agents.AI;
+using Microsoft.Extensions.AI;
 using ModelContextProtocol;
 using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol;
+using ModelContextProtocol.Server;
 using Moq;
-using NSubstitute;
+using OpenAI;
+using OpenAI.Assistants;
+using OpenAI.Responses;
 using Xunit;
 
 namespace BookWooks.OrderApi.UnitTests.Infrastructure.Services;
+
 public class OrderAiServiceTests
 {
-  private readonly Mock<IMcpFactory> _mcpFactoryMock;
-  private readonly Mock<IMcpClient> _mcpClientMock;
-  private readonly Mock<IChatCompletionService> _chatCompletionServiceMock;
+  private readonly Mock<IAIAgentFactory> _aiAgentFactoryMock;
   private readonly Mock<IAiOperations> _aiOperationsMock;
-  private readonly OrderAiService _sut;
-  private readonly Kernel _kernel;
   private readonly Mock<IReadRepository<Product>> _productRepositoryMock;
+  private readonly Mock<IMcpClient> _mcpClientMock;
+  private readonly Mock<AIAgent> _agentMock;
+  private readonly OrderAiService _sut;
 
   public OrderAiServiceTests()
   {
-    _mcpFactoryMock = new Mock<IMcpFactory>();
-    _mcpClientMock = new Mock<IMcpClient>();
-    _chatCompletionServiceMock = new Mock<IChatCompletionService>();
+    _aiAgentFactoryMock = new Mock<IAIAgentFactory>();
     _aiOperationsMock = new Mock<IAiOperations>();
     _productRepositoryMock = new Mock<IReadRepository<Product>>();
-    // Create a real Kernel instance for the context
-    var kernelBuilder = Kernel.CreateBuilder();
+    _mcpClientMock = new Mock<IMcpClient>();
+    _agentMock = new Mock<AIAgent>();
 
-    // Setup chat completion service
-    kernelBuilder.Services.AddSingleton<IChatCompletionService>(_chatCompletionServiceMock.Object);
-    _kernel = kernelBuilder.Build();
-
-    // Create McpContext with real kernel and mocked client
-    var mcpContext = new McpContext(_mcpClientMock.Object, _kernel);
-
-    _mcpFactoryMock
-    .Setup(x => x.CreateClientAndKernelAsync())
-    .ReturnsAsync(mcpContext);
-
-    _sut = new OrderAiService(_mcpFactoryMock.Object, _aiOperationsMock.Object, _productRepositoryMock.Object);
+    _sut = new OrderAiService(
+        _aiAgentFactoryMock.Object,
+        _aiOperationsMock.Object,
+        _productRepositoryMock.Object);
   }
 
   [Theory]
@@ -68,227 +59,210 @@ public class OrderAiServiceTests
     // Assert
     Assert.Equal(expected, result);
   }
-
   [Fact]
-  public async Task SearchProductsAsync_ShouldReturnOrderedProducts()
+  public async Task CustomerSupportAsync_WithValidQuery_ReturnsExpectedResults()
   {
     // Arrange
-    var productIds = new List<Guid>
+    var query = "How do I track my order?";
+    var expectedResponses = new List<AgentRunResponseUpdate>
     {
-        Guid.NewGuid(),
-        Guid.NewGuid()
-    };
-
-    // Setup kernel response with product IDs
-    var jsonResponse = new { content = new[] { new { text = JsonSerializer.Serialize(productIds) } } };
-    var jsonElement = JsonSerializer.SerializeToElement(jsonResponse);
-
-    // Create the function that will return our test data
-    var functionDefinition = KernelFunctionFactory.CreateFromMethod(
-        (Kernel kernel, KernelArguments arguments) =>
+        new AgentRunResponseUpdate(
+            ChatRole.Assistant,
+            new List<AIContent>
+            {
+                new TextContent("Your order can be tracked...")
+            })
         {
-          // Create FunctionResult with both the function and result data
-          var currentFunction = kernel.Plugins
-              .GetFunction(AiServiceConstants.ToolsPluginName, "ProductSearchTool_Search");
-          return new FunctionResult(currentFunction, jsonElement);
+            MessageId = "1",
+            ResponseId = "resp1"
         },
-        "ProductSearchTool_Search");
-
-    // Create and register the plugin
-    var plugin = KernelPluginFactory.CreateFromFunctions(
-        AiServiceConstants.ToolsPluginName,
-        new[] { functionDefinition });
-    _kernel.Plugins.Add(plugin);
-
-    // Setup repository to return products in a different order
-    // Create products list
-    var products = new List<Product>
-    {
-        Product.CreateProduct(productIds[1], "Book 2", "Desc 2", 15.99m, 10).Match(
-            product => product,
-            errors => throw new InvalidOperationException($"Failed to create product: {string.Join(", ", errors)}")),
-        Product.CreateProduct(productIds[0], "Book 1", "Desc 1", 10.99m, 10).Match(
-            product => product,
-            errors => throw new InvalidOperationException($"Failed to create product: {string.Join(", ", errors)}"))
-    };
-
-    _productRepositoryMock
-        .Setup(r => r.FindAllAsync(It.IsAny<ProductsByIdsSpecification>()))
-        .ReturnsAsync(products);
-
-    var mcpContext = new McpContext(_mcpClientMock.Object, _kernel);
-    _mcpFactoryMock.Setup(x => x.CreateClientAndKernelAsync())
-        .ReturnsAsync(mcpContext);
-
-    // Act
-    var result = await _sut.SearchProductsAsync("show me two books");
-
-    // Assert
-    var resultList = result.ToList();
-    Assert.NotNull(resultList);
-    Assert.Equal(2, resultList.Count);
-
-    // Verify order matches original productIds order
-    Assert.Equal(productIds[0], resultList[0].Id);
-    Assert.Equal(productIds[1], resultList[1].Id);
-
-    // Verify product details
-    Assert.Equal("Book 1", resultList[0].Name);
-    Assert.Equal(10.99m, resultList[0].Price);
-    Assert.Equal("Book 2", resultList[1].Name);
-    Assert.Equal(15.99m, resultList[1].Price);
-
-    // Verify repository was called with correct specification
-    //_productRepositoryMock.Verify(r =>
-    //    r.FindAllAsync(It.Is<ProductsByIdsSpecification>(s =>
-    //        s.Criteria.ToString().Contains(productIds[0].ToString()) &&
-    //        s.Criteria.ToString().Contains(productIds[1].ToString()))),
-    //    Times.Once);
-  }
-  [Fact]
-  public async Task SearchProductsAsync_WhenDeserializationFails_ShouldReturnEmptyList()
-  {
-
-    var noProducts = new List<ProductDto>();
-
-    var functionDelegate = (Kernel kernel) =>
-    {
-      return new FunctionResult(kernel.Plugins.GetFunction(AiServiceConstants.ToolsPluginName, "ProductSearchTool_Search"), noProducts);
-    };
-
-
-    // Create a function first
-    var function = KernelFunctionFactory.CreateFromMethod(
-        functionDelegate,
-        "ProductSearchTool_Search");
-
-    // Add the function to the kernel's plugin collection
-    var plugin = KernelPluginFactory.CreateFromFunctions(
-        AiServiceConstants.ToolsPluginName,
-        new[] { function });
-
-    _kernel.Plugins.Add(plugin);
-
-    // Act
-    var result = await _sut.SearchProductsAsync("show me two books");
-
-    // Assert
-    Assert.NotNull(result);
-    Assert.Empty(result);
-  }
-  [Fact]
-  public async Task CustomerSupportAsync_ShouldReturnResponse()
-  {
-    // Arrange
-    var query = "help with my order";
-    var expectedResponse = "Here's how I can help with your order...";
-
-    // Get the same context instance that was setup in the constructor
-    var mcpContext = await _mcpFactoryMock.Object.CreateClientAndKernelAsync();
-
-    // Mock the resource result
-    var contents = new List<ResourceContents>
-    {
-        new TextResourceContents
+        new AgentRunResponseUpdate(
+            ChatRole.Assistant,
+            new List<AIContent>
+            {
+                new TextContent("Here's more info...")
+            })
         {
-            Text = "some content",
-            MimeType = "text/plain",
-            Uri = "test://uri"
+            MessageId = "2",
+            ResponseId = "resp1"
         }
     };
-    var readResourceResult = new ReadResourceResult { Contents = contents };
-
-    _aiOperationsMock
-        .Setup(x => x.GetResourceAsync(mcpContext, query))
-        .ReturnsAsync(readResourceResult);
-
-    // Setup the chat completion response
-    _aiOperationsMock
-        .Setup(x => x.GetCompletionAsync(
-            mcpContext,
-            It.Is<ChatHistory>(h =>
-                h.Count == 2 && // Verifies both messages were added
-                h[1].Content == query))) // Verifies the query was added as second message
-        .ReturnsAsync(expectedResponse);
+    var expectedResponse = "Your order can be tracked...Here's more info...";
+    SetupCommonMocks(query, expectedResponses);
 
     // Act
     var result = await _sut.CustomerSupportAsync(query);
 
     // Assert
     Assert.Equal(expectedResponse, result);
-
-    // Verify all interactions
-    _mcpFactoryMock.Verify(x => x.CreateClientAndKernelAsync(), Times.Exactly(2));
-
-    _aiOperationsMock.Verify(
-        x => x.GetResourceAsync(mcpContext, query),
-        Times.Once);
-
-    _aiOperationsMock.Verify(
-        x => x.GetCompletionAsync(
-            mcpContext,
-            It.Is<ChatHistory>(h =>
-                h.Count == 2 &&
-                h[1].Content == query)),
-        Times.Once);
-  }
-  [Fact]
-  public async Task CustomerSupportAsync_WhenResourceFails_ShouldThrowException()
-  {
-    // Arrange
-    var query = "help with my order";
-    var mcpContext = new McpContext(_mcpClientMock.Object, _kernel);
-
-    _mcpFactoryMock
-        .Setup(x => x.CreateClientAndKernelAsync())
-        .ReturnsAsync(mcpContext);
-
-    _aiOperationsMock
-        .Setup(x => x.GetResourceAsync(mcpContext, query))
-        .ThrowsAsync(new InvalidOperationException("Failed to get resource"));
-
-    // Act & Assert
-    await Assert.ThrowsAsync<InvalidOperationException>(
-        () => _sut.CustomerSupportAsync(query));
+    VerifyCommonMocks();
   }
 
   [Fact]
-  public async Task CustomerSupportAsync_WhenCompletionFails_ShouldThrowException()
+  public async Task SearchProductsAsync_WithValidQuery_ReturnsOrderedProducts()
   {
     // Arrange
-    var query = "help with my order";
-    var mcpContext = new McpContext(_mcpClientMock.Object, _kernel);
-
-    var contents = new List<ResourceContents>
+    var query = "show me 2 fantasy books";
+    var productIds = Enumerable.Range(0, 3).Select(_ => Guid.NewGuid()).ToList();
+    var searchResult = new ProductIdsSearchResult { ProductIds = productIds };
+    //var products = productIds.Select(id =>
+    //    Product.CreateProduct(id, $"Book {id}", "Description", 9.99m, 10))
+    //    .ToList();
+    var products = new List<Product>
     {
-        new TextResourceContents
-        {
-            Text = "some content",
-            MimeType = "text/plain",
-            Uri = "test://uri"
-        }
+        Product.CreateProduct(productIds[0], "Book 2", "Desc 2", 15.99m, 10).Match(
+            product => product,
+            errors => throw new InvalidOperationException($"Failed to create product: {string.Join(", ", errors)}")),
+        Product.CreateProduct(productIds[1], "Book 1", "Desc 1", 10.99m, 10).Match(
+            product => product,
+            errors => throw new InvalidOperationException($"Failed to create product: {string.Join(", ", errors)}"))
     };
-    var readResourceResult = new ReadResourceResult { Contents = contents };
 
-    _mcpFactoryMock
-        .Setup(x => x.CreateClientAndKernelAsync())
-        .ReturnsAsync(mcpContext);
+    SetupProductSearchMocks(query, searchResult, products);
 
-    _aiOperationsMock
-        .Setup(x => x.GetResourceAsync(mcpContext, query))
-        .ReturnsAsync(readResourceResult);
+    // Act
+    var result = await _sut.SearchProductsAsync(query);
 
-    _aiOperationsMock
-        .Setup(x => x.GetCompletionAsync(
-            mcpContext,
-            It.IsAny<ChatHistory>()))
-        .ThrowsAsync(new InvalidOperationException("Failed to get completion"));
-
-    // Act & Assert
-    await Assert.ThrowsAsync<InvalidOperationException>(
-        () => _sut.CustomerSupportAsync(query));
+    // Assert
+    Assert.Equal(2, result.Count());
+    Assert.Equal(products.Select(p => p.ProductId.Value), result.Select(r => r.Id));
+    VerifyProductSearchMocks();
   }
 
+  [Theory]
+  [InlineData("show me 5 books", 5)]
+  [InlineData("i want three books", 3)]
+  [InlineData("get me a dozen books", 12)]
+  [InlineData("show me some books", 5)] // default fallback
+  [InlineData("show me a couple of books", 2)]
+  [InlineData("show me a few books", 3)]
+  public void ExtractCount_WithVariousQueries_ReturnsExpectedCount(string query, int expectedCount)
+  {
+    var count = _sut.ExtractCount(query);
+    Assert.Equal(expectedCount, count);
+  }
 
+  [Fact]
+  public async Task CustomerSupportAsync_WhenResourceFails_ThrowsException()
+  {
+    // Arrange
+    var query = "help with order";
+    _aiAgentFactoryMock
+        .Setup(x => x.CreateMcpClientAsync())
+        .ReturnsAsync(_mcpClientMock.Object);
 
+    _aiOperationsMock
+        .Setup(x => x.GetResourceAsync(_mcpClientMock.Object, query))
+        .ThrowsAsync(new Exception("Failed to get resource"));
+
+    // Act & Assert
+    await Assert.ThrowsAsync<Exception>(() => _sut.CustomerSupportAsync(query));
+  }
+
+  [Fact]
+  public async Task SearchProductsAsync_WhenNoProductsFound_ReturnsEmptyList()
+  {
+    // Arrange
+    var query = "show me 3 nonexistent books";
+    var searchResult = new ProductIdsSearchResult { ProductIds = new List<Guid>() };
+    SetupProductSearchMocks(query, searchResult, new List<Product>());
+
+    // Act
+    var result = await _sut.SearchProductsAsync(query);
+
+    // Assert
+    Assert.Empty(result);
+  }
+
+  private void SetupCommonMocks(string query, List<AgentRunResponseUpdate> expectedResponses)
+  {
+    _aiAgentFactoryMock
+        .Setup(x => x.CreateMcpClientAsync())
+        .ReturnsAsync(_mcpClientMock.Object);
+
+    var resourceResult = new ReadResourceResult
+    {
+      Contents = new List<ResourceContents>
+            {
+                new TextResourceContents
+                {
+                    Text = "Order tracking information",
+                    MimeType = "text/plain"
+                }
+            }
+    };
+
+    _aiOperationsMock
+        .Setup(x => x.GetResourceAsync(_mcpClientMock.Object, query))
+        .ReturnsAsync(resourceResult);
+
+    _aiAgentFactoryMock
+        .Setup(x => x.CreateAgent(It.IsAny<ChatClientAgentOptions>()))
+        .Returns(_agentMock.Object);
+
+    _agentMock
+    .Setup(x => x.RunStreamingAsync(
+        It.IsAny<IEnumerable<ChatMessage>>(),
+        It.IsAny<AgentThread?>(),
+        It.IsAny<AgentRunOptions?>(),
+        It.IsAny<CancellationToken>()))
+    .Returns(ToAsyncEnumerable(expectedResponses));
+
+  }
+
+  private void SetupProductSearchMocks(string query, ProductIdsSearchResult searchResult, List<Product> products)
+  {
+    _aiAgentFactoryMock
+        .Setup(x => x.CreateMcpClientAsync())
+        .ReturnsAsync(_mcpClientMock.Object);
+
+    _mcpClientMock.Setup(x => x.SendRequestAsync(
+    It.Is<JsonRpcRequest>(r => r.Method == RequestMethods.ToolsList),
+    It.IsAny<CancellationToken>()))
+    .ReturnsAsync(new JsonRpcResponse
+    {
+      Result = JsonSerializer.SerializeToNode(new { Tools = new List<McpClientTool>() })
+    });
+
+    _aiAgentFactoryMock
+        .Setup(x => x.CreateAgent(It.IsAny<ChatClientAgentOptions>()))
+        .Returns(_agentMock.Object);
+
+    _agentMock
+        .Setup(x => x.RunAsync(
+            It.IsAny<IEnumerable<ChatMessage>>(),
+            It.IsAny<AgentThread>(),
+            It.IsAny<AgentRunOptions>(),
+            It.IsAny<CancellationToken>()))
+        .ReturnsAsync(new AgentRunResponse(
+            new ChatMessage(ChatRole.Assistant, JsonSerializer.Serialize(searchResult))
+        ));
+
+    _productRepositoryMock
+        .Setup(x => x.FindAllAsync(It.IsAny<ProductsByIdsSpecification>()))
+        .ReturnsAsync(products);
+  }
+  private void VerifyCommonMocks()
+  {
+    _aiAgentFactoryMock.Verify(x => x.CreateMcpClientAsync(), Times.Once);
+    _aiOperationsMock.Verify(x => x.GetResourceAsync(It.IsAny<IMcpClient>(), It.IsAny<string>()), Times.Once);
+    _aiAgentFactoryMock.Verify(x => x.CreateAgent(It.IsAny<ChatClientAgentOptions>()), Times.Once);
+  }
+
+  private void VerifyProductSearchMocks()
+  {
+    _aiAgentFactoryMock.Verify(x => x.CreateMcpClientAsync(), Times.Once);
+    _mcpClientMock.Verify(x => x.SendRequestAsync(It.Is<JsonRpcRequest>(r => r.Method == RequestMethods.ToolsList),It.IsAny<CancellationToken>()), Times.Once);
+    _aiAgentFactoryMock.Verify(x => x.CreateAgent(It.IsAny<ChatClientAgentOptions>()), Times.Once);
+    _productRepositoryMock.Verify(x => x.FindAllAsync(It.IsAny<ProductsByIdsSpecification>()), Times.Once);
+  }
+  private static async IAsyncEnumerable<T> ToAsyncEnumerable<T>(IEnumerable<T> items)
+  {
+    foreach (var item in items)
+    {
+      yield return item;
+      await Task.Yield(); // ensures true async behavior
+    }
+  }
 }
+

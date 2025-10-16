@@ -88,9 +88,11 @@ global using BookWooks.OrderApi.Infrastructure.Options;
 // Other/External
 global using ModelContextProtocol.Client;
 global using ModelContextProtocol.Protocol;
+global using Microsoft.Agents.AI;
+global using Microsoft.Extensions.AI;
+global using OpenAI;
 
 // Aliases
-global using JsonSerializer = System.Text.Json.JsonSerializer;
 global using bookwooks.orderapi.infrastructure.caching;
 
 
