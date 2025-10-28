@@ -1,6 +1,6 @@
 ﻿namespace BookWooks.OrderApi.Core.OrderAggregate.Entities;
 
-using BookWooks.OrderApi.Core.OrderAggregate.Events;
+using BookWooks.OrderApi.Core.OrderAggregate.DomainEvents;
 
 public record OrderItem : EntityBase
 {
@@ -48,7 +48,7 @@ public record OrderItem : EntityBase
             var updated = new OrderItem(
                 OrderItemId, OrderId, ProductId, Price, 
                 createdQuantity, ProductName, ProductDescription);
-            updated.RegisterDomainEvent(new OrderItemQuantityUpdatedEvent(OrderItemId, createdQuantity, previousQuantity));
+            updated.RegisterDomainEvent(new OrderItemQuantityUpdatedDomainEvent(OrderItemId, createdQuantity, previousQuantity));
             return updated;
         });
     }

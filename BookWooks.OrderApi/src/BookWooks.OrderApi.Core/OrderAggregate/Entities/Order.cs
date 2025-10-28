@@ -113,7 +113,7 @@ public record Order : EntityBase, IAggregateRoot
      .Map(_ =>
           {
             var order = this with { Status = OrderStatus.Fulfilled };
-            order.RegisterDomainEvent(new OrderFulfilledEvent(order));
+            order.RegisterDomainEvent(new OrderFulfilledDomainEvent(order));
             return order;
           });
 

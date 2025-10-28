@@ -1,7 +1,7 @@
 ﻿
 
 namespace BookWooks.OrderApi.Core.OrderAggregate.Handlers;
-public class OrderFulfilledSendEmailEventHandler : INotificationHandler<OrderFulfilledEvent>
+public class OrderFulfilledSendEmailEventHandler : INotificationHandler<OrderFulfilledDomainEvent>
 {
   private readonly IEmailSender _emailSender;
 
@@ -14,7 +14,7 @@ public class OrderFulfilledSendEmailEventHandler : INotificationHandler<OrderFul
 
   // configure a test email server to demo this works
   // https://ardalis.com/configuring-a-local-test-email-server
-  public Task Handle(OrderFulfilledEvent domainEvent, CancellationToken cancellationToken)
+  public Task Handle(OrderFulfilledDomainEvent domainEvent, CancellationToken cancellationToken)
   {  
     //ArgumentException.ThrowIfNullOrEmpty(domainEvent, nameof(domainEvent));
 

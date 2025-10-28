@@ -2,11 +2,11 @@
 using BookyWooks.SharedKernel.DomainEventsDispatching;
 
 namespace BookWooks.OrderApi.Core.OrderAggregate.Events;
-public class OrderFulfilledEvent : DomainEventBase
+public class OrderFulfilledDomainEvent : DomainEventBase
 {
   public Order FulfilledOrder { get; set; }
 
-  public OrderFulfilledEvent(Order fulfilledOrder)
+  public OrderFulfilledDomainEvent(Order fulfilledOrder)
   {
     FulfilledOrder = fulfilledOrder;
   }
