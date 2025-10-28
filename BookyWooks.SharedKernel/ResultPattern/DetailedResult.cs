@@ -29,7 +29,7 @@ public class DetailedResult<T> : IResult
         Errors = result.Errors,
         SuccessMessage = result.SuccessMessage,
         CorrelationId = result.CorrelationId,
-        ValidationErrors = result.ValidationErrors,
+        DomainValidationErrors = result.DomainValidationErrors,
     };
 
     public T Value { get; }
@@ -41,7 +41,7 @@ public class DetailedResult<T> : IResult
     public string SuccessMessage { get; protected set; } = string.Empty;
     public string CorrelationId { get; protected set; } = string.Empty;
     public IEnumerable<string> Errors { get; protected set; } = new List<string>();
-    public List<ValidationError> ValidationErrors { get; protected set; } = new List<ValidationError>();
+    public List<DomainValidationError> DomainValidationErrors { get; protected set; } = new List<DomainValidationError>();
 
     public object GetValue()
     {
@@ -55,7 +55,7 @@ public class DetailedResult<T> : IResult
             SuccessMessage = SuccessMessage,
             CorrelationId = CorrelationId,
             Errors = Errors,
-            ValidationErrors = ValidationErrors
+            DomainValidationErrors = DomainValidationErrors
         };
 
         return pagedResult;
@@ -75,19 +75,19 @@ public class DetailedResult<T> : IResult
         return new DetailedResult<T>(ResultStatus.Error) { Errors = errorMessages };
     }
 
-    public static DetailedResult<T> Invalid(ValidationError validationError)
+    public static DetailedResult<T> Invalid(DomainValidationError validationError)
     {
-        return new DetailedResult<T>(ResultStatus.Invalid) { ValidationErrors = { validationError } };
+        return new DetailedResult<T>(ResultStatus.Invalid) { DomainValidationErrors = { validationError } };
     }
 
-    public static DetailedResult<T> Invalid(params ValidationError[] validationErrors)
+    public static DetailedResult<T> Invalid(params DomainValidationError[] validationErrors)
     {
-        return new DetailedResult<T>(ResultStatus.Invalid) { ValidationErrors = new List<ValidationError>(validationErrors) };
+        return new DetailedResult<T>(ResultStatus.Invalid) { DomainValidationErrors = new List<DomainValidationError>(validationErrors) };
     }
 
-    public static DetailedResult<T> Invalid(List<ValidationError> validationErrors)
+    public static DetailedResult<T> Invalid(List<DomainValidationError> domainValidationErrors)
     {
-        return new DetailedResult<T>(ResultStatus.Invalid) { ValidationErrors = validationErrors };
+        return new DetailedResult<T>(ResultStatus.Invalid) { DomainValidationErrors = domainValidationErrors };
     }
     public static DetailedResult<T> NotFound()
     {

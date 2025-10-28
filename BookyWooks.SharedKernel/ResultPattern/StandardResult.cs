@@ -38,19 +38,19 @@ public class StandardResult : DetailedResult<StandardResult>
         };
     }
 
-    public new static StandardResult Invalid(ValidationError validationError)
+    public new static StandardResult Invalid(DomainValidationError validationError)
     {
-        return new StandardResult(ResultStatus.Invalid) { ValidationErrors = { validationError } };
+        return new StandardResult(ResultStatus.Invalid) { DomainValidationErrors = { validationError } };
     }
 
-    public new static StandardResult Invalid(params ValidationError[] validationErrors)
+    public new static StandardResult Invalid(params DomainValidationError[] validationErrors)
     {
-        return new StandardResult(ResultStatus.Invalid) { ValidationErrors = new List<ValidationError>(validationErrors) };
+        return new StandardResult(ResultStatus.Invalid) { DomainValidationErrors = new List<DomainValidationError>(validationErrors) };
     }
 
-    public new static StandardResult Invalid(List<ValidationError> validationErrors)
+    public new static StandardResult Invalid(List<DomainValidationError> validationErrors)
     {
-        return new StandardResult(ResultStatus.Invalid) { ValidationErrors = validationErrors };
+        return new StandardResult(ResultStatus.Invalid) { DomainValidationErrors = validationErrors };
     }
 
     public new static StandardResult NotFound()

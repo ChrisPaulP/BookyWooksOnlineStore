@@ -9,11 +9,14 @@ using static BookWooks.OrderApi.UseCases.Errors.DatabaseErrors;
 namespace BookWooks.OrderApi.UseCases.Errors;
 
 [GenerateOneOf]
-public partial class OrderErrors: OneOfBase<OrderNotFound, NetworkErrors>, IError;
+public partial class OrderErrors: OneOfBase<OrderNotFound, CancelOrderError, FulfillOrderError, NetworkErrors>, IError;
 [GenerateOneOf]
 public partial class ProductErrors : OneOfBase<ProductNotFound, NetworkErrors>, IError;
 
 [GenerateOneOf]
 public partial class NetworkErrors : OneOfBase<TimeoutError, UnexpectedError, DatabaseError, UnhandledError>, IError;
+
+[GenerateOneOf]
+public partial class CreateOrderErrors : OneOfBase<DomainValidationErrors, NetworkErrors>, IError;
 
 

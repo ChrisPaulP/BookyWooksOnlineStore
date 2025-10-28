@@ -22,6 +22,8 @@ public record Order : EntityBase, IAggregateRoot
     // Backing field for EF Core
     private readonly List<OrderItem> _orderItems = new();
     public ImmutableList<OrderItem> OrderItems => _orderItems.ToImmutableList();
+  // Cache for order total - not readonly since it needs to be updated
+  private decimal? _cachedOrderTotal;
 
   private Order(OrderId orderId, CustomerId customerId, DeliveryAddress deliveryAddress, Payment payment,OrderStatus status, OrderPlaced orderPlaced, Message message, IsCancelled isCancelled, ImmutableList<OrderItem> orderItems)
     {
@@ -36,7 +38,7 @@ public record Order : EntityBase, IAggregateRoot
         _orderItems = orderItems.ToList();
     }
 
-    public static Validation<OrderValidationErrors, Order> CreateOrder(Guid customerId, string street, string city, string country, string postcode, string cardHolderName, string cardNumber, string expiration, int paymentMethod)
+    public static Validation<OrderDomainValidationErrors, Order> CreateOrder(Guid customerId, string street, string city, string country, string postcode, string cardHolderName, string cardNumber, string expiration, int paymentMethod)
     {
         var orderId = OrderId.New();
         var orderItems = ImmutableList<OrderItem>.Empty;
@@ -44,8 +46,8 @@ public record Order : EntityBase, IAggregateRoot
         var addressValidation = DeliveryAddress.TryCreate(street, city, country, postcode);
         var paymentValidation = Payment.TryCreate(cardHolderName, cardNumber, expiration, paymentMethod);
 
-        var messageValidation = Message.TryFrom(OrderStatus.NewOrderCreated.Label).ToValidationMonad<OrderValidationErrors, Message>(errors => new OrderErrors(ValidationMessages.OrderMessage, errors));
-        var customerIdValidation = CustomerId.TryFrom(customerId).ToValidationMonad<OrderValidationErrors, CustomerId>(errors => new CustomerIdErrors(ValidationMessages.CustomerId, errors));
+        var messageValidation = Message.TryFrom(OrderStatus.NewOrderCreated.Label).ToValidationMonad((Func<IReadOnlyList<BusinessRuleError>, OrderDomainValidationErrors>)(errors => new OrderValidationErrors(DomainValidationMessages.OrderMessage, errors)));
+        var customerIdValidation = CustomerId.TryFrom(customerId).ToValidationMonad<OrderDomainValidationErrors, CustomerId>(errors => new CustomerIdValidationErrors(DomainValidationMessages.CustomerId, errors));
 
         return (addressValidation, paymentValidation, messageValidation, customerIdValidation).Apply((createdAddress, createdPayment, createdMessage, createdCustomerId) =>
         {
@@ -56,33 +58,79 @@ public record Order : EntityBase, IAggregateRoot
     }
 
   public Validation<OrderItemValidationErrors, OrderItem> UpdateOrderItemQuantity(Guid productId, int newQuantity)
-    {
-        var orderItem = OrderItems.FirstOrDefault(item => item.ProductId.Value == productId);
-        return orderItem == null
-            ? new OrderItemValidationErrors(ValidationMessages.OrderItemNotFoundTitle,[BusinessRuleError.Create(string.Format(ValidationMessages.OrderItemNotFound, productId))])
-            : orderItem.UpdateQuantity(newQuantity);
+  {
+    var orderItem = OrderItems.FirstOrDefault(item => item.ProductId.Value == productId);
+    return orderItem == null ?
+    
+       new OrderItemValidationErrors(DomainValidationMessages.OrderItemNotFoundTitle, [BusinessRuleError.Create(string.Format(DomainValidationMessages.OrderItemNotFound, productId))])
+     : orderItem.UpdateQuantity(newQuantity)
+        .Map(updatedItem =>
+        {
+          var index = _orderItems.FindIndex(i => i.ProductId.Value == productId);
+          _orderItems[index] = updatedItem;
+          _cachedOrderTotal = null; // Invalidate cache
+          return updatedItem;
+        });
     }
 
-    public decimal OrderTotal => OrderItems.Sum(item => item.Price.Value * item.Quantity.Value);
 
-    public Order ApproveOrder() => this with { Status = OrderStatus.Approved };
-
-    public Order CancelOrder() => this with { Status = OrderStatus.Cancelled, IsCancelled = IsCancelled.True };
-
-    public Order ConfirmBookStock() => this with { Status = OrderStatus.BookStockConfirmed };
-
-    public Order FulfillOrder()
+      public decimal OrderTotal
+      {
+        get
+        {
+          if (!_cachedOrderTotal.HasValue)
+          {
+            _cachedOrderTotal = OrderItems.Sum(item => item.Price.Value * item.Quantity.Value);
+          }
+          return _cachedOrderTotal.Value;
+        }
+      }
+    private Validation<OrderStatusValidationError, bool> ValidateStateTransition(OrderStatus newStatus)
     {
-        this.RegisterDomainEvent(new OrderFulfilledEvent(this));
-        return this with { Status = OrderStatus.Fulfilled };
-    }
+      if (IsCancelled.Value && newStatus != OrderStatus.Cancelled)
+      {
+        return new OrderStatusValidationError("Invalid State Transition",
+            BusinessRuleError.Create("Cannot transition a cancelled order"));
+      }
 
-    public Order UpdateMessage(string newMessage) => this with { Message = Message.From(newMessage) };
-    public Validation<OrderValidationErrors, Order> AddOrderItem(Guid orderId, Guid productId, decimal price, string productName, string productDescription, int quantity = 1)
-    {
-      return OrderItem.AddOrderItem(orderId, productId, price, quantity, productName, productDescription)
-          .Map(orderItem =>{_orderItems.Add(orderItem);return this;})
-          .MapFail(orderItemErrors => new OrderValidationErrors(orderItemErrors));
+      // Add specific state transition rules
+      if (Status == OrderStatus.Fulfilled &&
+          (newStatus == OrderStatus.Pending || newStatus == OrderStatus.BookStockConfirmed))
+      {
+        return new OrderStatusValidationError("Invalid State Transition",
+            BusinessRuleError.Create($"Cannot transition from {Status.Label} to {newStatus.Label}"));
+      }
+
+      return true;
     }
+  public Validation<OrderStatusValidationError, Order> ApproveOrder() => ValidateStateTransition(OrderStatus.Approved).Map(_ => this with { Status = OrderStatus.Approved });
+
+  public Validation<OrderStatusValidationError, Order> CancelOrder() => ValidateStateTransition(OrderStatus.Cancelled).Map(_ => this with { Status = OrderStatus.Cancelled, IsCancelled = IsCancelled.True });
+
+  public Validation<OrderStatusValidationError, Order> ConfirmBookStock() => ValidateStateTransition(OrderStatus.BookStockConfirmed) .Map(_ => this with { Status = OrderStatus.BookStockConfirmed });
+
+  public Validation<OrderStatusValidationError, Order> FulfillOrder() => ValidateStateTransition(OrderStatus.Fulfilled)
+     .Map(_ =>
+          {
+            var order = this with { Status = OrderStatus.Fulfilled };
+            order.RegisterDomainEvent(new OrderFulfilledEvent(order));
+            return order;
+          });
+
+  public Order UpdateMessage(string newMessage) => this with { Message = Message.From(newMessage) };
+
+  public Validation<OrderDomainValidationErrors, Order> AddOrderItem(Guid orderId, Guid productId,
+      decimal price, string productName, string productDescription, int quantity = 1)
+  {
+    return OrderItem.AddOrderItem(orderId, productId, price, quantity, productName, productDescription)
+        .Map(orderItem =>
+        {
+          _orderItems.Add(orderItem);
+          _cachedOrderTotal = null; 
+          return this;
+        })
+        .MapFail(orderItemErrors => new OrderDomainValidationErrors(
+            orderItemErrors));
+  }
   public static readonly string OrderItemsFieldName = "_orderItems";
 }

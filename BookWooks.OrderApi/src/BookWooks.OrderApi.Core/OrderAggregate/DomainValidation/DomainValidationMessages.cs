@@ -1,6 +1,6 @@
 ﻿namespace BookWooks.OrderApi.Core.OrderAggregate.DomainValidation;
 
-public static class ValidationMessages
+public static class DomainValidationMessages
 {
   // Entity Names
   public const string OrderId = "Order Id";

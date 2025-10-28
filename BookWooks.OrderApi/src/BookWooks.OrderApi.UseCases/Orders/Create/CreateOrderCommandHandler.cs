@@ -18,7 +18,7 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Cre
 
     return orderResult.Match<CreateOrderResult>(
         order => order.OrderId,
-        errors => new CreateOrderErrors(new ValidationErrors(errors.Errors)));
+        errors => new CreateOrderErrors(new Errors.DomainValidationErrors(errors.Errors)));
   }
 }
 

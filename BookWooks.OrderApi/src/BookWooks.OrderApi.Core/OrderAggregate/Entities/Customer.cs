@@ -17,9 +17,9 @@ public record Customer : EntityBase
   }
   public static Validation<CustomerValidationErrors, Customer> CreateCustomer(Guid customerId, string name, string email)
   {
-    var customerIdValidation = CustomerId.TryFrom(customerId).ToValidationMonad(errors => new CustomerValidationErrors(ValidationMessages.CustomerId, errors));
-    var nameValidation = CustomerName.TryFrom(name).ToValidationMonad(errors => new CustomerValidationErrors(ValidationMessages.CustomerName, errors));
-    var emailValidation = EmailAddress.TryFrom(email).ToValidationMonad(errors => new CustomerValidationErrors(ValidationMessages.EmailAddressErrors, errors));
+    var customerIdValidation = CustomerId.TryFrom(customerId).ToValidationMonad(errors => new CustomerValidationErrors(DomainValidationMessages.CustomerId, errors));
+    var nameValidation = CustomerName.TryFrom(name).ToValidationMonad(errors => new CustomerValidationErrors(DomainValidationMessages.CustomerName, errors));
+    var emailValidation = EmailAddress.TryFrom(email).ToValidationMonad(errors => new CustomerValidationErrors(DomainValidationMessages.EmailAddressErrors, errors));
     if (emailValidation.IsFail)
     {
       var customerValidationErrors = emailValidation.FailToList();

@@ -21,11 +21,11 @@ public record Product : EntityBase, IAggregateRoot
 
   public static Validation<ProductValidationErrors, Product> CreateProduct(Guid productId, string name, string description, decimal price, int quantity)
   {
-    var productIdValidation =   ProductId.TryFrom(productId).ToValidationMonad(errors => new ProductValidationErrors(ValidationMessages.ProductId, errors));
-    var nameValidation =        ProductName.TryFrom(name).ToValidationMonad(errors => new ProductValidationErrors(ValidationMessages.CardName, errors));
-    var descriptionValidation = ProductDescription.TryFrom(description).ToValidationMonad(errors => new ProductValidationErrors(ValidationMessages.ProductDescription, errors));
-    var priceValidation =       ProductPrice.TryFrom(price).ToValidationMonad(errors => new ProductValidationErrors(ValidationMessages.ProductPrice, errors));
-    var quantityValidation =    ProductQuantity.TryFrom(quantity).ToValidationMonad(errors => new ProductValidationErrors(ValidationMessages.ProductQuantity, errors));
+    var productIdValidation =   ProductId.TryFrom(productId).ToValidationMonad(errors => new ProductValidationErrors(DomainValidationMessages.ProductId, errors));
+    var nameValidation =        ProductName.TryFrom(name).ToValidationMonad(errors => new ProductValidationErrors(DomainValidationMessages.CardName, errors));
+    var descriptionValidation = ProductDescription.TryFrom(description).ToValidationMonad(errors => new ProductValidationErrors(DomainValidationMessages.ProductDescription, errors));
+    var priceValidation =       ProductPrice.TryFrom(price).ToValidationMonad(errors => new ProductValidationErrors(DomainValidationMessages.ProductPrice, errors));
+    var quantityValidation =    ProductQuantity.TryFrom(quantity).ToValidationMonad(errors => new ProductValidationErrors(DomainValidationMessages.ProductQuantity, errors));
 
     return (productIdValidation, nameValidation, descriptionValidation, priceValidation, quantityValidation).Apply((createdProductId, createdName, createdDescription, createdPrice, createdQuantity) =>
     {

@@ -53,11 +53,11 @@ public class CreateTests
     {
         var request = CreateTestOrderRequest();
 
-        var errorDictionary = new Dictionary<ErrorType, IReadOnlyList<ValidationError>>
+        var errorDictionary = new Dictionary<ErrorType, IReadOnlyList<DomainValidationError>>
         {
-            [ErrorType.DeliveryAddress] = [new ValidationError("Delivery address is incorrect")]
+            [ErrorType.DeliveryAddress] = [new DomainValidationError("Delivery address is incorrect")]
         };
-        var errors = new ValidationErrors(errorDictionary);
+        var errors = new DomainValidationErrors(errorDictionary);
 
         var mediator = new Mock<IMediator>();
         mediator.Setup(m => m.Send(It.IsAny<CreateOrderCommand>(), It.IsAny<CancellationToken>()))
