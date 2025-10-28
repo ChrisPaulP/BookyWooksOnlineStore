@@ -3,7 +3,7 @@
 //public readonly partial record struct OrderId
 public sealed partial record OrderId
 {
-  public static Validation Validate(Guid input)  => ValueObjectValidation.ValidateGuid(input, ValidationMessages.OrderId);
+  public static Validation Validate(Guid input)  => ValueObjectValidation.ValidateGuid(input, DomainValidationMessages.OrderId);
   public static OrderId New() => From(Guid.NewGuid());
 }
 
@@ -16,12 +16,12 @@ public sealed partial record OrderId
   [ValueObject<DateTimeOffset>(conversions: Conversions.EfCoreValueConverter)]
   public partial record struct OrderPlaced
   {
-  private static Validation Validate(DateTimeOffset input) => ValueObjectValidation.ValidateDateTime(input, ValidationMessages.DateTime);
+  private static Validation Validate(DateTimeOffset input) => ValueObjectValidation.ValidateDateTime(input, DomainValidationMessages.DateTime);
 }
   [ValueObject<string>(conversions: Conversions.EfCoreValueConverter)]
   public partial record struct Message
   {
-    public static Validation Validate(string message) => ValueObjectValidation.ValidateString(message, ValidationMessages.OrderMessage, minLength: 1, maxLength: 50);
+    public static Validation Validate(string message) => ValueObjectValidation.ValidateString(message, DomainValidationMessages.OrderMessage, minLength: 1, maxLength: 50);
   }
 [ValueObject<bool>(conversions: Conversions.EfCoreValueConverter)]
 public partial record struct IsCancelled

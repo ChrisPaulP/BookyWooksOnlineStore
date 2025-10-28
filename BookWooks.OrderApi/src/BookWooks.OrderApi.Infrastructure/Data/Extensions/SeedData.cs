@@ -51,13 +51,13 @@ public static class OrderSeedData
     }
 ));
     }
-    public static Validation<OrderValidationErrors, Order> TryCreateOrder(Guid customerId) => CreateOrder(customerId);
-  public static Validation<OrderValidationErrors, Order> TryCreateOrderWithItems(Guid customerId, Product product) => CreateOrderWithItems(customerId, product);
+    public static Validation<OrderDomainValidationErrors, Order> TryCreateOrder(Guid customerId) => CreateOrder(customerId);
+  public static Validation<OrderDomainValidationErrors, Order> TryCreateOrderWithItems(Guid customerId, Product product) => CreateOrderWithItems(customerId, product);
 
-  public static Validation<OrderValidationErrors, Order> CreateOrder(Guid customerId) => Order
+  public static Validation<OrderDomainValidationErrors, Order> CreateOrder(Guid customerId) => Order
       .CreateOrder(customerId, _orderSeedData.Street, _orderSeedData.City, _orderSeedData.Country, _orderSeedData.PostCode, _orderSeedData.CardHolderName, _orderSeedData.CardNumber, _orderSeedData.Expiration, _orderSeedData.PaymentMethod);
 
-    public static Validation<OrderValidationErrors, Order> CreateOrderWithItems(Guid customerId, Product product) => Order
+    public static Validation<OrderDomainValidationErrors, Order> CreateOrderWithItems(Guid customerId, Product product) => Order
       .CreateOrder(customerId, _orderSeedData.Street, _orderSeedData.City, _orderSeedData.Country, _orderSeedData.PostCode, _orderSeedData.CardHolderName, _orderSeedData.CardNumber, _orderSeedData.Expiration, _orderSeedData.PaymentMethod)
       .Bind(order => order.AddOrderItem(OrderId.New().Value, product.ProductId.Value, product.Price.Value, product.Name.Value, product.Description.Value, product.Quantity.Value));
 }

@@ -7,7 +7,7 @@ public interface IResult
 
     IEnumerable<string> Errors { get; }
 
-    List<ValidationError> ValidationErrors { get; }
+    List<DomainValidationError> DomainValidationErrors { get; }
 
     Type ValueType { get; }
 

@@ -3,7 +3,7 @@ using static BookWooks.OrderApi.UseCases.Errors.DatabaseErrors;
 
 namespace BookWooks.OrderApi.UseCases.Errors;
 
-public record ValidationErrors(IReadOnlyDictionary<ErrorType, IReadOnlyList<ValidationError>> Errors) : IError;
+public record DomainValidationErrors(IReadOnlyDictionary<ErrorType, IReadOnlyList<DomainValidationError>> Errors) : IError;
 public enum ErrorType
 {
   Customer,
@@ -11,7 +11,8 @@ public enum ErrorType
   Payment,
   OrderItem,
   OrderId,
-  Order
+  Order,
+  OrderStatusValidationError
 }
 
 

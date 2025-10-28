@@ -15,13 +15,13 @@ public record DeliveryAddress
   public Country Country { get; }
   public PostCode Postcode { get; }
 
-  public static Validation<OrderValidationErrors, DeliveryAddress> TryCreate(
+  public static Validation<OrderDomainValidationErrors, DeliveryAddress> TryCreate(
        string street, string city, string country, string postcode)
   {
-    var streetValidation = Street.TryFrom(street).ToValidationMonad<OrderValidationErrors, Street>(error => new DeliveryAddressErrors(street, error));
-    var cityValidation = City.TryFrom(city).ToValidationMonad<OrderValidationErrors, City>(error => new DeliveryAddressErrors(city, error));
-    var countryValidation = Country.TryFrom(country).ToValidationMonad<OrderValidationErrors, Country>(error => new DeliveryAddressErrors(country, error));
-    var postCodeValidation = PostCode.TryFrom(postcode).ToValidationMonad<OrderValidationErrors, PostCode>(error => new DeliveryAddressErrors(postcode, error));
+    var streetValidation = Street.TryFrom(street).ToValidationMonad<OrderDomainValidationErrors, Street>(error => new DeliveryAddressValidationErrors(street, error));
+    var cityValidation = City.TryFrom(city).ToValidationMonad<OrderDomainValidationErrors, City>(error => new DeliveryAddressValidationErrors(city, error));
+    var countryValidation = Country.TryFrom(country).ToValidationMonad<OrderDomainValidationErrors, Country>(error => new DeliveryAddressValidationErrors(country, error));
+    var postCodeValidation = PostCode.TryFrom(postcode).ToValidationMonad<OrderDomainValidationErrors, PostCode>(error => new DeliveryAddressValidationErrors(postcode, error));
 
     return (streetValidation, cityValidation, countryValidation, postCodeValidation)
         .Apply((createdStreet, createdCity, createdCountry, createdPostCode) => new DeliveryAddress(createdStreet, createdCity, createdCountry, createdPostCode));
@@ -31,7 +31,7 @@ public record DeliveryAddress
 [ValueObject<string>(conversions: Conversions.EfCoreValueConverter)]
 public partial record struct Street
 {
-  private static Validation Validate(string input) =>ValueObjectValidation.ValidateString(input,ValidationMessages.Street,minLength: 3,maxLength: 100,customRule: s => ValidStreetRegex().IsMatch(s), customRuleError: ValidationMessages.StreetInvalid);
+  private static Validation Validate(string input) =>ValueObjectValidation.ValidateString(input,DomainValidationMessages.Street,minLength: 3,maxLength: 100,customRule: s => ValidStreetRegex().IsMatch(s), customRuleError: DomainValidationMessages.StreetInvalid);
 
   [GeneratedRegex(@"[a-zA-Z\-\.\'\s]*")]
   private static partial Regex ValidStreetRegex();
@@ -40,21 +40,21 @@ public partial record struct Street
 [ValueObject<string>(conversions: Conversions.EfCoreValueConverter)]
 public partial record struct City
 {
-  private static Validation Validate(string input) => ValueObjectValidation.ValidateString(input,ValidationMessages.City,minLength: 1, maxLength: 50
+  private static Validation Validate(string input) => ValueObjectValidation.ValidateString(input,DomainValidationMessages.City,minLength: 1, maxLength: 50
       );
 }
 
 [ValueObject<string>(conversions: Conversions.EfCoreValueConverter)]
 public partial record struct Country
 {
-  private static Validation Validate(string input) => ValueObjectValidation.ValidateString(input,ValidationMessages.Country,minLength: 1,maxLength: 50
+  private static Validation Validate(string input) => ValueObjectValidation.ValidateString(input,DomainValidationMessages.Country,minLength: 1,maxLength: 50
       );
 }
 
 [ValueObject<string>(conversions: Conversions.EfCoreValueConverter)]
 public partial record struct PostCode
 {
-  private static Validation Validate(string input) =>ValueObjectValidation.ValidateString(input,ValidationMessages.PostCode, minLength: 1, maxLength: 10,customRule: s => ValidPostCodeRegex().IsMatch(s),customRuleError: ValidationMessages.PostCodeInvalid);
+  private static Validation Validate(string input) =>ValueObjectValidation.ValidateString(input,DomainValidationMessages.PostCode, minLength: 1, maxLength: 10,customRule: s => ValidPostCodeRegex().IsMatch(s),customRuleError: DomainValidationMessages.PostCodeInvalid);
 
   [GeneratedRegex(@"[a-zA-Z\-\.\'\s]*")]
   private static partial Regex ValidPostCodeRegex();

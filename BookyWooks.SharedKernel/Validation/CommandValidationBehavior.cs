@@ -28,7 +28,7 @@ public class CommandValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
                 errorBuilder.AppendLine(error.ErrorMessage);
             }
 
-            return DetailedResult<TResponse>.Invalid(errors.Select(e => new ValidationError(e.ErrorMessage,HttpErrorType.Validation)).ToList());
+            return DetailedResult<TResponse>.Invalid(errors.Select(e => new DomainValidationError(e.ErrorMessage,HttpErrorType.Validation)).ToList());
         }
         return await next();
     }

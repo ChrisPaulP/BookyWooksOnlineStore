@@ -13,7 +13,7 @@ global using BookWooks.OrderApi.Core.OrderAggregate.ValueObjects;
 global using CustomerResult = LanguageExt.Validation<BookWooks.OrderApi.Core.OrderAggregate.DomainValidation.CustomerValidationErrors, BookWooks.OrderApi.Core.OrderAggregate.Entities.Customer>;
 global using ProductResult = LanguageExt.Validation<BookWooks.OrderApi.Core.OrderAggregate.DomainValidation.ProductValidationErrors, BookWooks.OrderApi.Core.OrderAggregate.Entities.Product>;
 global using LanguageExt;
-global using CreateOrderResult = LanguageExt.Either<BookWooks.OrderApi.UseCases.Errors.ValidationErrors, BookWooks.OrderApi.Core.OrderAggregate.ValueObjects.OrderId>;
+global using CreateOrderResult = LanguageExt.Either<BookWooks.OrderApi.UseCases.Errors.DomainValidationErrors, BookWooks.OrderApi.Core.OrderAggregate.ValueObjects.OrderId>;
 global using BookWooks.OrderApi.Infrastructure.AiServices;
 
 global using Microsoft.AspNetCore.Hosting;

@@ -36,7 +36,7 @@ public static class ToHttpResult
         pd.Extensions[kv.Key] = kv.Value;
 
     // If it's a ValidationErrors, add the errors dictionary to extensions
-    if (concreteError is ValidationErrors ve)
+    if (concreteError is DomainValidationErrors ve)
       pd.Extensions["validationErrors"] = ve.Errors;
 
     return Results.Problem(pd);
@@ -44,7 +44,7 @@ public static class ToHttpResult
 
   private static ErrorDefinition GetErrorDefinition(IError error) => error switch
   {
-    ValidationErrors => Errors.ValidationError,
+    DomainValidationErrors => Errors.ValidationError,
     OrderNotFound => Errors.OrderNotFound,
     DatabaseError => Errors.DatabaseError,
     TimeoutError => Errors.TimeoutError,

@@ -13,7 +13,7 @@ public static class ResultExtensions2
     public static TResult Match<T, TResult>(
         this DetailedResult<T> result,
         Func<T, TResult> onSuccess,
-        Func<IEnumerable<ValidationError>, TResult> onValidationFailure,
+        Func<IEnumerable<DomainValidationError>, TResult> onValidationFailure,
         Func<IEnumerable<string>, TResult> onDomainFailure)
        // where TResult : IResponse
     {
@@ -25,7 +25,7 @@ public static class ResultExtensions2
         return result switch
         {
             { IsSuccess: true } => onSuccess(result.Value),
-            { ValidationErrors: { Count: > 0 } } => onValidationFailure(result.ValidationErrors),
+            { DomainValidationErrors: { Count: > 0 } } => onValidationFailure(result.DomainValidationErrors),
             _ => onDomainFailure(result.Errors)
         };
     }
@@ -62,7 +62,7 @@ public static class ResultExtensions2
                     : DetailedResult<TDestination>.NotFound();
             case ResultStatus.Unauthorized: return DetailedResult<TDestination>.Unauthorized();
             case ResultStatus.Forbidden: return DetailedResult<TDestination>.Forbidden();
-            case ResultStatus.Invalid: return DetailedResult<TDestination>.Invalid(result.ValidationErrors);
+            case ResultStatus.Invalid: return DetailedResult<TDestination>.Invalid(result.DomainValidationErrors);
             case ResultStatus.Error: return DetailedResult<TDestination>.Error(result.Errors.ToArray());
             case ResultStatus.Conflict:
                 return result.Errors.Any()
