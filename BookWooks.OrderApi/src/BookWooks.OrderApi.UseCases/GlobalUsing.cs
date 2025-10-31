@@ -1,6 +1,4 @@
-﻿// GlobalUsings.cs
-
-global using System.Data;
+﻿global using System.Data;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.DependencyInjection;
 
@@ -28,5 +26,11 @@ global using static LanguageExt.Prelude;
 
 // Type Aliases
 //global using OrderItem = BookWooks.OrderApi.UseCases.Create.OrderItem;
+
+// Functional Extensions
+global using BookWooks.OrderApi.UseCases.FunctionalExtensions;
+
+// AI Services
+global using BookWooks.OrderApi.UseCases.Orders.AiServices;
 
 

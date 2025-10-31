@@ -9,13 +9,4 @@ public static class Extensions
         true => validation.ValueObject,
         false => onError(validation.Error.Data?.Keys.OfType<BusinessRuleError>().ToList() ?? [])
       };
-
-  public static Either<TError, T> ToEither<TError, T>(
-        this ValueObjectOrError<T> validation,
-        Func<IReadOnlyList<string>, TError> onError)
-  {
-    return validation.IsSuccess
-        ? Prelude.Right<TError, T>(validation.ValueObject)
-        : Prelude.Left<TError, T>(onError(validation.Error.Data?.Values.OfType<string>().ToList() ?? []));
-  }
 }
