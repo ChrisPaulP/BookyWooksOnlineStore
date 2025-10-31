@@ -1,11 +1,4 @@
-﻿using BookWooks.OrderApi.Core.OrderAggregate.Entities;
-using BookWooks.OrderApi.Core.OrderAggregate.DomainValidation;
-
-using BookyWooks.SharedKernel.Repositories;
-using BookyWooks.SharedKernel.ResultPattern;
-using Microsoft.Extensions.Logging;
-using UseCaseErrors = BookWooks.OrderApi.UseCases.Errors;
-using OrderErrors = BookWooks.OrderApi.UseCases.Errors.OrderErrors;
+﻿using OrderErrors = BookWooks.OrderApi.UseCases.Errors.OrderErrors;
 
 namespace BookWooks.OrderApi.UseCases.Contributors.Cancel;
 
@@ -23,13 +16,9 @@ public class CancelOrderHandler : ICommandHandler<CancelOrderCommand, CancelOrde
         
         return await (await _repository.GetByIdAsync(request.Id))
             .ToEither<OrderErrors, Order>(() => new OrderNotFound())
-            .Bind(order => 
-                order.CancelOrder().Match(
-                    success => Either<OrderErrors, Order>.Right(success),
-                    errors => Either<OrderErrors, Order>.Left(
-                        new CancelOrderError(errors.First().Error.Message))
-                ))
-             .SaveOrder(_repository.UpdateAsync, _repository, cancellationToken)
-             .MapAsync(OrderMappingExtensions.ToOrderCancelledDTO);
+            .Bind(order => order.CancelOrder()
+            .ToEither(domainError => new CancelOrderError(domainError.Error.Message)))
+            .SaveOrder(_repository.UpdateAsync, _repository, cancellationToken)
+            .MapAsync(OrderMappingExtensions.ToOrderCancelledDTO);
   }
 }

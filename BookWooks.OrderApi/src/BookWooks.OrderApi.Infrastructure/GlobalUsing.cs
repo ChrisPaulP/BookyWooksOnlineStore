@@ -69,6 +69,7 @@ global using BookWooks.OrderApi.UseCases.Orders.AiServices;
 global using BookWooks.OrderApi.UseCases.Products;
 global using BookWooks.OrderApi.UseCases.InternalCommands;
 global using BookWooks.OrderApi.UseCases.Errors;
+global using BookWooks.OrderApi.UseCases.FunctionalExtensions;
 
 // Project: BookWooks.OrderApi.Infrastructure
 global using BookWooks.OrderApi.Infrastructure.Data.Repositories.Abstract;

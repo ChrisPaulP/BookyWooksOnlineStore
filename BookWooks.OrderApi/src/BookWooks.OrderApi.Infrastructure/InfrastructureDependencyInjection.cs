@@ -207,7 +207,6 @@ public static class InfrastructureDependencyInjection
 
   private static void RegisterMediatR(IServiceCollection services)
   {
-    services.AddScoped<IMediator, Mediator>();
     services.AddScoped<IDomainEventDispatcher, MediatRDomainEventDispatcher<Guid>>();
     services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
     services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ErrorHandlingBehavior<,>));

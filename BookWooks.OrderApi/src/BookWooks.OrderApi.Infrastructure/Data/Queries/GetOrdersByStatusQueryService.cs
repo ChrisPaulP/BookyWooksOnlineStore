@@ -1,7 +1,4 @@
-﻿using BookWooks.OrderApi.UseCases.Errors;
-using LanguageExt;
-using Microsoft.Data.SqlClient;
-using OrderErrors = BookWooks.OrderApi.UseCases.Errors.OrderErrors;
+﻿using OrderErrors = BookWooks.OrderApi.UseCases.Errors.OrderErrors;
 
 namespace BookWooks.OrderApi.Infrastructure.Data.Queries;
 public class GetOrdersByStatusQueryService : IGetOrdersByStatusQueryService

@@ -1,5 +1,4 @@
 ﻿using BookWooks.OrderApi.Web.Configuration;
-using BookyWooks.Messaging.Messages.InitialMessage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +32,9 @@ services.AddInfrastructureServices(
 services.AddUseCasesServices();
 services.AddCoreServices();
 
+// Configure exception handling
+services.AddExceptionHandler<GlobalExceptionHandler>();
+services.AddProblemDetails();
 // Configure OpenTelemetry
 var tracingEnabled = builder.Configuration.GetValue<bool>("OpenTelemetry:TracingEnabled");
 if (tracingEnabled)
@@ -55,7 +57,7 @@ services.AddSwaggerGen(swg =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
+        Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\""
     });
     swg.AddSecurityRequirement(new OpenApiSecurityRequirement 
     { 
@@ -98,8 +100,8 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseMiddleware<ExceptionHandlingMiddleware>()
-       .UseHsts();
+    app.UseExceptionHandler();
+    app.UseHsts();
 }
 
 app.UseMiddleware<LogContextMiddleware>()
