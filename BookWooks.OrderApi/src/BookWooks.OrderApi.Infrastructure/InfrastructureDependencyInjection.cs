@@ -1,10 +1,9 @@
-﻿using BookWooks.OrderApi.Infrastructure.AiMcpSetUp;
+﻿using BookWooks.OrderApi.Core.OrderAggregate.Events;
+using BookWooks.OrderApi.Infrastructure.AiMcpSetUp;
 using BookWooks.OrderApi.Infrastructure.AiServices.Interfaces;
 using BookWooks.OrderApi.Infrastructure.Common.Behaviour;
 using BookWooks.OrderApi.UseCases.Create;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.VectorData;
-using Microsoft.SemanticKernel.Connectors.InMemory;
 using Microsoft.SemanticKernel.Connectors.Qdrant;
 using Qdrant.Client;
 #pragma warning disable SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
@@ -23,7 +22,6 @@ public static class InfrastructureDependencyInjection
         RegisterDbContext(services, configuration);
         RegisterOutboxContext(services);
         RegisterDomainEventsWrapper(services, domainEventsMap);
-        RegisterDomainEventsDispatcherNotificationHandlerDecorator(services);
         RegisterInternalCommandMapper(services, internalCommandMap);
         RegisterCommandScheduler(services);
         RegisterInboxContext(services);
@@ -154,7 +152,15 @@ public static class InfrastructureDependencyInjection
 
   private static void RegisterDomainEventsDispatcherNotificationHandlerDecorator(IServiceCollection services)
   {
-    services.AddTransient(typeof(INotificationHandler<>), typeof(DomainEventsDispatcherNotificationHandlerDecorator<>));
+    // Register decorator only for events with a handler and only if needed. But this will rarely be the case. Please see notes below
+    services.AddTransient<INotificationHandler<OrderFulfilledDomainEvent>>(provider =>
+    {
+        var decorated = provider.GetRequiredService<INotificationHandler<OrderFulfilledDomainEvent>>();
+        var domainEventDispatcher = provider.GetRequiredService<IDomainEventDispatcher>();
+        var dbContext = provider.GetRequiredService<DbContext>();
+        return new DomainEventsDispatcherNotificationHandlerDecorator<OrderFulfilledDomainEvent>(domainEventDispatcher,decorated,dbContext);
+    });
+    //services.AddTransient(typeof(INotificationHandler<>), typeof(DomainEventsDispatcherNotificationHandlerDecorator<>));
     // this is needed for the rare occasions when a NotificationHandler such as OrderCreatedDomainEventHandler does not save chnages but domain events still need to be dispatched. 
     //Note OrderCreatedDomainEventHandler is an example of a class that implements INotificationHandler but on this occassion no domain events need to be raised.
     //However if the were this decorator would take care of dispatching them.
