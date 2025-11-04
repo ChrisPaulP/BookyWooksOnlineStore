@@ -17,9 +17,6 @@ public static class ToHttpResult
     public static readonly ErrorDefinition UnhandledError = new("Unhandled error", 500, "https://httpstatuses.com/500");
   }
 
-  public static IResult Map(OrderErrors error) => Map(UnwrapError(error));
-  public static IResult Map(CreateOrderErrors error) => Map(UnwrapError(error));
-
   public static IResult Map(IError error)
   {
     var concreteError = UnwrapError(error);

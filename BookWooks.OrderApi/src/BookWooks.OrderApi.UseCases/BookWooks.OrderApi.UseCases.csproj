@@ -5,13 +5,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Common\**" />
+    <Compile Remove="FunctionalExtensions\**" />
     <Compile Remove="Orders\Payment\**" />
     <Compile Remove="Orders\UpdateOrderStatus\**" />
-    <EmbeddedResource Remove="Common\**" />
+    <EmbeddedResource Remove="FunctionalExtensions\**" />
     <EmbeddedResource Remove="Orders\Payment\**" />
     <EmbeddedResource Remove="Orders\UpdateOrderStatus\**" />
-    <None Remove="Common\**" />
+    <None Remove="FunctionalExtensions\**" />
     <None Remove="Orders\Payment\**" />
     <None Remove="Orders\UpdateOrderStatus\**" />
   </ItemGroup>
@@ -29,6 +29,10 @@
   </ItemGroup>
   <ItemGroup>
     <EditorConfigFiles Remove="C:\Users\porterc\source\repos\BookyWooksOnlineStore\BookWooks.OrderApi\src\BookWooks.OrderApi.UseCases\.editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FunctionalExtensions\EitherExtensions.cs" />
+    <Compile Include="FunctionalExtensions\ValidationExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="C:\Users\porterc\source\repos\BookyWooksOnlineStore\BookWooks.OrderApi\src\BookWooks.OrderApi.UseCases\.editorconfig" />
