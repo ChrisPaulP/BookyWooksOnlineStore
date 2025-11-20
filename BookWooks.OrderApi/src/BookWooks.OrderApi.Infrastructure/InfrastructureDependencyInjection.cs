@@ -1,6 +1,7 @@
 ﻿using BookWooks.OrderApi.Core.OrderAggregate.Events;
 using BookWooks.OrderApi.Infrastructure.AiMcpSetUp;
 using BookWooks.OrderApi.Infrastructure.AiServices.Interfaces;
+using BookWooks.OrderApi.Infrastructure.Caching;
 using BookWooks.OrderApi.Infrastructure.Common.Behaviour;
 using BookWooks.OrderApi.UseCases.Create;
 using Microsoft.Extensions.VectorData;

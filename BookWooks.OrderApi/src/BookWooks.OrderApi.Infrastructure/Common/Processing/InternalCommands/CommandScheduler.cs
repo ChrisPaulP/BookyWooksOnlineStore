@@ -14,14 +14,12 @@ internal class CommandScheduler : ICommandScheduler
     {
       Id = command.Id,
       EnqueueDate = DateTime.UtcNow,
-      //Type = command.GetType().FullName ?? string.Empty, 
       Type = command.GetType().AssemblyQualifiedName ?? string.Empty,
       Data = JsonConvert.SerializeObject(command, new JsonSerializerSettings
       {
         ContractResolver = new AllPropertiesContractResolver()
       })
     };
-
     await _dbContext.InternalCommands.AddAsync(internalCommand);
     await _dbContext.SaveChangesAsync();
   }
@@ -32,7 +30,6 @@ internal class CommandScheduler : ICommandScheduler
     {
       Id = command.Id,
       EnqueueDate = DateTime.UtcNow,
-      //Type = command.GetType().FullName ?? string.Empty, 
       Type = command.GetType().AssemblyQualifiedName ?? string.Empty,
       Data = JsonConvert.SerializeObject(command, new JsonSerializerSettings
       {

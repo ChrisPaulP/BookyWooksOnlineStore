@@ -1,5 +1,4 @@
-﻿
-namespace SagaOrchestration.StateMachines;
+﻿namespace SagaOrchestration.StateMachines;
 
 public class OrderStateMachine : MassTransitStateMachine<OrderStateInstance>
 {
@@ -40,11 +39,12 @@ public class OrderStateMachine : MassTransitStateMachine<OrderStateInstance>
         During(StockCheck,
             When(StockConfirmedEvent)
                 .Then(context => { 
-                    _logger.ForContext("CorrelationId", context.Saga.CorrelationId).Information("StockReservedEvent received in OrderStateMachine: {ContextSaga} ", context.Saga); })
+                    _logger.ForContext("CorrelationId", context.Saga.CorrelationId).Information("StockConfirmedEvent received in OrderStateMachine: {ContextSaga} ", context.Saga); })
                 .TransitionTo(StockReserved)
                 .Send(new Uri($"queue:{QueueConstants.CompletePaymentCommandQueueName}"),
                     context => new CompletePaymentCommand(context.Saga.CorrelationId, context.Saga.CustomerId, context.Saga.OrderTotal))
-                .Then(context => { _logger.ForContext("CorrelationId", context.Saga.CorrelationId).Information("CompletePaymentMessage sent in OrderStateMachine: {ContextSaga} ", context.Saga); }),
+                .Then(context => { 
+                    _logger.ForContext("CorrelationId", context.Saga.CorrelationId).Information("CompletePaymentMessage sent in OrderStateMachine: {ContextSaga} ", context.Saga); }),
             When(StockReservationFailedEvent)
                 .Then(context => { _logger.ForContext("CorrelationId", context.Saga.CorrelationId).Information("StockReservationFailedEvent received in OrderStateMachine: {ContextSaga} ", context.Saga); })
                 .TransitionTo(StockReservationFailed)

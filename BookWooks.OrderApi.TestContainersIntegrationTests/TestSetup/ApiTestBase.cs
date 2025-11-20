@@ -1,15 +1,20 @@
-﻿namespace BookWooks.OrderApi.TestContainersIntegrationTests.TestSetup;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System.Linq.Expressions;
+
+namespace BookWooks.OrderApi.TestContainersIntegrationTests.TestSetup;
 
 public class ApiTestBase<TProgram, TDbContext> : IAsyncLifetime
         where TProgram : class // Ensure the TProgram is a class (e.g. Startup or Program)
         where TDbContext : DbContext // Ensure TDbContext is a type of DbContext
 {
     private readonly Func<Task> _resetDatabase;
-    private readonly TestFactoryBase<TProgram> _apiFactory;
+    private readonly WebApplicationFactory<TProgram> _apiFactory;
     private static IServiceScopeFactory _scopeFactory = null!;
     //private static TDbContext _dbContext = null!;
 
-    public ApiTestBase(TestFactoryBase<TProgram> apiFactory, Func<Task> resetDatabase)
+    public ApiTestBase(WebApplicationFactory<TProgram> apiFactory, Func<Task> resetDatabase)
     {
         _apiFactory = apiFactory;
         _scopeFactory = _apiFactory.Services.GetRequiredService<IServiceScopeFactory>();

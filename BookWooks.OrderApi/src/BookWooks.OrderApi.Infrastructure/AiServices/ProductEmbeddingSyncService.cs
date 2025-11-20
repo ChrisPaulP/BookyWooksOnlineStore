@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BookWooks.OrderApi.Infrastructure.AiServices.Models;
-using Microsoft.Extensions.AI;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.VectorData;
-using OpenAI.VectorStores;
-
-
+﻿using BookWooks.OrderApi.Infrastructure.AiServices.Models;
 namespace BookWooks.OrderApi.Infrastructure.AiServices;
 public class ProductEmbeddingSyncService
 {
