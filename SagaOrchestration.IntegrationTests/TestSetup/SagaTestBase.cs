@@ -1,17 +1,3 @@
-using BookyWooks.Messaging.Constants;
-using BookyWooks.Messaging.Contracts.Events;
-using BookyWooks.Messaging.Messages.InitialMessage;
-using MassTransit;
-using MassTransit.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using SagaOrchestration.Data;
-using SagaOrchestration.IntegrationTests;
-using SagaOrchestration.StateInstances;
-using SagaOrchestration.StateMachines;
-using System.Diagnostics;
-using MassTransit.EntityFrameworkCoreIntegration;
-
 namespace SagaOrchestration.IntegrationTests.TestSetup;
 
 public abstract class SagaTestBase : IAsyncLifetime
@@ -22,7 +8,6 @@ public abstract class SagaTestBase : IAsyncLifetime
     {
         Factory = factory;
     }
-
     public virtual Task InitializeAsync() => Task.CompletedTask;
 
     public virtual async Task DisposeAsync()
@@ -35,7 +20,6 @@ public abstract class SagaTestBase : IAsyncLifetime
         using var scope = Factory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<StateMachineDbContext>();
         
-        // Clear all tables to ensure test isolation
         context.Set<InboxState>().RemoveRange(context.Set<InboxState>());
         context.Set<OutboxMessage>().RemoveRange(context.Set<OutboxMessage>());
         context.Set<OutboxState>().RemoveRange(context.Set<OutboxState>());

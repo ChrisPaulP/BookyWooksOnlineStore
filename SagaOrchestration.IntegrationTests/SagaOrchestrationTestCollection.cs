@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SagaOrchestration.IntegrationTests;
+﻿namespace SagaOrchestration.IntegrationTests;
 
 [CollectionDefinition("Saga Orchestration Test Collection", DisableParallelization = true)]
 public class SagaOrchestrationTestCollection : ICollectionFixture<CustomSagaOrchestrationTestFactory<SagaOrchestrationProgram>>

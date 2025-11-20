@@ -1,27 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System.Linq.Expressions;
+﻿namespace BookWooks.OrderApi.TestContainersIntegrationTests.TestSetup;
 
-namespace BookWooks.OrderApi.TestContainersIntegrationTests.TestSetup;
-
-public class ApiTestBase<TProgram, TDbContext> : IAsyncLifetime
+public class ApiTestBase<TProgram, TDbContext> 
         where TProgram : class // Ensure the TProgram is a class (e.g. Startup or Program)
         where TDbContext : DbContext // Ensure TDbContext is a type of DbContext
 {
     private readonly Func<Task> _resetDatabase;
-    private readonly WebApplicationFactory<TProgram> _apiFactory;
     private static IServiceScopeFactory _scopeFactory = null!;
-    //private static TDbContext _dbContext = null!;
 
     public ApiTestBase(WebApplicationFactory<TProgram> apiFactory, Func<Task> resetDatabase)
     {
-        _apiFactory = apiFactory;
-        _scopeFactory = _apiFactory.Services.GetRequiredService<IServiceScopeFactory>();
+        _scopeFactory = apiFactory.Services.GetRequiredService<IServiceScopeFactory>();
         _resetDatabase = resetDatabase; // Pass in the resetDatabase action as a dependency
     }
-
-    public Task InitializeAsync() => Task.CompletedTask;
 
     public static async Task AddAsync<TEntity>(TEntity entity)
        where TEntity : class
@@ -65,5 +55,4 @@ public class ApiTestBase<TProgram, TDbContext> : IAsyncLifetime
 
         return await dbContext.Set<TEntity>().Where(predicate).ToListAsync();
     }
-    public Task DisposeAsync() => _resetDatabase();
 }

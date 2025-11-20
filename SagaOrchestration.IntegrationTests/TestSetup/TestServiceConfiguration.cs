@@ -1,9 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using SagaOrchestration.Data;
-
 namespace SagaOrchestration.IntegrationTests;
 
 public static class TestServiceConfiguration
@@ -42,8 +36,8 @@ public static class TestServiceConfiguration
 
         services.AddDbContext<StateMachineDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("SagaOrchestrationDatabase"))
-                   //.EnableSensitiveDataLogging()
-                   //.LogTo(Console.WriteLine, LogLevel.Debug)
+                   .EnableSensitiveDataLogging()
+                   .LogTo(Console.WriteLine, LogLevel.Debug)
         );
     }
 }
