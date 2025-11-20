@@ -1,18 +1,8 @@
-using BookWooks.OrderApi.TestContainersIntegrationTests.TestSetup;
-using BookyWooks.Messaging.Messages.InitialMessage;
-using MassTransit;
-using MassTransit.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using SagaOrchestration.IntegrationTests.TestSetup;
-using SagaOrchestration.StateInstances;
-using SagaOrchestration.StateMachines;
-
 namespace SagaOrchestration.IntegrationTests.OrderStateMachineTests;
 
 [Collection("Order Created Transition To Stock Check Test Collection")]
 public class OrderCreatedTransitionToStockCheckTests : SagaTestBase
 {
-
     public OrderCreatedTransitionToStockCheckTests(CustomSagaOrchestrationTestFactory<SagaOrchestrationProgram> factory) 
         : base(factory)
     {
@@ -23,25 +13,17 @@ public class OrderCreatedTransitionToStockCheckTests : SagaTestBase
     {
          await CleanDatabaseAsync();
 
-        //using var scope = _factory.Services.CreateAsyncScope();
-        //var testHarness = scope.ServiceProvider.GetRequiredService<ITestHarness>();
-        //var sagaHarness = testHarness.GetSagaStateMachineHarness<OrderStateMachine, OrderStateInstance>();
-
-        // Get fresh harnesses for this test
         var testHarness = GetTestHarness();
         var sagaHarness = GetSagaHarness();
 
         await testHarness.Start();
         try
         {
-            // Arrange
             var message = CreateTestOrderMessage();
 
-            // Act
             await testHarness.Bus.Send(message);
             Assert.True(await sagaHarness.Consumed.Any<OrderCreatedMessage>());
 
-            // Assert
             var createdSaga = sagaHarness.Created
                 .Select(x => x.Saga.OrderId == message.orderId)
                 .FirstOrDefault();

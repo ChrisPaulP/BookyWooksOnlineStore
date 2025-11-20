@@ -1,5 +1,4 @@
 namespace SagaOrchestration.IntegrationTests;
-
 public static class ContainerConfiguration
 {
     public const string RabbitMqUsername = "guest";

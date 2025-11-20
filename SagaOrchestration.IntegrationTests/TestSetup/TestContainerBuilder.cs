@@ -1,8 +1,3 @@
-using BookWooks.OrderApi.TestContainersIntegrationTests.TestSetup;
-using DotNet.Testcontainers.Networks;
-using Testcontainers.MsSql;
-using Testcontainers.RabbitMq;
-
 namespace SagaOrchestration.IntegrationTests;
 
 public class TestContainerBuilder
