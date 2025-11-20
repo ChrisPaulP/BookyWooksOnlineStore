@@ -1,7 +1,4 @@
-﻿using BookWooks.OrderApi.Core.OrderAggregate.Events;
-using BookyWooks.Messaging.Messages.InitialMessage;
-using BookyWooks.SharedKernel;
-
+﻿using BookyWooks.Messaging.Messages.InitialMessage;
 namespace BookWooks.OrderApi.Web.Configuration;
 
 public static class DomainEventConfiguration

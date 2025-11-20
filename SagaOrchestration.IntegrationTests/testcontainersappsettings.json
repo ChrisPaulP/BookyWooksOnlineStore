@@ -1,34 +1,35 @@
 {
   "ConnectionStrings": {
     "DefaultConnection": "",
-    "SagaOrchestrationDatabase": "", //"Server=127.0.0.1,65089;Database=master;User Id=sa;Password=yourStrong(!)Password;TrustServerCertificate=True",
+    "SagaOrchestrationDatabase": "",
     "TestConnection": "MyTest",
     "Redis": "localhost:0000"
   },
   "RabbitMQConfiguration": {
     "Config": {
-      "HostName": "amqp://localhost:0000",
+      "HostName": "localhost",
       "UserName": "guest",
       "Password": "guest",
       "VirtualHost": "/",
-      "Port": 0
-    },
-    "Serilog": {
-      "MinimumLevel": {
-        "Default": "Information"
-      },
-      "WriteTo": [
-        {
-          "Name": "Console"
-        },
-        {
-          "Name": "File",
-          "Args": {
-            "path": "Logs/integrationTests-log.txt",
-            "rollingInterval": "Day"
-          }
-        }
-      ]
+      "Port": 5672
     }
+  },
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Information"
+    },
+    "WriteTo": [
+      {
+        "Name": "Console"
+      },
+      {
+        "Name": "File",
+        "Args": {
+          "path": "Logs/integrationTests-log.txt",
+          "rollingInterval": "Day"
+        }
+      }
+    ]
   }
+}
 }

@@ -94,7 +94,4 @@ global using Microsoft.Extensions.AI;
 global using OpenAI;
 
 // Aliases
-global using bookwooks.orderapi.infrastructure.caching;
-
-
-
+global using BookWooks.OrderApi.Infrastructure.Caching;

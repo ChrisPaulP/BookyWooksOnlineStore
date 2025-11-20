@@ -52,7 +52,4 @@
     <PackageReference Include="SQLite" />
     <PackageReference Include="System.Net.Http.Json" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="AIAgentServices\" />
-  </ItemGroup>
 </Project>
