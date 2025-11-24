@@ -57,7 +57,7 @@ public class TestContainerBuilder
     public QdrantContainer BuildQdrantContainer() =>
         new QdrantBuilder()
             .WithImage("qdrant/qdrant:latest")
-            .WithName("qdrant-test")
+            //.WithName("qdrant-test")
             .WithPortBinding(6333, true)
             .WithPortBinding(6334, true)
             .WithNetwork(_network)

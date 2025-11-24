@@ -2,18 +2,18 @@
 [Collection("Order Test Collection")]
 public class Payment_CompletePayment : ApiTestBase<Program, BookyWooksOrderDbContext>
 {
-    private readonly CustomOrderTestFactory<Program> _apiFactory;
+    private readonly OrderWebApplicationFactory<Program> _testFactory;
 
-    public Payment_CompletePayment(CustomOrderTestFactory<Program> apiFactory)
-        : base(apiFactory, () => Task.CompletedTask)
+    public Payment_CompletePayment(OrderWebApplicationFactory<Program> testFactory)
+        : base(testFactory)
     {
-        _apiFactory = apiFactory;
+        _testFactory = testFactory;
     }
 
     [Fact]
     public async Task CompletePayment()
     {
-        using var scope = _apiFactory.Services.CreateAsyncScope();
+        using var scope = _testFactory.Services.CreateAsyncScope();
         var testHarness = scope.ServiceProvider.GetRequiredService<ITestHarness>();
 
         await testHarness.Start();

@@ -13,10 +13,10 @@ public class OrderAiServiceTests : ApiTestBase<Program, BookyWooksOrderDbContext
     private readonly ICustomerSupportService _customerSupportService;
     private readonly IProductSearchService _productSearchService;
 
-    public OrderAiServiceTests(CustomOrderTestFactory<Program> apiFactory)
-        : base(apiFactory, () => Task.CompletedTask)
+    public OrderAiServiceTests(OrderWebApplicationFactory<Program> testFactory)
+        : base(testFactory)
     {
-        var scope = apiFactory.Services.CreateScope();
+        var scope = testFactory.Services.CreateScope();
         _customerSupportService = scope.ServiceProvider.GetRequiredService<ICustomerSupportService>();
         _productSearchService = scope.ServiceProvider.GetRequiredService<IProductSearchService>();
     }

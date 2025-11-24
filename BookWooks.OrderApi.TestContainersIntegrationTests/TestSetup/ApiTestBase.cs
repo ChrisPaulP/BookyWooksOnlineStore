@@ -1,58 +1,44 @@
 ﻿namespace BookWooks.OrderApi.TestContainersIntegrationTests.TestSetup;
 
-public class ApiTestBase<TProgram, TDbContext> 
-        where TProgram : class // Ensure the TProgram is a class (e.g. Startup or Program)
-        where TDbContext : DbContext // Ensure TDbContext is a type of DbContext
+public class ApiTestBase<TProgram, TDbContext>
+    where TProgram : class
+    where TDbContext : DbContext
 {
-    private readonly Func<Task> _resetDatabase;
-    private static IServiceScopeFactory _scopeFactory = null!;
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public ApiTestBase(WebApplicationFactory<TProgram> apiFactory, Func<Task> resetDatabase)
+    public ApiTestBase(WebApplicationFactory<TProgram> apiFactory)
     {
         _scopeFactory = apiFactory.Services.GetRequiredService<IServiceScopeFactory>();
-        _resetDatabase = resetDatabase; // Pass in the resetDatabase action as a dependency
     }
 
-    public static async Task AddAsync<TEntity>(TEntity entity)
-       where TEntity : class
+    protected async Task AddAsync<TEntity>(TEntity entity) where TEntity : class
     {
         using var scope = _scopeFactory.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<TDbContext>();
-
-        dbContext.Add(entity);
-        await dbContext.SaveChangesAsync();
+        var db = scope.ServiceProvider.GetRequiredService<TDbContext>();
+        db.Add(entity);
+        await db.SaveChangesAsync();
     }
-    public static async Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request)
+
+    protected async Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request)
     {
         using var scope = _scopeFactory.CreateScope();
         var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-
         return await mediator.Send(request);
     }
 
-    public static async Task<TEntity?> FindAsync<TEntity>(params object[] keyValues)
-       where TEntity : class
+    protected async Task<TEntity?> FindAsync<TEntity>(params object[] keys) where TEntity : class
     {
         using var scope = _scopeFactory.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<TDbContext>();
-
-        return await dbContext.FindAsync<TEntity>(keyValues);
+        var db = scope.ServiceProvider.GetRequiredService<TDbContext>();
+        return await db.FindAsync<TEntity>(keys);
     }
-    public static async Task<IEnumerable<TEntity?>> FindAllAsync<TEntity>()
-     where TEntity : class
+
+    protected async Task<List<TEntity>> FindByForeignKeyAsync<TEntity>(
+        Expression<Func<TEntity, bool>> predicate) where TEntity : class
     {
         using var scope = _scopeFactory.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<TDbContext>();
-
-        return await dbContext.Set<TEntity>().ToListAsync();
-    }
-    public static async Task<List<TEntity>> FindByForeignKeyAsync<TEntity>(
-    Expression<Func<TEntity, bool>> predicate)
-    where TEntity : class
-    {
-        using var scope = _scopeFactory.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<TDbContext>();
-
-        return await dbContext.Set<TEntity>().Where(predicate).ToListAsync();
+        var db = scope.ServiceProvider.GetRequiredService<TDbContext>();
+        return await db.Set<TEntity>().Where(predicate).ToListAsync();
     }
 }
+
