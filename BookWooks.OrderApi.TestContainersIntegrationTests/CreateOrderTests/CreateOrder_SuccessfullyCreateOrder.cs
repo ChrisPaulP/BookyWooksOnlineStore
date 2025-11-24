@@ -1,15 +1,11 @@
 ﻿namespace BookWooks.OrderApi.TestContainersIntegrationTests.CreateOrderTests;
 
 [Collection("Order Test Collection")]
-public class CreateOrder_SuccessfullyCreateOrder
-    : ApiTestBase<Program, BookyWooksOrderDbContext>
+public class CreateOrder_SuccessfullyCreateOrder: ApiTestBase<Program, BookyWooksOrderDbContext>
 {
-    private readonly HttpClient _client;
-
-    public CreateOrder_SuccessfullyCreateOrder(CustomOrderTestFactory<Program> apiFactory)
-        : base(apiFactory, () => Task.CompletedTask)
+    public CreateOrder_SuccessfullyCreateOrder(OrderWebApplicationFactory<Program> testFactory)
+        : base(testFactory)
     {
-        _client = apiFactory.CreateClient();
     }
 
     [Fact]

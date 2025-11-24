@@ -1,11 +1,7 @@
-﻿using Docker.DotNet.Models;
-using Microsoft.Data.SqlClient;
-using System.Net;
-using System.Net.Http.Headers;
-
+﻿using Microsoft.Data.SqlClient;
 namespace BookWooks.OrderApi.TestContainersIntegrationTests.TestSetup;
 
-public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntryPoint>, IAsyncLifetime
+public class OrderWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEntryPoint>, IAsyncLifetime
     where TEntryPoint : class
 {
     private readonly INetwork _network;
@@ -18,7 +14,7 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
     private readonly RabbitMqContainer RabbitMqContainer;
     private readonly RedisContainer RedisContainer;
     private QdrantContainer QdrantContainer;
-    private IContainer McpServerContainer;
+    private IContainer? McpServerContainer; // Make nullable
     protected IConfiguration Configuration { get; private set; } = default!;
 
     public string RabbitMqHost => RabbitMqContainer.Hostname;
@@ -27,7 +23,7 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
     public string QdrantHost => QdrantContainer.Hostname;
     public ushort QdrantPort => QdrantContainer.GetMappedPublicPort(6334);
 
-    protected TestFactoryBase()
+    public OrderWebApplicationFactory()
     {
         try
         {
@@ -69,8 +65,12 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
 
     private void ConfigureAppSettings(IConfigurationBuilder configBuilder)
     {
-        Environment.SetEnvironmentVariable("MCPSERVER__HOST", McpServerContainer.Hostname);
-        Environment.SetEnvironmentVariable("MCPSERVER__PORT", McpServerContainer.GetMappedPublicPort(8181).ToString());
+        if (McpServerContainer != null)
+        {
+            Environment.SetEnvironmentVariable("MCPSERVER__HOST", McpServerContainer.Hostname);
+            Environment.SetEnvironmentVariable("MCPSERVER__PORT", McpServerContainer.GetMappedPublicPort(8181).ToString());
+        }
+
         // Add Qdrant configuration to the environment
         Environment.SetEnvironmentVariable("QdrantOptions__QdrantHost", QdrantContainer.Hostname);
         Environment.SetEnvironmentVariable("QdrantOptions__QdrantPort", QdrantContainer.GetMappedPublicPort(6334).ToString());
@@ -83,13 +83,18 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
             ["RabbitMQConfiguration:Config:HostName"] = RabbitMqHost,
             ["RabbitMQConfiguration:Config:Port"] = RabbitMqPort.ToString(),
             ["RabbitMQConfiguration:Config:UserName"] = ContainerConfiguration.RabbitMqUsername,
-            ["RabbitMQConfiguration:Config:Password"] = ContainerConfiguration.RabbitMqPassword,
-            ["McpServer:MCPSERVER__HOST"] = McpServerContainer.Hostname,
-            ["McpServer:MCPSERVER__PORT"] = McpServerContainer.GetMappedPublicPort(8181).ToString(),
-            ["QdrantOptions:QdrantHost"] = QdrantContainer.Hostname,
-            ["QdrantOptions:QdrantPort"] = "6334",
-            ["QdrantOptions:ApiKey"] = "your-secret-api-key-here"
+            ["RabbitMQConfiguration:Config:Password"] = ContainerConfiguration.RabbitMqPassword
         };
+
+        if (McpServerContainer != null)
+        {
+            connectionStrings["McpServer:MCPSERVER__HOST"] = McpServerContainer.Hostname;
+            connectionStrings["McpServer:MCPSERVER__PORT"] = McpServerContainer.GetMappedPublicPort(8181).ToString();
+        }
+
+        connectionStrings["QdrantOptions:QdrantHost"] = QdrantContainer.Hostname;
+        connectionStrings["QdrantOptions:QdrantPort"] = "6334";
+        connectionStrings["QdrantOptions:ApiKey"] = "your-secret-api-key-here";
 
         Configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(connectionStrings)
@@ -147,7 +152,7 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
                 RedisContainer.StartAsync()
             );
 
-           // await WaitForMcpServerReadiness();
+            // await WaitForMcpServerReadiness();
         }
         catch (DockerApiException ex) when (ex.Message.Contains("already exists"))
         {
@@ -180,7 +185,11 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
         cfg.ConfigureEndpoints(ctx);
     }
 
-    protected abstract void ConfigureMassTransit(IBusRegistrationConfigurator cfg);
+    protected void ConfigureMassTransit(IBusRegistrationConfigurator busRegistration)
+    {
+        busRegistration.AddConsumer<CompletePaymentCommandConsumer>();
+        busRegistration.AddConsumer<OrderCreatedConsumer>();
+    }
 
     private async Task EnsureDatabaseCreatedAsync(string masterConnection)
     {
@@ -225,17 +234,23 @@ public abstract class TestFactoryBase<TEntryPoint> : WebApplicationFactory<TEntr
             }
         }
     }
+
     public async Task DisposeAsync()
     {
-        
-            await Task.WhenAll(
-                SqlContainer.DisposeAsync().AsTask(),
-                RabbitMqContainer.DisposeAsync().AsTask(),
-                RedisContainer.DisposeAsync().AsTask(),
-                QdrantContainer.DisposeAsync().AsTask(),
-                McpServerContainer.DisposeAsync().AsTask()
-            );
-            await _network.DisposeAsync();
-        
+        var disposeTasks = new List<Task>
+        {
+            SqlContainer.DisposeAsync().AsTask(),
+            RabbitMqContainer.DisposeAsync().AsTask(),
+            RedisContainer.DisposeAsync().AsTask(),
+            QdrantContainer.DisposeAsync().AsTask()
+        };
+
+        if (McpServerContainer != null)
+        {
+            disposeTasks.Add(McpServerContainer.DisposeAsync().AsTask());
+        }
+
+        await Task.WhenAll(disposeTasks);
+        await _network.DisposeAsync();
     }
 }
